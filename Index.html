@@ -2,431 +2,745 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Producción Ataque y Defensa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producción Ataque y Defensa v2.0</title>
     <style>
-        *{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none}
-        body,html{width:100%;height:100%;overflow:hidden;background:#111;font-family:sans-serif;display:flex;justify-content:center;align-items:center;touch-action:none}
-        #main-menu{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a0f08,#2a1810);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:300}
-        #main-menu.hidden{display:none}
-        #menu-title{font-size:32px;color:#ffd700;text-align:center;margin-bottom:50px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:bold;line-height:1.3}
-        .menu-btn{width:250px;height:60px;background:linear-gradient(135deg,#ff8c00,#ff6600);border:3px solid #cc5500;border-radius:10px;margin:10px;font-size:20px;font-weight:bold;color:#fff;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.5)}
-        .menu-btn:active{transform:scale(.95)}
-        .menu-btn.secondary{background:linear-gradient(135deg,#4a4a4a,#3a3a3a);border-color:#555}
-        #levels-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a0f08,#2a1810);display:none;flex-direction:column;align-items:center;z-index:300;overflow-y:auto;padding:20px}
-        #levels-screen.active{display:flex}
-        #levels-title{font-size:28px;color:#ffd700;margin:20px}
-        .levels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;padding:20px;max-width:400px;width:100%}
-        .level-btn{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#555,#444);border:3px solid #777;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;color:#fff;cursor:pointer}
-        .level-btn:active{transform:scale(.95)}
-        .level-btn.locked{opacity:.4;cursor:not-allowed}
-        .level-btn.completed{border-color:#4CAF50;background:linear-gradient(135deg,#2e7d32,#1b5e20)}
-        .level-number{font-size:24px;font-weight:bold}
-        .level-info{font-size:10px;margin-top:5px;color:#ccc}
-        #inventory-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a0f08,#2a1810);display:none;flex-direction:column;z-index:300;overflow-y:auto;padding:20px}
-        #inventory-screen.active{display:flex}
-        #inventory-title{font-size:24px;color:#ffd700;text-align:center;margin-bottom:20px}
-        .inventory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:500px;margin:0 auto;width:100%}
-        .inventory-item{background:#3a2817;border:3px solid #6b4423;border-radius:8px;padding:15px;text-align:center;color:#fff}
-        .inventory-item .item-icon{font-size:40px;margin-bottom:8px}
-        .inventory-item .item-name{font-size:14px;font-weight:bold;color:#ffd700}
-        .inventory-item .item-desc{font-size:11px;color:#ccc;margin-top:5px}
-        #game-container{position:relative;width:100vw;height:100vh;display:none;flex-direction:column;background:#222}
-        #game-container.active{display:flex}
-        #controls-bar{position:fixed;top:85px;left:10px;display:flex;gap:8px;z-index:300;pointer-events:auto}
-        .ctrl-btn{width:45px;height:45px;background:rgba(0,0,0,.85);border:2px solid #ffd700;border-radius:8px;color:#ffd700;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-        .ctrl-btn:active{transform:scale(.9);background:rgba(255,215,0,.4)}
-        #pause-btn{position:fixed;top:85px;right:10px;width:50px;height:50px;background:rgba(0,0,0,.85);border:2px solid #ffd700;border-radius:8px;color:#ffd700;font-size:24px;cursor:pointer;z-index:300;display:flex;align-items:center;justify-content:center;pointer-events:auto;touch-action:manipulation}
-        #pause-btn:active{transform:scale(.9);background:rgba(255,215,0,.4)}
-        #inventory-bar{width:100%;height:75px;background:#332211;border-bottom:4px solid #553311;display:flex;align-items:center;justify-content:center;gap:2px;padding:5px;z-index:10;flex-shrink:0;overflow-x:auto}
-        #gold-counter{height:60px;padding:0 10px;background:#ffd700;border:3px solid #b8860b;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:#332200;font-weight:bold;min-width:60px;box-shadow:inset 0 0 5px rgba(255,255,255,.6)}
-        #gold-value{font-size:14px;margin-top:2px}
-        .slot{width:40px;height:60px;background:#555;border:3px solid #888;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:5px;color:#fff;text-align:center;font-weight:bold;cursor:pointer;flex-shrink:0}
-        .slot.selected{border-color:#00ffcc;background:#2a4444}
-        .slot.locked{background:#333;border-color:#555;opacity:.5}
-        .slot.cant-afford{opacity:.4;border-color:#ff4444}
-        .slot.demolition{background:#5a2a2a;border-color:#ff4444}
-        .slot.demolition.selected{background:#ff2a2a;border-color:#ff6666}
-        #canvas-wrapper{flex-grow:1;display:flex;justify-content:center;align-items:center;background:#151515;overflow:hidden;position:relative;width:100%}
-        canvas{display:block;background:#2e5c1e;box-shadow:0 0 20px rgba(0,0,0,.5);touch-action:none}
-        #wave-hud{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.8);border:2px solid #ffd700;border-radius:8px;padding:6px 12px;color:#ffd700;font-size:13px;font-weight:bold;z-index:50;text-align:center;pointer-events:none;white-space:nowrap}
-        #wave-hud .wave-time{font-size:11px;color:#fff;margin-top:2px}
-        #shop-button{position:fixed;bottom:20px;right:20px;width:65px;height:65px;background:linear-gradient(135deg,#ff8c00,#ff6600);border:3px solid #cc5500;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:bold;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.5);z-index:100}
-        #shop-button:active{transform:scale(.95)}
-        #shop-button .shop-icon{font-size:24px;margin-bottom:2px}
-        #shop-overlay,#victory-overlay,#defeat-overlay,#pause-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:250;pointer-events:auto}
-        #shop-overlay.active,#victory-overlay.active,#defeat-overlay.active,#pause-overlay.active{display:flex}
-        #shop-content,#victory-content,#defeat-content,#pause-content{background:linear-gradient(135deg,#2a1810,#1a0f08);border:4px solid #8b4513;border-radius:12px;padding:20px;max-width:90%;max-height:80%;overflow-y:auto;box-shadow:0 0 30px rgba(255,140,0,.3);text-align:center}
-        #victory-content{border-color:#ffd700}
-        #defeat-content{border-color:#ff4444}
-        #pause-content{border-color:#ffd700;min-width:250px}
-        #pause-title{font-size:28px;color:#ffd700;margin-bottom:20px}
-        .pause-btn{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:2px solid #555;background:linear-gradient(135deg,#444,#333);color:#fff;font-size:16px;font-weight:bold;cursor:pointer}
-        .pause-btn:active{transform:scale(.95)}
-        .pause-btn.resume{background:linear-gradient(135deg,#4CAF50,#45a049);border-color:#2e7d32}
-        .pause-btn.restart{background:linear-gradient(135deg,#ff9800,#f57c00);border-color:#e65100}
-        .pause-btn.menu{background:linear-gradient(135deg,#f44336,#d32f2f);border-color:#b71c1c}
-        #victory-title{font-size:36px;color:#ffd700;margin-bottom:15px}
-        #defeat-title{font-size:36px;color:#ff4444;margin-bottom:15px}
-        #victory-stats,#defeat-stats{color:#fff;font-size:16px;margin-bottom:20px;line-height:1.6}
-        .result-btn{background:linear-gradient(135deg,#4CAF50,#45a049);border:2px solid #2e7d32;border-radius:6px;padding:12px 25px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;margin:5px}
-        .result-btn:active{transform:scale(.95)}
-        .result-btn.secondary{background:linear-gradient(135deg,#666,#555);border-color:#444}
-        #shop-title{text-align:center;color:#ffd700;font-size:20px;margin-bottom:15px}
-        .upgrade-card{background:#3a2817;border:3px solid #6b4423;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
-        .upgrade-icon{font-size:36px;min-width:50px;text-align:center}
-        .upgrade-info{flex-grow:1;color:#fff;text-align:left}
-        .upgrade-name{font-size:14px;font-weight:bold;color:#ffd700;margin-bottom:3px}
-        .upgrade-desc{font-size:10px;color:#ccc;margin-bottom:5px}
-        .upgrade-cost{font-size:11px;color:#ffd700;font-weight:bold}
-        .buy-button{background:linear-gradient(135deg,#4CAF50,#45a049);border:2px solid #2e7d32;border-radius:6px;padding:8px 15px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer;min-width:80px}
-        .buy-button:active{transform:scale(.95)}
-        .buy-button.disabled{background:#555;border-color:#333;opacity:.6}
-        .buy-button.success{background:#66BB6A !important;transform:scale(1.1)}
-        #close-shop{display:block;margin:15px auto 0;background:#666;border:2px solid #444;border-radius:6px;padding:8px 25px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer}
+        *{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-tap-highlight-color:transparent}
+        body,html{width:100%;height:100%;overflow:hidden;background:#111;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+        #menu{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a0f08,#2a1810);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:300}
+        #menu.hidden{display:none}
+        h1{font-size:32px;color:#ffd700;text-align:center;margin-bottom:30px;text-shadow:3px 3px 6px rgba(0,0,0,.8)}
+        .btn{width:220px;height:55px;background:linear-gradient(135deg,#ff8c00,#ff6600);border:3px solid #cc5500;border-radius:10px;margin:8px;font-size:18px;font-weight:bold;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s}
+        .btn:active{transform:scale(.95)}
+        .btn.sec{background:linear-gradient(135deg,#4a4a4a,#3a3a3a);border-color:#555}
+        .btn.full{background:linear-gradient(135deg,#6a1b9a,#4a148c);border-color:#9c27b0}
+        #inv-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a0f08,#2a1810);display:none;flex-direction:column;z-index:300;padding:15px;overflow-y:auto}
+        #inv-screen.active{display:flex}
+        .tabs{display:flex;gap:10px;margin-bottom:15px}
+        .tab{flex:1;padding:12px;background:#333;border:2px solid #555;border-radius:8px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+        .tab.active{background:#ffd700;color:#332200;border-color:#ffd700}
+        .section{display:none}
+        .section.active{display:block}
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:15px}
+        .card{background:#3a2817;border:3px solid #6b4423;border-radius:8px;padding:10px;text-align:center;color:#fff;cursor:pointer;position:relative;transition:transform 0.2s ease, box-shadow 0.2s ease;min-height:90px}
+        .card:active{transform:scale(0.95);box-shadow:0 0 15px rgba(255,215,0,0.6)}
+        .card.sel{border-color:#00ffcc;background:#1a3333;transform:scale(1.05);box-shadow:0 0 20px rgba(0,255,204,0.5)}
+        .card.disabled{opacity:0.4;cursor:not-allowed}
+        .card.disabled:active{transform:none;box-shadow:none}
+        .card .e{font-size:36px;margin-bottom:5px;display:block;min-height:40px;line-height:1.2}
+        .card .n{font-size:11px;font-weight:bold;color:#ffd700}
+        .card .c{position:absolute;top:2px;right:4px;font-size:12px;color:#ffd700}
+        .card.pop{animation:popAnim 0.3s ease}
+        @keyframes popAnim{0%{transform:scale(1)}50%{transform:scale(1.15) rotate(-5deg)}100%{transform:scale(1)}}
+        #counter{background:#2a1810;border:2px solid #6b4423;border-radius:6px;padding:8px;text-align:center;color:#fff;font-size:12px;margin-bottom:10px}
+        #game{position:relative;width:100vw;height:100vh;display:none;flex-direction:column;background:#222}
+        #game.active{display:flex}
+        #pause{position:fixed;top:8px;right:10px;width:50px;height:50px;background:rgba(0,0,0,.85);border:2px solid #ffd700;border-radius:8px;color:#ffd700;font-size:24px;cursor:pointer;z-index:300}
+        #bar{width:100%;background:linear-gradient(180deg,#332211,#2a1a0a);border-bottom:3px solid #553311;display:flex;flex-direction:column;align-items:center;padding:10px 5px 25px;z-index:10;position:relative;min-height:80px;transition:min-height .3s ease}
+        #bar.expanded{min-height:160px}
+        #bar-toggle{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);background:#553311;border:1px solid #888;border-radius:4px;color:#ffd700;font-size:11px;padding:2px 10px;cursor:pointer;z-index:11}
+        #bar-row1{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;width:100%}
+        #bar-row2{display:none;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:6px;padding-top:6px;border-top:1px solid #553311}
+        #bar.expanded #bar-row2{display:flex}
+        .slot{width:50px;height:70px;background:linear-gradient(180deg,#666,#444);border:3px solid #999;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:#fff;cursor:pointer;position:relative;transition:transform 0.2s ease, box-shadow 0.2s ease}
+        .slot:active{transform:scale(0.95)}
+        .slot .e{font-size:28px;line-height:1.2;margin-bottom:2px}
+        .slot .cost{font-size:8px;color:#ffd700;text-align:center}
+        .slot.sel{border-color:#00ffcc;background:#2a4444;transform:scale(1.08);box-shadow:0 0 15px rgba(0,255,204,0.6)}
+        .slot.gp-sel{border-color:#ffcc00!important;box-shadow:0 0 15px rgba(255,204,0,0.6)!important;}
+        .slot.nexo{background:#4a3a1a;border-color:#886622}
+        .slot.nexo .cnt{font-size:14px;font-weight:bold;color:#ffd700;position:absolute;top:2px;right:3px}
+        #wrap{flex-grow:1;display:flex;justify-content:center;align-items:center;background:#151515;overflow:hidden}
+        canvas{display:block;background:#2e5c1e}
+        #hud{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.8);border:2px solid #ffd700;border-radius:8px;padding:6px 12px;color:#ffd700;font-size:13px;font-weight:bold}
+        #shop-badge{position:fixed;bottom:95px;right:22px;background:linear-gradient(135deg,#ffd700,#ffaa00);border:2px solid #b8860b;border-radius:12px;padding:4px 10px;color:#332200;font-size:13px;font-weight:bold;z-index:100}
+        #shop-btn{position:fixed;bottom:20px;right:20px;width:70px;height:70px;background:linear-gradient(135deg,#ff8c00,#ff6600);border:3px solid #cc5500;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:bold;cursor:pointer;z-index:100}
+        #shop-btn .i{font-size:28px}
+        #shop-ov,#vict-ov,#def-ov,#pause-ov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:250}
+        #shop-ov.active,#vict-ov.active,#def-ov.active,#pause-ov.active{display:flex}
+        .content{background:linear-gradient(135deg,#2a1810,#1a0f08);border:4px solid #8b4513;border-radius:12px;padding:20px;max-width:90%;max-height:80%;overflow-y:auto;text-align:center}
+        #vict-ov .content{border-color:#ffd700}
+        #def-ov .content{border-color:#ff4444}
+        #pause-ov .content{border-color:#ffd700;min-width:250px}
+        .pbtn{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:2px solid #555;background:#444;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}
+        .pbtn.res{background:#4CAF50;border-color:#2e7d32}
+        .pbtn.full{background:linear-gradient(135deg,#6a1b9a,#4a148c);border-color:#9c27b0}
+        .pbtn.rot{background:linear-gradient(135deg,#6a1b9a,#4a148c);border-color:#9c27b0}
+        #vict-t{font-size:36px;color:#ffd700;margin-bottom:15px}
+        #def-t{font-size:36px;color:#ff4444;margin-bottom:15px}
+        .rbtn{background:#4CAF50;border:2px solid #2e7d32;border-radius:6px;padding:12px 25px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;margin:5px}
+        .rbtn.sec{background:#666;border-color:#444}
+        .upg{background:#3a2817;border:3px solid #6b4423;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+        .upg .ic{font-size:36px;min-width:50px;text-align:center;line-height:1.2}
+        .upg .inf{flex-grow:1;color:#fff;text-align:left}
+        .upg .nm{font-size:13px;font-weight:bold;color:#ffd700}
+        .upg .cost{font-size:10px;color:#ffd700;font-weight:bold}
+        .buy{background:#4CAF50;border:2px solid #2e7d32;border-radius:6px;padding:6px 12px;color:#fff;font-size:11px;font-weight:bold;cursor:pointer}
+        .buy.dis{background:#555;border-color:#333;opacity:.6;pointer-events:none}
+        .shop-item{display:none}
+        .shop-item.visible{display:flex}
+        #close{display:block;margin:15px auto 0;background:#666;border:2px solid #444;border-radius:6px;padding:8px 25px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer}
+        #close-inv{display:block;margin:15px auto 0;background:#ff4444;border:2px solid #cc0000;border-radius:6px;padding:8px 25px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer}
+        #lvl-screen{flex-direction:column;justify-content:flex-start;padding:30px 20px}
+        .lvl-title{font-size:32px;color:#ffd700;text-align:center;margin-bottom:20px;text-shadow:3px 3px 6px rgba(0,0,0,.8);letter-spacing:2px}
+        .lvl-scroll-container{width:100%;flex-grow:1;overflow-x:auto;overflow-y:hidden;display:flex;align-items:center;padding:20px 0;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#6b4423 #1a0f08}
+        .lvl-scroll-container::-webkit-scrollbar{height:8px}
+        .lvl-scroll-container::-webkit-scrollbar-track{background:#1a0f08;border-radius:4px}
+        .lvl-scroll-container::-webkit-scrollbar-thumb{background:#6b4423;border-radius:4px}
+        .lvl-scroll-content{display:flex;gap:30px;padding:0 30px;min-width:max-content;align-items:center}
+        .lvl-circle{width:108px;height:108px;border-radius:50%;position:relative;cursor:pointer;transition:transform 0.3s ease, box-shadow 0.3s ease;flex-shrink:0;overflow:visible}
+        .lvl-circle:active{transform:scale(0.95)}.lvl-circle.unlocked-fertile{background:radial-gradient(circle at 30% 30%,#7cb342,#558b2f);box-shadow:0 6px 15px rgba(0,0,0,.5),inset 0 -15px 30px rgba(139,69,19,.4)}
+        .lvl-circle.unlocked-fertile:hover{transform:scale(1.05);box-shadow:0 10px 25px rgba(0,0,0,.6),inset 0 -15px 30px rgba(139,69,19,.4)}
+        .lvl-circle.unlocked-snow{background:radial-gradient(circle at 30% 30%,#64b5f6,#1976d2);box-shadow:0 6px 15px rgba(0,0,0,.5),inset 0 -15px 30px rgba(255,255,255,.3)}
+        .lvl-circle.unlocked-snow:hover{transform:scale(1.05);box-shadow:0 10px 25px rgba(0,0,0,.6),inset 0 -15px 30px rgba(255,255,255,.3)}
+        .lvl-circle.locked{background:radial-gradient(circle at 30% 30%,#666,#444);box-shadow:0 6px 15px rgba(0,0,0,.5);opacity:.6;cursor:not-allowed}
+        .lvl-circle.locked:active{transform:none}
+        .lvl-circle .grass-top{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:60%;height:16px;z-index:5}
+        .lvl-circle .grass-top::before{content:'🌿';position:absolute;left:0;font-size:14px}
+        .lvl-circle .grass-top::after{content:'🌱';position:absolute;right:0;font-size:14px}
+        .lvl-circle .snow-top{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:60%;height:16px;z-index:5}
+        .lvl-circle .snow-top::before{content:'❄️';position:absolute;left:0;font-size:14px}
+        .lvl-circle .snow-top::after{content:'⛄';position:absolute;right:0;font-size:12px}
+        .lvl-circle .flower{position:absolute;z-index:6;font-size:12px}
+        .lvl-circle .flower.f1{top:-12px;left:10px}
+        .lvl-circle .flower.f2{top:-10px;right:8px}
+        .lvl-circle .flower.f3{top:-14px;left:50%;transform:translateX(-50%)}
+        .lvl-num{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);font-size:36px;font-weight:bold;color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,.8);z-index:10}
+        .lvl-label{position:absolute;top:68%;left:50%;transform:translateX(-50%);font-size:10px;font-weight:bold;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.8);z-index:10;letter-spacing:1px}
+        .lvl-info{position:absolute;bottom:-45px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap}
+        .lvl-rows{font-size:14px;color:#ffd700;font-weight:bold;margin-bottom:3px}
+        .lvl-bombs{font-size:12px;color:#ff8c00}
+        .lvl-lock{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;z-index:10}
+        .lvl-back-btn{margin-top:30px;width:200px;height:50px;background:linear-gradient(135deg,#4a4a4a,#3a3a3a);border:3px solid #555;border-radius:10px;color:#fff;font-size:18px;font-weight:bold;cursor:pointer;transition:transform 0.2s ease}
+        .lvl-back-btn:active{transform:scale(0.95)}
     </style>
 </head>
 <body>
-<div id="main-menu">
-    <div id="menu-title">PRODUCCIÓN<br>ATAQUE Y DEFENSA 🛡️</div>
-    <button class="menu-btn" onclick="showLevels()">▶ PLAY</button>
-    <button class="menu-btn secondary" onclick="showInventory()">📦 INVENTARIO</button>
-    <button class="menu-btn secondary" onclick="showLevelsScreen()">🗺️ NIVELES</button>
+<div id="menu">
+    <h1>PRODUCCIÓN<br>ATAQUE Y DEFENSA 🛡️</h1>
+    <button class="btn" onclick="startLvl(1)">▶ PLAY</button>
+    <button class="btn sec" onclick="showInv()">📦 INVENTARIO</button>
+    <button class="btn sec" onclick="showLvls()">🗺️ NIVELES</button>
+    <button class="btn full" onclick="toggleFull()">⛶ PANTALLA COMPLETA</button>
 </div>
-<div id="levels-screen">
-    <div id="levels-title">🗺️ SELECCIONA NIVEL</div>
-    <div class="levels-grid" id="levels-grid"></div>
-    <button class="menu-btn secondary" onclick="showMainMenu()" style="margin-top:20px">⬅ VOLVER</button>
+<div id="lvl-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a0f08,#2a1810);display:none;z-index:300">
+    <div class="lvl-title" id="lvl-title">🌍 TIERRAS FÉRTILES</div>
+    <div class="lvl-scroll-container">
+        <div class="lvl-scroll-content" id="lvl-scroll-content"></div>
+    </div>
+    <button class="lvl-back-btn" onclick="showMenu()">⬅ VOLVER</button>
 </div>
-<div id="inventory-screen">
-    <div id="inventory-title">📦 INVENTARIO</div>
-    <div class="inventory-grid" id="inventory-grid"></div>
-    <button class="menu-btn secondary" onclick="showMainMenu()" style="margin-top:20px">⬅ VOLVER</button>
-</div>
-<div id="game-container">
-    <div id="controls-bar">
-        <button class="ctrl-btn" onclick="toggleFullscreen()">⛶</button>
-        <button class="ctrl-btn" onclick="rotateScreen()">⟳</button>
+<div id="inv-screen">
+    <div style="font-size:24px;color:#ffd700;text-align:center;margin-bottom:15px">🃏 CARTAS</div>
+    <div class="tabs">
+        <div class="tab active" onclick="swTab('stor')"> Almacenamiento</div>
+        <div class="tab" onclick="swTab('act')">️ Inventario</div>
     </div>
-    <button id="pause-btn" onclick="togglePause()">☰</button>
-    <div id="inventory-bar">
-        <div id="gold-counter"><span>ORO</span><div id="gold-value">4 ✨</div></div>
-        <div class="slot" id="slot-0" onclick="selectSlot(0)"></div>
-        <div class="slot" id="slot-1" onclick="selectSlot(1)"></div>
-        <div class="slot" id="slot-2" onclick="selectSlot(2)"></div>
-        <div class="slot" id="slot-3" onclick="selectSlot(3)"></div>
-        <div class="slot" id="slot-4" onclick="selectSlot(4)"></div>
-        <div class="slot" id="slot-5" onclick="selectSlot(5)"></div>
-        <div class="slot locked" id="slot-6" onclick="selectSlot(6)"></div>
-        <div class="slot locked" id="slot-7" onclick="selectSlot(7)"></div>
-        <div class="slot locked" id="slot-8" onclick="selectSlot(8)"></div>
-        <div class="slot locked" id="slot-9" onclick="selectSlot(9)"></div>
-        <div class="slot demolition" id="slot-10" onclick="selectSlot(10)">Demo<br>🔨</div>
+    <div id="counter">Torres: <span id="t-cnt">0</span>/5 | Nexos: <span id="n-cnt">0</span>/5</div>
+    <div id="stor-sec" class="section active">
+        <div class="grid" id="stor-grid"></div>
+        <div style="color:#ccc;font-size:12px;text-align:center">Toca para agregar al inventario</div>
     </div>
-    <div id="canvas-wrapper">
-        <canvas id="gameCanvas"></canvas>
-        <div id="wave-hud"><div id="wave-phase">FASE 1/10</div><div class="wave-time" id="wave-time">Preparación: 20s</div></div>
+    <div id="act-sec" class="section">
+        <div class="grid" id="act-grid"></div>
+        <div style="color:#ccc;font-size:12px;text-align:center">Toca para remover</div>
     </div>
-    <div id="shop-button" onclick="openShop()"><div class="shop-icon">🛒</div><div>TIENDA</div></div>
-    <div id="shop-overlay" onclick="closeShopOnOverlay(event)"><div id="shop-content" onclick="event.stopPropagation()">
-        <div id="shop-title"> TIENDA DE MEJORAS</div>
-        <div class="upgrade-card"><div class="upgrade-icon">🟩</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Dureza</div><div class="upgrade-desc">+15% HP a Muros y Ataque</div><div class="upgrade-cost">Costo: 50 ✨</div></div><button class="buy-button" id="buy-nexo-dureza" onclick="buyNexoDureza()">COMPRAR</button></div>
-        <div class="upgrade-card"><div class="upgrade-icon">🟩</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Funcionamiento</div><div class="upgrade-desc">Mejora efectos de Asistencia</div><div class="upgrade-cost">Costo: 70 ✨</div></div><button class="buy-button" id="buy-nexo-funcionamiento" onclick="buyNexoFuncionamiento()">COMPRAR</button></div>
-        <div class="upgrade-card"><div class="upgrade-icon">🟩</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Producción</div><div class="upgrade-desc">+20% producción de Minas</div><div class="upgrade-cost">Costo: 60 ✨</div></div><button class="buy-button" id="buy-nexo-produccion" onclick="buyNexoProduccion()">COMPRAR</button></div>
-        <div class="upgrade-card"><div class="upgrade-icon">🟦</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Infantería</div><div class="upgrade-desc">Duplica daño de Ataque y Bala</div><div class="upgrade-cost">Costo: 90 ✨</div></div><button class="buy-button" id="buy-nexo-infanteria" onclick="buyNexoInfanteria()">COMPRAR</button></div>
-        <button id="close-shop" onclick="closeShop()">CERRAR</button>
+    <button id="close-inv" onclick="showMenu()">✕ CERRAR</button>
+</div><div id="game">
+    <button id="pause" onclick="togglePause()">☰</button>
+    <div id="bar">
+        <button id="bar-toggle" onclick="toggleBar()">▼ Cartas</button>
+        <div id="bar-row1"></div>
+        <div id="bar-row2"></div>
+    </div>
+    <div id="wrap"><canvas id="cv"></canvas>
+        <div id="hud"><div id="phase">FASE 1/10</div><div id="time">20s</div></div>
+    </div>
+    <div id="shop-badge">✨ <span id="sgold">4</span></div>
+    <div id="shop-btn" onclick="openShop()"><div class="i">🛒</div><div>TIENDA</div></div>
+    <div id="shop-ov" onclick="if(event.target===this)closeShop()"><div class="content" onclick="event.stopPropagation()">
+        <div style="color:#ffd700;font-size:20px;margin-bottom:15px">🛒 TIENDA</div>
+        <div style="color:#ffd700;margin-bottom:15px">Oro: <span id="shop-g">4</span> ✨</div>
+        <div id="shop-no-items" style="color:#ff6666;font-size:14px;margin-bottom:15px;display:none">No tienes nexos en tu inventario</div>
+        <div class="upg shop-item" id="si-0"><div class="ic">🟩</div><div class="inf"><div class="nm">Nexo Dureza</div><div class="cost">50 ✨</div></div><button class="buy" id="b-d">COMPRAR</button></div>
+        <div class="upg shop-item" id="si-1"><div class="ic">🟨</div><div class="inf"><div class="nm">Nexo Funcionamiento</div><div class="cost">70 ✨</div></div><button class="buy" id="b-f">COMPRAR</button></div>
+        <div class="upg shop-item" id="si-2"><div class="ic">🟢</div><div class="inf"><div class="nm">Nexo Producción</div><div class="cost">60 ✨</div></div><button class="buy" id="b-p">COMPRAR</button></div>
+        <div class="upg shop-item" id="si-3"><div class="ic">🛠️</div><div class="inf"><div class="nm">Nexo Infantería</div><div class="cost">90 ✨</div></div><button class="buy" id="b-i">COMPRAR</button></div>
+        <div class="upg shop-item" id="si-4"><div class="ic">💚</div><div class="inf"><div class="nm">Nexo Curación</div><div class="cost">90 ✨</div></div><button class="buy" id="b-h">COMPRAR</button></div>
+        <div class="upg shop-item" id="si-5"><div class="ic">⚡</div><div class="inf"><div class="nm">Nexo Expansión</div><div class="cost">120 ✨</div></div><button class="buy" id="b-e">COMPRAR</button></div>
+        <div class="upg shop-item" id="si-6"><div class="ic">🛡️</div><div class="inf"><div class="nm">Nexo Inquebrantable</div><div class="cost">85 ✨</div></div><button class="buy" id="b-q">COMPRAR</button></div>
+        <div class="upg shop-item" id="si-7"><div class="ic">⚙️</div><div class="inf"><div class="nm">Nexo Mecánica</div><div class="cost">50 ✨</div></div><button class="buy" id="b-m">COMPRAR</button></div>
+        <button id="close" onclick="closeShop()">CERRAR</button>
     </div></div>
-    <div id="pause-overlay" onclick="closePauseOnOverlay(event)"><div id="pause-content" onclick="event.stopPropagation()">
-        <div id="pause-title">☰ PAUSA</div>
-        <button class="pause-btn resume" onclick="resumeGame()">▶ REANUDAR</button>
-        <button class="pause-btn restart" onclick="restartFromPause()">🔄 REINICIAR NIVEL</button>
-        <button class="pause-btn menu" onclick="backToMenu()">🏠 MENÚ PRINCIPAL</button>
+    <div id="pause-ov" onclick="if(event.target===this)resume()"><div class="content" onclick="event.stopPropagation()">
+        <div style="font-size:28px;color:#ffd700;margin-bottom:20px">☰ PAUSA</div>
+        <button class="pbtn res" onclick="resume()">▶ REANUDAR</button>
+        <button class="pbtn" onclick="restart()">🔄 REINICIAR</button>
+        <button class="pbtn rot" onclick="rotate()">🔄 ROTAR PANTALLA</button>
+        <button class="pbtn full" onclick="toggleFull()">⛶ PANTALLA COMPLETA</button>
+        <button class="pbtn" onclick="showMenu()">🏠 MENÚ</button>
     </div></div>
-    <div id="victory-overlay"><div id="victory-content">
-        <div id="victory-title">🏆 ¡VICTORIA! 🏆</div>
-        <div id="victory-stats">Nivel <span id="victory-level">1</span> completado<br>Oro: <span id="victory-gold">0</span> ✨<br>Torres: <span id="victory-towers">0</span></div>
-        <button class="result-btn" onclick="nextLevel()">▶ SIGUIENTE</button>
-        <button class="result-btn secondary" onclick="backToMenu()">🏠 MENÚ</button>
+    <div id="vict-ov"><div class="content">
+        <div id="vict-t"> ¡VICTORIA!</div>
+        <div style="color:#fff;margin-bottom:20px">Nivel <span id="v-lvl">1</span></div>
+        <button class="rbtn" onclick="nextLvl()">▶ SIGUIENTE</button>
+        <button class="rbtn sec" onclick="showMenu()">🏠 MENÚ</button>
     </div></div>
-    <div id="defeat-overlay"><div id="defeat-content">
-        <div id="defeat-title">💀 ¡DERROTA! 💀</div>
-        <div id="defeat-stats">Un enemigo cruzó tu defensa<br>Nivel <span id="defeat-level">1</span><br>Oleada: <span id="defeat-wave">0</span></div>
-        <button class="result-btn" onclick="retryLevel()">🔄 REINTENTAR</button>
-        <button class="result-btn secondary" onclick="backToMenu()">🏠 MENÚ</button>
+    <div id="def-ov"><div class="content">
+        <div id="def-t">💀 ¡DERROTA!</div>
+        <div style="color:#fff;margin-bottom:20px">Nivel <span id="d-lvl">1</span></div>
+        <button class="rbtn" onclick="retry()">🔄 REINTENTAR</button>
+        <button class="rbtn sec" onclick="showMenu()">🏠 MENÚ</button>
     </div></div>
 </div>
 <script>
-    var canvas=document.getElementById("gameCanvas"),ctx=canvas.getContext("2d");
-    var LEVEL_CONFIG={1:{rows:1,maxWave:2},2:{rows:2,maxWave:3},3:{rows:3,maxWave:4},4:{rows:4,maxWave:5},5:{rows:5,maxWave:6},6:{rows:5,maxWave:7},7:{rows:6,maxWave:8},8:{rows:6,maxWave:9},9:{rows:7,maxWave:10},10:{rows:7,maxWave:10}};
-    var TOWER_TYPES=[
-        {name:"Ataque",color:"#888888",icon:"⚔",hp:100,shootCooldown:90},
-        {name:"Asistencia",color:"#888888",icon:"🛡",hp:120,shootCooldown:0},
-        {name:"Mina",color:"#888888",icon:"💎",hp:80,shootCooldown:0},
-        {name:"Muro",color:"#888888",icon:"🧱",hp:500,shootCooldown:0},
-        {name:"Bomba",color:"#888888",icon:"💣",hp:99999,shootCooldown:0},
-        {name:"Bala",color:"#888888",icon:"🔫",hp:80,shootCooldown:240}
-    ];
-    var currentLevel=1,maxUnlockedLevel=1,ROWS=1,COLS=11;
-    var WAVES=[],selectedSlotIndex=null;
-    var nexoDurezaCharges=0,nexoFuncionamientoCharges=0,nexoProduccionCharges=0,nexoInfanteriaCharges=0;
-    var grid=[],enemies=[],projectiles=[],enemyArrows=[],visualExplosions=[];
-    var goldPieces=4,frameCount=0,cellWidth=0,cellHeight=0,towersBuilt=0;
-    var currentWave=0,waveTimer=0,normalSpawnTimer=0,tankSpawnTimer=0,archerSpawnTimer=0;
-    var gameEnded=false,gameStarted=false,gamePaused=false;
-    var boardWidth=0,boardHeight=0;
-    var minesBought=0,bombsBought=0,bombLimit=0,arrastradorSpawned=0;
-    var lastFrameTime=0,FPS=60,frameInterval=1000/FPS;
-    try{var sv=localStorage.getItem("td_progress");if(sv)maxUnlockedLevel=parseInt(sv)||1}catch(e){}
-    function saveProgress(){try{localStorage.setItem("td_progress",maxUnlockedLevel.toString())}catch(e){}}
-    function getMineCost(){if(minesBought===0)return 0;return Math.min(Math.pow(2,minesBought),4096)}
-    function getBombLimit(){return Math.max(0,(currentLevel-1)*5)}
-    function getTowerCost(i){if(i===0)return 5;if(i===1)return 10;if(i===2)return getMineCost();if(i===3)return 20;if(i===4)return 15;if(i===5)return 12;return 0}
-    function canAfford(i){if(i===2&&minesBought>=12)return false;if(i===4&&bombsBought>=bombLimit)return false;return goldPieces>=getTowerCost(i)}
-    function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}function showMainMenu(){
-        document.getElementById("main-menu").classList.remove("hidden");
-        document.getElementById("levels-screen").classList.remove("active");
-        document.getElementById("inventory-screen").classList.remove("active");
-        document.getElementById("game-container").classList.remove("active");
-        document.getElementById("victory-overlay").classList.remove("active");
-        document.getElementById("defeat-overlay").classList.remove("active");
-        document.getElementById("pause-overlay").classList.remove("active");
-        gameStarted=false;gamePaused=false;gameEnded=false;
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+var LCFG={1:{r:1,w:2},2:{r:2,w:3},3:{r:3,w:4},4:{r:4,w:5},5:{r:5,w:6},6:{r:5,w:7},7:{r:6,w:8},8:{r:6,w:9},9:{r:7,w:10},10:{r:7,w:10},11:{r:7,w:10},12:{r:7,w:11},13:{r:8,w:11},14:{r:8,w:12},15:{r:8,w:12},16:{r:9,w:13},17:{r:9,w:13},18:{r:9,w:14},19:{r:10,w:14},20:{r:10,w:15}};
+
+var TW=[
+    {n:"Ataque",e:"🗡️",hp:200,cd:90,c:5},
+    {n:"Asistencia",e:"🛡️",hp:250,cd:0,c:10},
+    {n:"Mina",e:"💎",hp:80,cd:0,c:0},
+    {n:"Muro",e:"🧱",hp:500,cd:0,c:20},
+    {n:"Bomba",e:"💣",hp:99999,cd:0,c:15},
+    {n:"Bala",e:"🔫",hp:80,cd:240,c:20},
+    {n:"Tesla",e:"🔮",hp:100,cd:360,c:35},
+    {n:"MuroInq",e:"🏰",hp:700,cd:0,c:45}
+];
+
+var NX=[
+    {n:"NexoD",e:"🟩",c:50},
+    {n:"NexoF",e:"🟨",c:70},
+    {n:"NexoP",e:"🟢",c:60},
+    {n:"NexoI",e:"🛠️",c:90},
+    {n:"NexoH",e:"💚",c:90},
+    {n:"NexoE",e:"⚡",c:120},
+    {n:"NexoQ",e:"🛡️",c:85},
+    {n:"NexoM",e:"⚙️",c:50}
+];var lvl=1,maxLvl=1,ROWS=1,COLS=11;
+var waves=[],sel=null,selNexIdx=-1,nxC=[0,0,0,0,0,0,0,0];
+var grid=[],en=[],proj=[],earr=[],exp=[];
+var gold=4,fc=0,cw=0,ch=0,tBuilt=0;
+var cWave=0,wT=0,nST=0,tST=0,aST=0,mST=0;
+var end=false,start=false,pause=false;
+var bw=0,bh=0,mB=0,bB=0,bLim=0,arrSp=0,balC=0;
+var lFT=0,FPS=60,fInt=1000/FPS;
+var actT=[],actN=[];
+var stor={t:[1,1,1,1,1,1,1,1],n:[1,1,1,1,1,1,1,1]};
+
+// --- GAMEPAD API SETUP ---
+var gpCursor={r:0,c:0},gpBarIdx=-1,gpPrevBtns=[],gpMoveCooldown=0,gamepadConnected=false;
+window.addEventListener("gamepadconnected",function(){gamepadConnected=true;});
+window.addEventListener("gamepaddisconnected",function(){gamepadConnected=false;});
+function isBtnPressed(gp,idx){if(!gp.buttons[idx])return false;var p=gp.buttons[idx].pressed;var w=gpPrevBtns[idx]||false;gpPrevBtns[idx]=p;return p&&!w;}
+function cycleBar(dir){var total=actT.length+actN.length+1;if(total===0)return;if(gpBarIdx<0)gpBarIdx=0;else gpBarIdx+=dir;if(gpBarIdx<0)gpBarIdx=total-1;if(gpBarIdx>=total)gpBarIdx=0;updUI();}
+function simulateGridClick(row,col){var rect=cv.getBoundingClientRect();touch({preventDefault:function(){},stopPropagation:function(){},clientX:rect.left+(col*cw)+(cw/2),clientY:rect.top+(row*ch)+(ch/2)});}
+function pollGamepad(){
+    var gps=navigator.getGamepads?navigator.getGamepads():[];var gp=null;for(var i=0;i<gps.length;i++){if(gps[i]){gp=gps[i];break;}}if(!gp)return;
+    if(isBtnPressed(gp,9))togglePause();
+    if(isBtnPressed(gp,3)){if(document.getElementById("shop-ov").classList.contains("active"))closeShop();else openShop();}
+    if(isBtnPressed(gp,1)){if(document.getElementById("shop-ov").classList.contains("active"))closeShop();else if(sel==="dem"){sel=null;updUI();}else if(typeof sel==="number"||selNexIdx>=0){sel=null;selNexIdx=-1;updUI();}}
+    if(isBtnPressed(gp,2)){sel=(sel==="dem")?null:"dem";selNexIdx=-1;updUI();}
+    if(isBtnPressed(gp,4))cycleBar(-1);if(isBtnPressed(gp,5))cycleBar(1);
+    if(isBtnPressed(gp,0)){if(!document.getElementById("shop-ov").classList.contains("active")){if(gpBarIdx>=0){if(gpBarIdx<actT.length)selSlot(gpBarIdx);else{var nIdx=gpBarIdx-actT.length-1;if(nIdx>=0&&nIdx<actN.length)clickNexo(nIdx);else{sel="dem";updUI();}}gpBarIdx=-1;}else if(sel!==null){simulateGridClick(gpCursor.r,gpCursor.c);}}}
+    if(gpMoveCooldown>0)gpMoveCooldown--;else{var dx=gp.axes[0],dy=gp.axes[1];var moved=false;
+    if(dy<-0.5||(gp.buttons[12]&&gp.buttons[12].pressed)){gpCursor.r--;moved=true;}
+    else if(dy>0.5||(gp.buttons[13]&&gp.buttons[13].pressed)){gpCursor.r++;moved=true;}
+    else if(dx<-0.5||(gp.buttons[14]&&gp.buttons[14].pressed)){gpCursor.c--;moved=true;}
+    else if(dx>0.5||(gp.buttons[15]&&gp.buttons[15].pressed)){gpCursor.c++;moved=true;}
+    if(moved){if(gpCursor.r<0)gpCursor.r=ROWS-1;if(gpCursor.r>=ROWS)gpCursor.r=0;if(gpCursor.c<0)gpCursor.c=COLS-1;if(gpCursor.c>=COLS)gpCursor.c=0;gpMoveCooldown=12;}}
+}
+// -------------------------
+
+try{
+    var s=localStorage.getItem("td_p");if(s)maxLvl=parseInt(s)||1;
+    var st=localStorage.getItem("td_st");if(st)stor=JSON.parse(st);
+    if(!stor.t||stor.t.length<8)stor.t=[1,1,1,1,1,1,1,1];
+    else{for(var k=0;k<8;k++){if(stor.t[k]===0)stor.t[k]=1;}}
+    if(!stor.n||stor.n.length<8)stor.n=[1,1,1,1,1,1,1,1];
+    else{for(var k=0;k<8;k++){if(stor.n[k]===0)stor.n[k]=1;}}
+    var at=localStorage.getItem("td_at");if(at)actT=JSON.parse(at);
+    var an=localStorage.getItem("td_an");if(an)actN=JSON.parse(an);
+}catch(e){}
+
+function save(){try{localStorage.setItem("td_st",JSON.stringify(stor));localStorage.setItem("td_at",JSON.stringify(actT));localStorage.setItem("td_an",JSON.stringify(actN));}catch(e){}}
+function gMC(){if(mB===0)return 0;return Math.min(Math.pow(2,mB),4096);}
+function gBL(){return Math.max(0,(lvl-1)*5);}
+function gBC(){return 20+(balC*5);}
+function rI(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+
+function showMenu(){
+    document.getElementById("menu").classList.remove("hidden");
+    document.getElementById("lvl-screen").style.display="none";
+    document.getElementById("inv-screen").classList.remove("active");
+    document.getElementById("game").classList.remove("active");
+    document.getElementById("vict-ov").classList.remove("active");
+    document.getElementById("def-ov").classList.remove("active");
+    document.getElementById("pause-ov").classList.remove("active");
+    start=false;pause=false;end=false;
+}
+
+function showLvls(){document.getElementById("menu").classList.add("hidden");document.getElementById("lvl-screen").style.display="flex";renderLvls();}
+
+function startLvl(l){
+    console.log("Iniciando nivel: "+l);
+    lvl=l;var c=LCFG[l];if(!c){console.error("No existe nivel "+l);return;}
+    ROWS=c.r;var mw=c.w;waves=[];
+    for(var i=0;i<mw;i++){
+        if(i===0)waves.push({d:1200,n:0,t:0,a:0,m:0});
+        else if(i===1)waves.push({d:7200,n:720,t:0,a:0,m:0});
+        else if(i===2)waves.push({d:12600,n:360,t:0,a:0,m:0});
+        else if(i===3)waves.push({d:7200,n:240,t:720,a:0,m:0});
+        else if(i===4)waves.push({d:7200,n:144,t:360,a:240,m:0});
+        else{var m=Math.min(1+(i-4)*0.5,2);var mineFreq=0;if(lvl>=8&&i>=4)mineFreq=Math.floor(240/m);waves.push({d:7200,n:Math.floor(144/m),t:Math.floor(360/m),a:Math.floor(240/m),m:mineFreq});}
     }
-    function showLevelsScreen(){document.getElementById("main-menu").classList.add("hidden");document.getElementById("levels-screen").classList.add("active");renderLevels()}
-    function showLevels(){document.getElementById("main-menu").classList.add("hidden");startLevel(maxUnlockedLevel)}
-    function showInventory(){document.getElementById("main-menu").classList.add("hidden");document.getElementById("inventory-screen").classList.add("active");renderInventory()}
-    function renderLevels(){
-        var g=document.getElementById("levels-grid");g.innerHTML="";
-        for(var i=1;i<=10;i++){var b=document.createElement("div");b.className="level-btn";var cfg=LEVEL_CONFIG[i];
-            if(i>maxUnlockedLevel){b.classList.add("locked");b.innerHTML='<div class="level-number">'+i+'</div><div class="level-info">🔒 '+cfg.rows+' fila'+(cfg.rows>1?'s':'')+'</div>'}
-            else{b.onclick=(function(lv){return function(){startLevel(lv)}})(i);if(i<maxUnlockedLevel)b.classList.add("completed");
-                var info=cfg.rows+' fila'+(cfg.rows>1?'s':'')+'<br>💣x'+Math.max(0,(i-1)*5);if(i>7)info+='<br>🐛x'+(i===10?2:1);
-                b.innerHTML='<div class="level-number">'+i+'</div><div class="level-info">'+info+'</div>'}
-            g.appendChild(b)}
-    }
-    function renderInventory(){
-        var g=document.getElementById("inventory-grid");g.innerHTML="";
-        var items=[{n:"Ataque (5✨)",i:"⚔️",d:"Dispara proyectiles"},{n:"Asistencia (10✨)",i:"🛡️",d:"Cura Muros y mejora torres"},{n:"Mina (0→4096✨)",i:"💎",d:"Genera oro pasivamente"},{n:"Muro (20✨)",i:"🧱",d:"500 HP, bloquea enemigos"},{n:"Bomba (15✨)",i:"💣",d:"Explota en cruz (+45✨ kill)"},{n:"Bala (12✨)",i:"🔫",d:"Traspaso: 3 enemigos, 4 HP"},{n:"Nexo Dureza (50✨)",i:"🟩",d:"+15% HP Muro/Ataque"},{n:"Nexo Func. (70✨)",i:"🟩",d:"Mejora Asistencia"},{n:"Nexo Prod. (60✨)",i:"🟩",d:"+20% Mina"},{n:"Nexo Inf. (90✨)",i:"🟦",d:"x2 daño Ataque/Bala"}];
-        items.forEach(function(it){var d=document.createElement("div");d.className="inventory-item";d.innerHTML='<div class="item-icon">'+it.i+'</div><div class="item-name">'+it.n+'</div><div class="item-desc">'+it.d+'</div>';g.appendChild(d)})
-    }
-    function startLevel(level){
-        currentLevel=level;var cfg=LEVEL_CONFIG[level];ROWS=cfg.rows;var mw=cfg.maxWave;
-        WAVES=[];
-        for(var i=0;i<mw;i++){
-            if(i===0)WAVES.push({duration:1200,normalFreq:0,tankFreq:0,archerFreq:0});
-            else if(i===1)WAVES.push({duration:7200,normalFreq:720,tankFreq:0,archerFreq:0});
-            else if(i===2)WAVES.push({duration:12600,normalFreq:360,tankFreq:0,archerFreq:0});
-            else if(i===3)WAVES.push({duration:7200,normalFreq:240,tankFreq:720,archerFreq:0});
-            else if(i===4)WAVES.push({duration:7200,normalFreq:144,tankFreq:360,archerFreq:240});
-            else{var m=Math.min(1+(i-4)*0.5,2);WAVES.push({duration:7200,normalFreq:Math.floor(144/m),tankFreq:Math.floor(360/m),archerFreq:Math.floor(240/m)})}
+    grid=[];for(var r=0;r<ROWS;r++){grid[r]=[];for(var c=0;c<COLS;c++)grid[r][c]=null;}
+    en=[];proj=[];earr=[];exp=[];
+    gold=4;fc=0;tBuilt=0;cWave=0;wT=0;nST=0;tST=0;aST=0;mST=0;
+    end=false;pause=false;sel=null;selNexIdx=-1;nxC=[0,0,0,0,0,0,0,0];
+    mB=0;bB=0;bLim=gBL();arrSp=0;balC=0;
+    document.getElementById("menu").classList.add("hidden");
+    document.getElementById("lvl-screen").style.display="none";
+    document.getElementById("inv-screen").classList.remove("active");
+    document.getElementById("vict-ov").classList.remove("active");
+    document.getElementById("def-ov").classList.remove("active");
+    document.getElementById("pause-ov").classList.remove("active");
+    document.getElementById("game").classList.add("active");
+    setTimeout(function(){resize();setupBar();updUI();updHud();start=true;},150);
+}
+
+function showInv(){document.getElementById("menu").classList.add("hidden");document.getElementById("inv-screen").classList.add("active");updCnt();renderStor();renderAct();}
+
+function swTab(t){
+    document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active")});
+    document.querySelectorAll(".section").forEach(function(x){x.classList.remove("active")});
+    if(t==="stor"){document.querySelectorAll(".tab")[0].classList.add("active");document.getElementById("stor-sec").classList.add("active");}
+    else{document.querySelectorAll(".tab")[1].classList.add("active");document.getElementById("act-sec").classList.add("active");}
+}
+function updCnt(){document.getElementById("t-cnt").innerText=actT.length;document.getElementById("n-cnt").innerText=actN.length;}function renderStor(){
+    var g=document.getElementById("stor-grid");g.innerHTML="";
+    TW.forEach(function(t,i){
+        var c=stor.t[i]||0;
+        var d=document.createElement("div");d.className="card";
+        if(c===0)d.classList.add("disabled");
+        d.innerHTML='<div class="e">'+t.e+'</div><div class="n">'+t.n+'</div><div class="c">x'+c+'</div>';
+        if(c>0)d.onclick=(function(idx){return function(){addToAct("t",idx);animCard(this);}})(i);
+        g.appendChild(d);
+    });
+    NX.forEach(function(n,i){
+        var c=stor.n[i]||0;
+        var d=document.createElement("div");d.className="card";
+        if(c===0)d.classList.add("disabled");
+        d.innerHTML='<div class="e">'+n.e+'</div><div class="n">'+n.n+'</div><div class="c">x'+c+'</div>';
+        if(c>0)d.onclick=(function(idx){return function(){addToAct("n",idx);animCard(this);}})(i);
+        g.appendChild(d);
+    });
+}
+
+function renderAct(){
+    var g=document.getElementById("act-grid");g.innerHTML="";
+    actT.forEach(function(t,i){
+        var tw=TW[t];
+        var d=document.createElement("div");d.className="card sel";
+        d.innerHTML='<div class="e">'+tw.e+'</div><div class="n">'+tw.n+'</div>';
+        d.onclick=(function(idx){return function(){remFromAct("t",idx);animCard(this);}})(i);
+        g.appendChild(d);
+    });
+    actN.forEach(function(n,i){
+        var nx=NX[n];
+        var d=document.createElement("div");d.className="card sel";
+        d.innerHTML='<div class="e">'+nx.e+'</div><div class="n">'+nx.n+'</div>';
+        d.onclick=(function(idx){return function(){remFromAct("n",idx);animCard(this);}})(i);
+        g.appendChild(d);
+    });
+}
+
+function animCard(el){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');setTimeout(function(){el.classList.remove('pop')},300);}
+
+function addToAct(tp,idx){
+    if(tp==="t"){if(actT.length>=5){alert("Max 5 torres");return;}if(stor.t[idx]>0){actT.push(idx);stor.t[idx]--;save();updCnt();renderAct();renderStor();}}
+    else{if(actN.length>=5){alert("Max 5 nexos");return;}if(stor.n[idx]>0){actN.push(idx);stor.n[idx]--;save();updCnt();renderAct();renderStor();}}
+}
+
+function remFromAct(tp,idx){
+    if(tp==="t"){var towerIdx=actT[idx];stor.t[towerIdx]++;actT.splice(idx,1);save();updCnt();renderAct();renderStor();}
+    else{var nexoIdx=actN[idx];stor.n[nexoIdx]++;actN.splice(idx,1);save();updCnt();renderAct();renderStor();}
+}
+
+function renderLvls(){
+    var container=document.getElementById("lvl-scroll-content");var title=document.getElementById("lvl-title");
+    if(!container||!title){console.error("No se encontraron elementos");return;}
+    container.innerHTML="";
+    var flowers=['','','🌺','','','','','🍀'];var snowDecor=['️','','🧊','☃️'];
+    var showSnowWorld=maxLvl>=11;
+    if(showSnowWorld){title.innerHTML="❄️ TIERRAS NEVADAS";document.getElementById("lvl-screen").style.background="linear-gradient(135deg,#0a1628,#1a2840)";}
+    else{title.innerHTML="🌍 TIERRAS FÉRTILES";document.getElementById("lvl-screen").style.background="linear-gradient(135deg,#1a0f08,#2a1810)";}
+    var startLvlNum=showSnowWorld?11:1;var endLvlNum=showSnowWorld?20:10;
+    for(var i=startLvlNum;i<=endLvlNum;i++){
+        var c=LCFG[i];if(!c)continue;
+        var circle=document.createElement("div");circle.className="lvl-circle";
+        if(i>maxLvl){circle.classList.add("locked");circle.innerHTML='<div class="lvl-lock">🔒</div><div class="lvl-info"><div class="lvl-rows">'+c.r+' fila'+(c.r>1?'s':'')+'</div></div>';}
+        else{
+            var isSnow=i>=11;
+            if(isSnow){
+                circle.classList.add("unlocked-snow");var bombCount=Math.max(0,(i-1)*5);var snow=snowDecor[(i*2)%snowDecor.length];
+                circle.innerHTML='<div class="snow-top"></div><div class="lvl-num">'+i+'</div><div style="position:absolute;top:5px;right:5px;font-size:16px">'+snow+'</div><div class="lvl-label">NIVEL</div><div class="lvl-info"><div class="lvl-rows">'+c.r+' fila'+(c.r>1?'s':'')+'</div><div class="lvl-bombs">💣x'+bombCount+'</div></div>';
+            }else{
+                circle.classList.add("unlocked-fertile");var bombCount=Math.max(0,(i-1)*5);
+                var f1=flowers[(i*2)%flowers.length];var f2=flowers[(i*3+1)%flowers.length];var f3=flowers[(i*5+2)%flowers.length];
+                circle.innerHTML='<div class="flower f1">'+f1+'</div><div class="flower f2">'+f2+'</div><div class="flower f3">'+f3+'</div><div class="grass-top"></div><div class="lvl-num">'+i+'</div><div class="lvl-label">NIVEL</div><div class="lvl-info"><div class="lvl-rows">'+c.r+' fila'+(c.r>1?'s':'')+'</div><div class="lvl-bombs">💣x'+bombCount+'</div></div>';
+            }
+            circle.onclick=(function(lv){return function(){startLvl(lv);}})(i);
         }
-        grid=[];for(var r=0;r<ROWS;r++){grid[r]=[];for(var c=0;c<COLS;c++)grid[r][c]=null}
-        enemies=[];projectiles=[];enemyArrows=[];visualExplosions=[];
-        goldPieces=4;frameCount=0;towersBuilt=0;currentWave=0;waveTimer=0;
-        normalSpawnTimer=0;tankSpawnTimer=0;archerSpawnTimer=0;
-        gameEnded=false;gamePaused=false;selectedSlotIndex=null;
-        nexoDurezaCharges=0;nexoFuncionamientoCharges=0;nexoProduccionCharges=0;nexoInfanteriaCharges=0;
-        minesBought=0;bombsBought=0;bombLimit=getBombLimit();arrastradorSpawned=0;
-        document.getElementById("main-menu").classList.add("hidden");
-        document.getElementById("levels-screen").classList.remove("active");
-        document.getElementById("inventory-screen").classList.remove("active");
-        document.getElementById("victory-overlay").classList.remove("active");
-        document.getElementById("defeat-overlay").classList.remove("active");
-        document.getElementById("pause-overlay").classList.remove("active");
-        document.getElementById("game-container").classList.add("active");
-        setTimeout(function(){resizeCanvas();updateInventoryUI();updateWaveHUD();gameStarted=true},150);
+        container.appendChild(circle);
     }
-    function backToMenu(){gameEnded=true;gameStarted=false;gamePaused=false;document.getElementById("pause-overlay").classList.remove("active");showMainMenu()}
-    function nextLevel(){if(currentLevel<10)startLevel(currentLevel+1);else{backToMenu()}}
-    function retryLevel(){startLevel(currentLevel)}
-    function restartFromPause(){document.getElementById("pause-overlay").classList.remove("active");gamePaused=false;startLevel(currentLevel)}
-    function resizeCanvas(){
-        var w=document.getElementById("canvas-wrapper"),mw=w.clientWidth,mh=w.clientHeight;
-        var tw=mw*0.98,th=(tw/COLS)*ROWS;
-        if(th>mh*0.95){th=mh*0.95;tw=(th/ROWS)*COLS}
-        var dpr=window.devicePixelRatio||1;
-        canvas.width=tw*dpr;canvas.height=th*dpr;
-        canvas.style.width=tw+'px';canvas.style.height=th+'px';
-        ctx.setTransform(dpr,0,0,dpr,0,0);
-        cellWidth=tw/COLS;cellHeight=th/ROWS;
-        boardWidth=cellWidth*COLS;boardHeight=cellHeight*ROWS;
+    }function setupBar(){
+    var bar=document.getElementById("bar");var row1=document.getElementById("bar-row1");var row2=document.getElementById("bar-row2");
+    row1.innerHTML='';row2.innerHTML='';
+    actT.forEach(function(t,i){
+        var tw=TW[t];var cost=tw.c;
+        if(tw.n==="Bomba")cost=cost+"✨<br>0/"+bLim;
+        else if(tw.n==="Mina")cost=mB===0?"0✨":gMC()+"✨";
+        else if(tw.n==="Bala")cost=gBC()+"✨";
+        else cost=cost+"✨";
+        var s=document.createElement("div");s.className="slot";s.id="s-"+i;
+        s.innerHTML='<span class="e">'+tw.e+'</span><span class="cost">'+cost+'</span>';
+        s.onclick=(function(idx){return function(){selSlot(idx);}})(i);
+        row1.appendChild(s);
+    });
+    var ds=document.createElement("div");ds.className="slot";ds.id="s-dem";
+    ds.innerHTML='<span class="e">🗑️</span><span class="cost">Demo</span>';
+    ds.onclick=function(){sel=(sel==="dem")?null:"dem";updUI();};
+    row1.appendChild(ds);
+    actN.forEach(function(n,i){
+        var nx=NX[n];var cnt=0;
+        if(n===0)cnt=nxC[0];if(n===1)cnt=nxC[1];if(n===2)cnt=nxC[2];
+        if(n===3)cnt=nxC[3];if(n===4)cnt=nxC[4];if(n===5)cnt=nxC[5];
+        if(n===6)cnt=nxC[6];if(n===7)cnt=nxC[7];
+        var s=document.createElement("div");s.className="slot nexo";s.id="ns-"+i;
+        s.innerHTML='<span class="cnt">x'+cnt+'</span><span class="e">'+nx.e+'</span><span class="cost">'+nx.n+'</span>';
+        s.onclick=(function(idx){return function(){clickNexo(idx);}})(i);
+        row2.appendChild(s);
+    });
+    var toggle=document.getElementById("bar-toggle");
+    if(row2.children.length===0){toggle.style.display="none";document.getElementById("bar").classList.remove("expanded");}
+    else{toggle.style.display="block";}
+}
+
+function toggleBar(){var bar=document.getElementById("bar");var btn=document.getElementById("bar-toggle");bar.classList.toggle("expanded");btn.innerText=bar.classList.contains("expanded")?"▲ Cerrar":"▼ Cartas";}
+
+function selSlot(i){
+    var tt=actT[i];if(tt===undefined)return;
+    var tw=TW[tt];
+    if(tw.n==="Mina"){if(mB>=12)return;if(mB>0&&gold<gMC())return;}
+    else if(tw.n==="Bomba"){if(bB>=bLim)return;if(gold<tw.c)return;}
+    else if(tw.n==="Bala"){if(gold<gBC())return;}
+    else{if(gold<tw.c)return;}
+    sel=(sel===i)?null:i;selNexIdx=-1;updUI();
+}
+
+function clickNexo(i){
+    var nexoType=actN[i];var cnt=nxC[nexoType];
+    if(cnt<=0)return;
+    if(selNexIdx===i){selNexIdx=-1;sel=null;}
+    else{selNexIdx=i;sel="n"+i;}
+    updUI();
+}
+
+function resize(){
+    var w=document.getElementById("wrap");var mw=w.clientWidth,mh=w.clientHeight;
+    var tw=mw*0.98,th=(tw/COLS)*ROWS;
+    if(th>mh*0.95){th=mh*0.95;tw=(th/ROWS)*COLS;}
+    var dpr=window.devicePixelRatio||1;
+    cv.width=tw*dpr;cv.height=th*dpr;
+    cv.style.width=tw+'px';cv.style.height=th+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    cw=tw/COLS;ch=th/ROWS;bw=cw*COLS;bh=ch*ROWS;
+}
+
+window.addEventListener("resize",resize);
+
+function updHud(){
+    var p=document.getElementById("phase"),t=document.getElementById("time");
+    if(cWave<waves.length){
+        p.innerText="FASE "+(cWave+1)+"/"+waves.length;
+        var rem=Math.ceil((waves[cWave].d-wT)/60);
+        t.innerText=cWave===0?"Prep: "+rem+"s":"Tiempo: "+rem+"s";
+    }else{p.innerText="¡COMPLETADO!";t.innerText="";}
+}
+
+function togglePause(){if(end||!start)return;pause=!pause;document.getElementById("pause-ov").classList.toggle("active",pause);}
+function resume(){pause=false;document.getElementById("pause-ov").classList.remove("active");}
+
+function spawn(tp){
+    var rr=Math.floor(Math.random()*ROWS),bs=Math.min(cw,ch);
+    var speedMod=lvl>=11?0.9:1.0;
+    if(tp==="t")en.push({tp:"t",x:bw+10,row:rr,hp:100,mx:100,sp:0.085*speedMod,sz:bs*0.85,ic:"🤖",cl:"#2f4f4f",bg:false});
+    else if(tp==="a")en.push({tp:"a",x:bw+10,row:rr,hp:20,mx:20,sp:0.2*speedMod,sz:bs*0.75,ic:"🏹",cl:"#4a0080",bg:false,at:0});
+    else if(tp==="arr"){var ar=Math.floor(Math.random()*Math.max(1,ROWS-1));en.push({tp:"arr",x:bw+10,row:ar,hp:750,mx:750,sp:0.1*speedMod,sz:ch*2,ic:"🐛",cl:"#4a2c0a",bg:true});}
+    else if(tp==="mine")en.push({tp:"mine",x:bw+10,row:rr,hp:6,mx:6,sp:0.35*speedMod,sz:bs*0.5,ic:"💣",cl:"#ff6600",bg:false});
+    else en.push({tp:"n",x:bw+10,row:rr,hp:10,mx:10,sp:0.234*speedMod,sz:bs*0.7,ic:"🧟",cl:"#6a0dad",bg:false});
+                         }function touch(e){
+    e.preventDefault();e.stopPropagation();
+    if(!start||pause||end||cw<=0||ch<=0)return;
+    var cx,cy;
+    if(e.touches&&e.touches.length>0){cx=e.touches[0].clientX;cy=e.touches[0].clientY;}
+    else if(e.clientX!==undefined){cx=e.clientX;cy=e.clientY;}
+    else return;
+    var rect=cv.getBoundingClientRect();
+    var tx=cx-rect.left,ty=cy-rect.top;
+    var col=Math.floor(tx/cw),row=Math.floor(ty/ch);
+    if(row<0||row>=ROWS||col<0||col>=COLS)return;
+    if(sel==="dem"){if(grid[row][col]!==null)grid[row][col]=null;sel=null;selNexIdx=-1;updUI();return;}
+    if(selNexIdx>=0){
+        var nIdx=selNexIdx;var nexoType=actN[nIdx];var t=grid[row][col];var cnt=nxC[nexoType];
+        if(cnt<=0){selNexIdx=-1;sel=null;updUI();return;}
+        if(!t)return;
+        var applied=false;
+        if(nexoType===0){if((t.tp.n==="Muro"||t.tp.n==="Ataque"||t.tp.n==="Asistencia"||t.tp.n==="MuroInq")&&!t.nD){var inc=Math.floor(t.mx*0.60);t.mx+=inc;t.hp+=inc;t.nD=true;nxC[0]--;applied=true;}}
+        if(nexoType===1){if(t.tp.n==="Asistencia"&&!t.nF){t.nF=true;nxC[1]--;applied=true;}}
+        if(nexoType===2){if(t.tp.n==="Mina"&&!t.nP){t.nP=true;nxC[2]--;applied=true;}}
+        if(nexoType===3){if((t.tp.n==="Ataque"||t.tp.n==="Bala")&&!t.nI){t.nI=true;nxC[3]--;applied=true;}}
+        if(nexoType===4){if((t.tp.n==="Muro"||t.tp.n==="Asistencia"||t.tp.n==="MuroInq")&&!t.nH){t.nH=true;t.healTimer=0;nxC[4]--;applied=true;}}
+        if(nexoType===5){if(t.tp.n==="Tesla"&&!t.nE){t.nE=true;nxC[5]--;applied=true;}}
+        if(nexoType===6){if((t.tp.n==="Muro"||t.tp.n==="MuroInq")&&!t.nQ){t.nQ=true;nxC[6]--;applied=true;}}
+        if(nexoType===7){if(t.tp.n==="Mina"&&!t.nM){t.nM=true;t.prodCount=0;nxC[7]--;applied=true;}}
+        if(applied){selNexIdx=-1;sel=null;updUI();}
+        return;
     }
-    window.addEventListener("resize",resizeCanvas);
-    function updateWaveHUD(){
-        var p=document.getElementById("wave-phase"),t=document.getElementById("wave-time");
-        if(currentWave<WAVES.length){p.innerText="FASE "+(currentWave+1)+"/"+WAVES.length;var rem=Math.ceil((WAVES[currentWave].duration-waveTimer)/60);t.innerText=currentWave===0?"Preparación: "+rem+"s":"Tiempo: "+rem+"s"}
-        else{p.innerText="¡COMPLETADO!";t.innerText=""}
+    if(typeof sel==="number"){
+        var tIdx=actT[sel];var tw=TW[tIdx];
+        var cost=(tIdx===5)?gBC():((tIdx===2)?gMC():tw.c);
+        if(tIdx===2&&mB===0)cost=0;
+        if(grid[row][col]===null&&gold>=cost){
+            if(tIdx===4&&bB>=bLim)return;
+            if(tIdx===2&&mB>=12)return;
+            gold-=cost;
+            if(tIdx===2)mB++;
+            if(tIdx===4)bB++;
+            if(tIdx===5){balC++;save();}
+            grid[row][col]={tp:tw,hp:tw.hp,mx:tw.hp,cd:0,row:row,col:col,ft:tw.n==="Bomba"?60:0,gt:0,nD:false,nF:false,nP:false,nI:false,nH:false,nE:false,nQ:false,nM:false,prodCount:0,healTimer:0};
+            tBuilt++;sel=null;updUI();
+        }
     }
-    function togglePause(){if(gameEnded||!gameStarted)return;gamePaused=!gamePaused;document.getElementById("pause-overlay").classList.toggle("active",gamePaused)}
-    function resumeGame(){gamePaused=false;document.getElementById("pause-overlay").classList.remove("active")}
-    function closePauseOnOverlay(e){if(e.target.id==="pause-overlay")resumeGame()}function spawnEnemy(type){
-        var rr=Math.floor(Math.random()*ROWS),bs=Math.min(cellWidth,cellHeight);
-        if(type==="tanque")enemies.push({type:"tanque",x:boardWidth+10,row:rr,maxHp:100,hp:100,speed:0.06,size:bs*0.85,icon:"🤖",color:"#2f4f4f",isEating:false,isBig:false});
-        else if(type==="arquero")enemies.push({type:"arquero",x:boardWidth+10,row:rr,maxHp:20,hp:20,speed:0.2,size:bs*0.75,icon:"🏹",color:"#4a0080",isEating:false,arrowTimer:0,isBig:false});
-        else if(type==="arrastrador"){var ar=Math.max(0,Math.floor(ROWS/2)-1);enemies.push({type:"arrastrador",x:boardWidth+10,row:ar,maxHp:650,hp:650,speed:0.042,size:cellHeight*2,icon:"🐛",color:"#4a2c0a",isEating:false,isBig:true})}
-        else enemies.push({type:"normal",x:boardWidth+10,row:rr,maxHp:10,hp:10,speed:0.234,size:bs*0.7,icon:"🧟",color:"#6a0dad",isEating:false,isBig:false});
+}
+cv.addEventListener("touchstart",touch,{passive:false});
+cv.addEventListener("mousedown",touch);
+
+function explode(r,c,dmg){
+    var sq=[{r:r,c:c},{r:r-1,c:c},{r:r+1,c:c},{r:r,c:c-1},{r:r,c:c+1}];
+    exp.push({sq:sq,d:15});
+    for(var i=en.length-1;i>=0;i--){var e=en[i];if(e.hp<=0)continue;var ec=Math.floor((e.x+e.sz/2)/cw);for(var s=0;s<sq.length;s++){if(sq[s].r===e.row&&sq[s].c===ec){e.hp-=dmg;if(e.hp<=0)gold+=45;break;}}}
+}
+
+function explodeMine(r,c){
+    var sq=[{r:r,c:c},{r:r-1,c:c},{r:r+1,c:c},{r:r,c:c-1},{r:r,c:c+1}];
+    exp.push({sq:sq,d:15});
+    for(var s=0;s<sq.length;s++){if(sq[s].r>=0&&sq[s].r<ROWS&&sq[s].c>=0&&sq[s].c<COLS){var t=grid[sq[s].r][sq[s].c];if(t){t.hp-=85;if(t.hp<=0.5)grid[sq[s].r][sq[s].c]=null;}}}
+}
+
+function upd(){
+    if(end||!start||pause)return;
+    fc++;
+    if(cWave<waves.length){
+        wT++;var w=waves[cWave];
+        if(wT>=w.d){cWave++;wT=0;nST=0;tST=0;aST=0;mST=0;if(cWave>=waves.length){endG(true);return;}updHud();}
+        else{
+            if(w.n>0){nST++;if(nST>=w.n){spawn("n");nST=0;}}
+            if(w.t>0){tST++;if(tST>=w.t){spawn("t");tST=0;}}
+            if(w.a>0){aST++;if(aST>=w.a){spawn("a");aST=0;}}
+            if(w.m>0){mST++;if(mST>=w.m){spawn("mine");mST=0;}}
+            if(cWave===waves.length-1&&lvl>7){if(arrSp===0&&wT===60){spawn("arr");arrSp++;}else if(arrSp===1&&lvl===10&&wT===600){spawn("arr");arrSp++;}}
+            if(fc%30===0){updUI();updHud();}
+        }
     }
-    function selectSlot(index){
-        if(index===6&&nexoDurezaCharges===0)return;if(index===7&&nexoFuncionamientoCharges===0)return;
-        if(index===8&&nexoProduccionCharges===0)return;if(index===9&&nexoInfanteriaCharges===0)return;
-        if(index<6&&!canAfford(index))return;
-        selectedSlotIndex=(selectedSlotIndex===index)?null:index;updateInventoryUI();
-    }
-    function handleTouch(e){
-        e.preventDefault();e.stopPropagation();
-        if(!gameStarted||gamePaused||gameEnded||cellWidth<=0||cellHeight<=0)return;
-        var cx,cy;
-        if(e.touches&&e.touches.length>0){cx=e.touches[0].clientX;cy=e.touches[0].clientY}
-        else if(e.clientX!==undefined){cx=e.clientX;cy=e.clientY}else return;
-        var rect=canvas.getBoundingClientRect(),tx=cx-rect.left,ty=cy-rect.top;
-        var col=Math.floor(tx/cellWidth),row=Math.floor(ty/cellHeight);
-        if(row>=0&&row<ROWS&&col>=0&&col<COLS&&selectedSlotIndex!==null){
-            if(selectedSlotIndex===10){if(grid[row][col]!==null)grid[row][col]=null}
-            else if(selectedSlotIndex===6){var t=grid[row][col];if(t&&(t.type.name==="Muro"||t.type.name==="Ataque")&&!t.hasNexoDureza){var inc=Math.floor(t.maxHp*0.15);t.maxHp+=inc;t.hp+=inc;t.hasNexoDureza=true;nexoDurezaCharges--;selectedSlotIndex=null;updateInventoryUI()}}
-            else if(selectedSlotIndex===7){var t=grid[row][col];if(t&&t.type.name==="Asistencia"&&!t.hasNexoFuncionamiento){t.hasNexoFuncionamiento=true;nexoFuncionamientoCharges--;selectedSlotIndex=null;updateInventoryUI()}}
-            else if(selectedSlotIndex===8){var t=grid[row][col];if(t&&t.type.name==="Mina"&&!t.hasNexoProduccion){t.hasNexoProduccion=true;nexoProduccionCharges--;selectedSlotIndex=null;updateInventoryUI()}}
-            else if(selectedSlotIndex===9){var t=grid[row][col];if(t&&(t.type.name==="Ataque"||t.type.name==="Bala")&&!t.hasNexoInfanteria){t.hasNexoInfanteria=true;nexoInfanteriaCharges--;selectedSlotIndex=null;updateInventoryUI()}}
-            else if(selectedSlotIndex<6&&grid[row][col]===null){
-                var cost=getTowerCost(selectedSlotIndex);
-                if(goldPieces>=cost&&canAfford(selectedSlotIndex)){
-                    goldPieces-=cost;var type=TOWER_TYPES[selectedSlotIndex];
-                    if(selectedSlotIndex===2)minesBought++;if(selectedSlotIndex===4)bombsBought++;
-                    grid[row][col]={type:type,hp:type.hp,maxHp:type.hp,cooldownTimer:0,row:row,col:col,fuseTimer:type.name==="Bomba"?60:0,goldTimer:0,hasNexoDureza:false,hasNexoFuncionamiento:false,hasNexoProduccion:false,hasNexoInfanteria:false};
-                    towersBuilt++;selectedSlotIndex=null;updateInventoryUI()
+    for(var r=0;r<ROWS;r++){
+        for(var c=0;c<COLS;c++){
+            var t=grid[r][c];if(!t)continue;
+            if(t.tp.n==="Bomba"){t.ft--;if(t.ft<=0){explode(r,c,15);grid[r][c]=null;continue;}}
+            if(t.tp.n==="Asistencia"){var tc=c+1;if(tc<COLS){var ft=grid[r][tc];if(ft&&(ft.tp.n==="Muro"||ft.tp.n==="MuroInq")){var h=t.nF?10:5;if(fc%60===0&&ft.hp<ft.mx)ft.hp=Math.min(ft.mx,ft.hp+h);}}}
+            if(t.tp.n==="Mina"){
+                var ac=c-1,ha=false,hnf=false;
+                if(ac>=0){var bt=grid[r][ac];if(bt&&bt.tp.n==="Asistencia"){ha=true;if(bt.nF)hnf=true;}}
+                var cd=180;if(ha)cd=150;if(hnf)cd=Math.floor(150*0.7);if(t.nP)cd=Math.floor(cd*0.8);
+                if(lvl>=11)cd=Math.floor(cd*1.15);
+                t.gt++;
+                if(t.gt>=cd){
+                    var goldProduced=1;
+                    if(t.nM){t.prodCount=(t.prodCount||0)+1;if(t.prodCount>=4){goldProduced+=4;t.prodCount=0;}}
+                    gold+=goldProduced;t.gt=0;
                 }
-            }
-        }
-    }
-    if(canvas){canvas.addEventListener("touchstart",handleTouch,{passive:false});canvas.addEventListener("mousedown",handleTouch)}
-    function explodeBomb(row,col){
-        var sq=[{r:row,c:col},{r:row-1,c:col},{r:row+1,c:col},{r:row,c:col-1},{r:row,c:col+1}];
-        visualExplosions.push({squares:sq,duration:15});
-        for(var i=enemies.length-1;i>=0;i--){var e=enemies[i],ec=Math.floor((e.x+e.size/2)/cellWidth);
-            for(var s=0;s<sq.length;s++){if(sq[s].r===e.row&&sq[s].c===ec){e.hp-=15;if(e.hp<=0){goldPieces+=45;enemies.splice(i,1)}break}}}
-    }
-    function updateGame(){
-        if(gameEnded||!gameStarted||gamePaused)return;
-        frameCount++;
-        if(currentWave<WAVES.length){
-            waveTimer++;var wave=WAVES[currentWave];
-            if(waveTimer>=wave.duration){currentWave++;waveTimer=0;normalSpawnTimer=0;tankSpawnTimer=0;archerSpawnTimer=0;
-                if(currentWave>=WAVES.length){endGame(true);return}updateWaveHUD()}
-            else{
-                if(wave.normalFreq>0){normalSpawnTimer++;if(normalSpawnTimer>=wave.normalFreq){spawnEnemy("normal");normalSpawnTimer=0}}
-                if(wave.tankFreq>0){tankSpawnTimer++;if(tankSpawnTimer>=wave.tankFreq){spawnEnemy("tanque");tankSpawnTimer=0}}
-                if(wave.archerFreq>0){archerSpawnTimer++;if(archerSpawnTimer>=wave.archerFreq){spawnEnemy("arquero");archerSpawnTimer=0}}
-                if(currentWave===WAVES.length-1&&currentLevel>7){var ma=currentLevel===10?2:1;if(arrastradorSpawned<ma&&waveTimer===60*arrastradorSpawned+60){spawnEnemy("arrastrador");arrastradorSpawned++}}
-                if(frameCount%30===0){updateInventoryUI();updateWaveHUD()}
-            }
-        }
-        for(var r=0;r<ROWS;r++){for(var c=0;c<COLS;c++){var t=grid[r][c];if(!t)continue;
-            if(t.type.name==="Bomba"){t.fuseTimer--;if(t.fuseTimer<=0){explodeBomb(r,c);grid[r][c]=null;continue}}
-            if(t.type.name==="Asistencia"){var tc=c+1;if(tc<COLS){var ft=grid[r][tc];if(ft&&ft.type.name==="Muro"){var h=t.hasNexoFuncionamiento?10:5;if(frameCount%60===0&&ft.hp<ft.maxHp)ft.hp=Math.min(ft.maxHp,ft.hp+h)}}}
-            if(t.type.name==="Mina"){var ac=c-1,ha=false,hnf=false;if(ac>=0){var bt=grid[r][ac];if(bt&&bt.type.name==="Asistencia"){ha=true;if(bt.hasNexoFuncionamiento)hnf=true}}var cd=180;if(ha)cd=150;if(hnf)cd=Math.floor(150*0.7);if(t.hasNexoProduccion)cd=Math.floor(cd*0.8);t.goldTimer++;if(t.goldTimer>=cd){goldPieces+=1;t.goldTimer=0}}
-            if(t.type.name==="Ataque"||t.type.name==="Bala"){
-                var eir=false;for(var ei=0;ei<enemies.length;ei++){var en=enemies[ei];if((en.row===r||(en.isBig&&en.row===r-1))&&en.x>c*cellWidth&&en.x<boardWidth){eir=true;break}}
-                if(eir){var ac2=c-1,ha2=false,hnf2=false;if(ac2>=0){var bt2=grid[r][ac2];if(bt2&&bt2.type.name==="Asistencia"){ha2=true;if(bt2.hasNexoFuncionamiento)hnf2=true}}
-                    var cd2;
-                    if(t.type.name==="Bala"){
-                        if(hnf2) cd2=120; // 2 seg con NexoF
-                        else if(ha2) cd2=180; // 3 seg con Asistencia normal
-                        else cd2=240; // 4 seg base
-                    } else {
-                        cd2=hnf2?30:(ha2?t.type.shootCooldown/2:t.type.shootCooldown);
+            }if(t.tp.n==="Ataque"||t.tp.n==="Bala"){
+                var eir=false;
+                for(var ei=0;ei<en.length;ei++){var e=en[ei];if(e.hp<=0)continue;if((e.row===r||(e.bg&&e.row===r-1))&&e.x>c*cw&&e.x<bw){eir=true;break;}}
+                if(eir){
+                    var ac2=c-1,ha2=false,hnf2=false;
+                    if(ac2>=0){var bt2=grid[r][ac2];if(bt2&&bt2.tp.n==="Asistencia"){ha2=true;if(bt2.nF)hnf2=true;}}
+                    var cd2;if(t.tp.n==="Bala"){if(hnf2)cd2=120;else if(ha2)cd2=180;else cd2=240;}else{cd2=hnf2?30:(ha2?t.tp.cd/2:t.tp.cd);}
+                    if(lvl>=11)cd2=Math.floor(cd2*1.15);
+                    t.cd++;
+                    if(t.cd>=cd2){
+                        if(t.tp.n==="Bala")proj.push({x:c*cw+cw/2,y:r*ch+ch/2,row:r,sp:6,rad:4,dmg:t.nI?8:4,pc:3,hits:0});
+                        else proj.push({x:c*cw+cw/2,y:r*ch+ch/2,row:r,sp:5,rad:5,dmg:t.nI?2:1,pc:0,hits:0});
+                        t.cd=0;
                     }
-                    t.cooldownTimer++;if(t.cooldownTimer>=cd2){
-                        if(t.type.name==="Bala"){projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:6,radius:4,damage:t.hasNexoInfanteria?8:4,pierce:3,hits:0})}
-                        else{projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:5,radius:5,damage:t.hasNexoInfanteria?2:1,pierce:0,hits:0})}
-                        t.cooldownTimer=0}}else t.cooldownTimer=0}
-        }}
-        for(var i=enemyArrows.length-1;i>=0;i--){var a=enemyArrows[i];a.x-=a.speed;if(a.x<0){enemyArrows.splice(i,1);continue}var ac3=Math.floor((a.x+a.size/2)/cellWidth);if(ac3>=0&&ac3<COLS){var t3=grid[a.row][ac3];if(t3){t3.hp-=a.damage;enemyArrows.splice(i,1);if(t3.hp<=0.5)grid[a.row][ac3]=null}}}
-        for(var i=visualExplosions.length-1;i>=0;i--){visualExplosions[i].duration--;if(visualExplosions[i].duration<=0)visualExplosions.splice(i,1)}
-        for(var i=projectiles.length-1;i>=0;i--){var p=projectiles[i];p.x+=p.speed;if(p.x>boardWidth){projectiles.splice(i,1);continue}var rem=false;
-            for(var j=enemies.length-1;j>=0;j--){var e=enemies[j];if((p.row===e.row||(e.isBig&&p.row===e.row+1))&&p.x>=e.x&&p.x<=e.x+e.size){
-                e.hp-=p.damage;if(e.hp<=0){var rw=0;if(e.type==="normal")rw=randInt(1,4);else if(e.type==="tanque")rw=randInt(3,9);else if(e.type==="arquero")rw=randInt(5,7);else if(e.type==="arrastrador")rw=50;goldPieces+=rw;enemies.splice(j,1)}
-                if(p.pierce>0){p.hits=(p.hits||0)+1;if(p.hits>=p.pierce){rem=true;break}}else{rem=true;break}}}
-            if(rem)projectiles.splice(i,1)}
-        for(var i=enemies.length-1;i>=0;i--){var e=enemies[i];
-            if(e.type==="arquero"){e.arrowTimer++;if(e.arrowTimer>=180){e.arrowTimer=0;enemyArrows.push({x:e.x,row:e.row,speed:4,size:cellWidth*0.4,damage:10})}}
-            var cc=Math.floor((e.x+e.size/2)/cellWidth),oa=false;
-            if(e.isBig){for(var rr=e.row;rr<=e.row+1&&rr<ROWS;rr++){var tw=grid[rr][cc];if(tw&&tw.type.name!=="Bomba"){oa=true;e.isEating=true;tw.hp-=0.5;if(tw.hp<=0.5)grid[rr][cc]=null}}}
-            else{if(cc>=0&&cc<COLS){var tw=grid[e.row][cc];if(tw&&tw.type.name!=="Bomba"){oa=true;e.isEating=true;tw.hp-=0.5;if(tw.hp<=0.5){grid[e.row][cc]=null;e.isEating=false}}}}
-            if(!oa){e.isEating=false;e.x-=e.speed}
-            if(e.x+e.size<0){endGame(false);return}}
-    }function drawGame(){
-        if(!gameStarted)return;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        for(var r=0;r<ROWS;r++){for(var c=0;c<COLS;c++){
-            ctx.fillStyle=(r+c)%2===0?"#3b7a24":"#2e5c1e";
-            ctx.fillRect(c*cellWidth,r*cellHeight,cellWidth,cellHeight);
-            ctx.strokeStyle="rgba(255,255,255,0.3)";ctx.lineWidth=1;
-            ctx.strokeRect(c*cellWidth+0.5,r*cellHeight+0.5,cellWidth-1,cellHeight-1);
-            var t=grid[r][c];
-            if(t){var p=6,x=c*cellWidth+p,y=r*cellHeight+p,w=cellWidth-p*2,h=cellHeight-p*2;
-                var nc=0;if(t.hasNexoDureza)nc++;if(t.hasNexoFuncionamiento)nc++;if(t.hasNexoProduccion)nc++;if(t.hasNexoInfanteria)nc++;
-                var tc=t.type.color;if(nc>=2)tc="#2196F3";else if(nc===1)tc="#4CAF50";
-                ctx.fillStyle=tc;ctx.fillRect(x,y,w,h);
-                if(t.hp<t.maxHp&&t.type.name!=="Bomba"){ctx.fillStyle="rgba(0,0,0,0.5)";ctx.fillRect(x,y,w,4);ctx.fillStyle="#00ff00";ctx.fillRect(x,y,w*(t.hp/t.maxHp),4)}
-                ctx.fillStyle="#fff";ctx.font="bold "+Math.floor(Math.min(cellWidth,cellHeight)*0.5)+"px Arial";ctx.textAlign="center";ctx.textBaseline="middle";
-                ctx.fillText(t.type.icon,x+w/2,y+h/2+2)}}}
-        for(var i=0;i<enemyArrows.length;i++){var a=enemyArrows[i],ay=a.row*cellHeight+cellHeight/2;ctx.fillStyle="#ff6600";ctx.beginPath();ctx.moveTo(a.x,ay);ctx.lineTo(a.x-a.size,ay-a.size/3);ctx.lineTo(a.x-a.size,ay+a.size/3);ctx.closePath();ctx.fill()}
-        for(var i=0;i<visualExplosions.length;i++){var exp=visualExplosions[i];ctx.fillStyle="rgba(255,68,68,0.6)";for(var s=0;s<exp.squares.length;s++){var sq=exp.squares[s];if(sq.r>=0&&sq.r<ROWS&&sq.c>=0&&sq.c<COLS)ctx.fillRect(sq.c*cellWidth,sq.r*cellHeight,cellWidth,cellHeight)}}
-        for(var i=0;i<projectiles.length;i++){var p=projectiles[i];ctx.fillStyle=p.pierce>0?"#ff4400":(p.damage>=2?"#ff8800":"#ffff00");ctx.beginPath();ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);ctx.fill()}
-        for(var i=0;i<enemies.length;i++){var e=enemies[i],ey,eh,es;
-            if(e.isBig){ey=e.row*cellHeight;eh=cellHeight*2;es=eh*0.9}else{ey=e.row*cellHeight+(cellHeight-e.size)/2;eh=e.size;es=e.size}
-            ctx.fillStyle=e.color;ctx.beginPath();ctx.ellipse(e.x+es/2,ey+eh/2,es/2,eh/2,0,0,Math.PI*2);ctx.fill();
-            ctx.strokeStyle="#fff";ctx.lineWidth=e.type==="tanque"||e.type==="arrastrador"?3:1.5;ctx.stroke();
-            ctx.fillStyle="#fff";ctx.font="bold "+Math.floor(es*0.4)+"px Arial";ctx.textAlign="center";ctx.textBaseline="middle";
-            ctx.fillText(e.icon,e.x+es/2,ey+eh/2);
-            ctx.fillStyle="#ff0000";ctx.fillRect(e.x,ey-8,es,e.isBig?6:4);ctx.fillStyle="#00ff00";ctx.fillRect(e.x,ey-8,es*(e.hp/e.maxHp),e.isBig?6:4)}
-        if(gamePaused){ctx.fillStyle="rgba(0,0,0,0.3)";ctx.fillRect(0,0,boardWidth,boardHeight)}
+                }else t.cd=0;
+            }
+            if(t.tp.n==="Tesla"){
+                var eir=false;
+                for(var ei=0;ei<en.length;ei++){var e=en[ei];if(e.hp<=0)continue;if((e.row===r||(e.bg&&e.row===r-1))&&e.x>c*cw&&e.x<bw){eir=true;break;}}
+                if(eir){
+                    var ac2=c-1,ha2=false,hnf2=false;
+                    if(ac2>=0){var bt2=grid[r][ac2];if(bt2&&bt2.tp.n==="Asistencia"){ha2=true;if(bt2.nF)hnf2=true;}}
+                    var cd2=360;if(ha2)cd2=300;if(hnf2)cd2=240;
+                    if(lvl>=11)cd2=Math.floor(cd2*1.15);
+                    t.cd++;
+                    if(t.cd>=cd2){var splits=t.nE?10:5;proj.push({x:c*cw+cw/2,y:r*ch+ch/2,row:r,sp:7,rad:5,dmg:1,pc:1,hits:0,tesla:true,splits:splits});t.cd=0;}
+                }else t.cd=0;
+            }
+            if(t.tp.n==="Muro"||t.tp.n==="Asistencia"||t.tp.n==="MuroInq"){
+                if(t.nH){t.healTimer++;if(t.healTimer>=720){t.healTimer=0;var heal=(t.tp.n==="MuroInq")?10:35;var ac=c-1;if(ac>=0){var bt=grid[r][ac];if(bt&&bt.tp.n==="Asistencia")heal+=bt.nF?10:5;}t.hp=Math.min(t.mx,t.hp+heal);}}
+            }
+        }
     }
-    function updateInventoryUI(){
-        var sn=["Ataque","Asist.","Mina","Muro","Bomba","Bala"];
-        for(var i=0;i<6;i++){var s=document.getElementById("slot-"+i);if(s){var cost=getTowerCost(i),lb=sn[i]+"<br>"+cost+"✨";
-            if(i===2){if(minesBought>=12)lb="Mina<br>MAX";else lb="Mina<br>"+cost+"✨"}
-            if(i===4)lb="Bomba<br>"+cost+"✨<br>"+bombsBought+"/"+bombLimit;
-            s.innerHTML=lb;s.classList.toggle("selected",i===selectedSlotIndex);s.classList.toggle("cant-afford",!canAfford(i))}}
-        var n6=document.getElementById("slot-6");if(n6){n6.classList.toggle("selected",selectedSlotIndex===6);n6.classList.toggle("locked",nexoDurezaCharges===0);n6.innerHTML=nexoDurezaCharges>0?"NexoD x"+nexoDurezaCharges+"<br>🟩":"NexoD<br>"}
-        var n7=document.getElementById("slot-7");if(n7){n7.classList.toggle("selected",selectedSlotIndex===7);n7.classList.toggle("locked",nexoFuncionamientoCharges===0);n7.innerHTML=nexoFuncionamientoCharges>0?"NexoF x"+nexoFuncionamientoCharges+"<br>🟩":"NexoF<br>"}
-        var n8=document.getElementById("slot-8");if(n8){n8.classList.toggle("selected",selectedSlotIndex===8);n8.classList.toggle("locked",nexoProduccionCharges===0);n8.innerHTML=nexoProduccionCharges>0?"NexoP x"+nexoProduccionCharges+"<br>🟩":"NexoP<br>🟩"}
-        var n9=document.getElementById("slot-9");if(n9){n9.classList.toggle("selected",selectedSlotIndex===9);n9.classList.toggle("locked",nexoInfanteriaCharges===0);n9.innerHTML=nexoInfanteriaCharges>0?"NexoI x"+nexoInfanteriaCharges+"<br>🟦":"NexoI<br>"}
-        var n10=document.getElementById("slot-10");if(n10)n10.classList.toggle("selected",selectedSlotIndex===10);
-        var gv=document.getElementById("gold-value");if(gv)gv.innerText=goldPieces+" ";
-        updateShopButtons();
+    for(var i=earr.length-1;i>=0;i--){var a=earr[i];a.x-=a.sp;if(a.x<0){earr.splice(i,1);continue;}var ac3=Math.floor((a.x+a.sz/2)/cw);if(ac3>=0&&ac3<COLS){var t3=grid[a.row][ac3];if(t3){t3.hp-=a.damage;earr.splice(i,1);if(t3.hp<=0.5)grid[a.row][ac3]=null;}}}
+    for(var i=exp.length-1;i>=0;i--){exp[i].d--;if(exp[i].d<=0)exp.splice(i,1);}
+    for(var i=proj.length-1;i>=0;i--){
+        var p=proj[i];
+        if(p.vx!==undefined){p.x+=p.vx;p.y+=p.vy;}else{p.x+=p.sp;}
+        if(p.x>bw||p.x<0||p.y<0||p.y>bh){proj.splice(i,1);continue;}
+        var rem=false;
+        for(var j=en.length-1;j>=0;j--){
+            var e=en[j];if(e.hp<=0)continue;var hit=false;
+            if(p.vx!==undefined){var dx=p.x-(e.x+e.sz/2),dy=p.y-(e.row*ch+ch/2);if(Math.sqrt(dx*dx+dy*dy)<e.sz/2+p.rad)hit=true;}
+            else{if((p.row===e.row||(e.bg&&p.row===e.row+1))&&p.x>=e.x&&p.x<=e.x+e.sz)hit=true;}
+            if(hit){
+                e.hp-=p.dmg;
+                if(e.hp<=0){var rw=0;if(e.tp==="n")rw=rI(1,4);else if(e.tp==="t")rw=rI(3,9);else if(e.tp==="a")rw=rI(5,7);else if(e.tp==="arr")rw=50;else if(e.tp==="mine")rw=15;gold+=rw;}
+                if(p.tesla&&p.hits===0){var angleStep=(Math.PI*2)/p.splits;for(var s=0;s<p.splits;s++){var angle=angleStep*s-Math.PI/2;var spd=5;proj.push({x:p.x,y:p.y,row:p.row,sp:0,rad:3,dmg:2,pc:0,hits:0,vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd});}}
+                if(p.pc>0){p.hits=(p.hits||0)+1;if(p.hits>=p.pc){rem=true;break;}}else{rem=true;break;}
+            }
+        }
+        if(rem)proj.splice(i,1);
     }
-    function openShop(){if(gameEnded||gamePaused)return;document.getElementById("shop-overlay").classList.add("active");updateShopButtons()}
-    function closeShop(){document.getElementById("shop-overlay").classList.remove("active")}
-    function closeShopOnOverlay(e){if(e.target.id==="shop-overlay")closeShop()}
-    function updateShopButtons(){
-        var bD=document.getElementById("buy-nexo-dureza"),bF=document.getElementById("buy-nexo-funcionamiento"),bP=document.getElementById("buy-nexo-produccion"),bI=document.getElementById("buy-nexo-infanteria");
-        if(bD){bD.classList.toggle("disabled",goldPieces<50);bD.onclick=goldPieces>=50?buyNexoDureza:null}
-        if(bF){bF.classList.toggle("disabled",goldPieces<70);bF.onclick=goldPieces>=70?buyNexoFuncionamiento:null}
-        if(bP){bP.classList.toggle("disabled",goldPieces<60);bP.onclick=goldPieces>=60?buyNexoProduccion:null}
-        if(bI){bI.classList.toggle("disabled",goldPieces<90);bI.onclick=goldPieces>=90?buyNexoInfanteria:null}
+    for(var i=en.length-1;i>=0;i--){if(en[i].hp<=0)en.splice(i,1);}
+    for(var i=en.length-1;i>=0;i--){
+        var e=en[i];if(e.hp<=0)continue;
+        if(e.tp==="a"){e.at++;if(e.at>=180){e.at=0;earr.push({x:e.x,row:e.row,sp:4,sz:cw*0.4,damage:10});}}
+        var cc=Math.floor((e.x+e.sz/2)/cw),oa=false;
+        if(e.tp==="mine"){if(cc>=0&&cc<COLS){var tw=grid[e.row][cc];if(tw){explodeMine(e.row,cc);en.splice(i,1);continue;}}}
+        if(e.bg){for(var rr=e.row;rr<=e.row+1&&rr<ROWS;rr++){var tw=grid[rr][cc];if(tw&&tw.tp.n!=="Bomba"){oa=true;if(tw.tp.n==="MuroInq"){var dmgToTower=tw.nQ?0.5:1.0;var dmgToEnemy=tw.nQ?0.5:1.0;tw.hp-=dmgToTower;e.hp-=dmgToEnemy;if(tw.hp<=0.5)grid[rr][cc]=null;}else if(tw.tp.n==="Muro"){var dmgToTower=tw.nQ?0.25:0.5;tw.hp-=dmgToTower;if(tw.hp<=0.5)grid[rr][cc]=null;}else{tw.hp-=0.5;if(tw.hp<=0.5)grid[rr][cc]=null;}}}}
+        else{if(cc>=0&&cc<COLS){var tw=grid[e.row][cc];if(tw&&tw.tp.n!=="Bomba"){oa=true;if(tw.tp.n==="MuroInq"){var dmgToTower=tw.nQ?0.5:1.0;var dmgToEnemy=tw.nQ?0.5:1.0;tw.hp-=dmgToTower;e.hp-=dmgToEnemy;if(tw.hp<=0.5)grid[e.row][cc]=null;}else if(tw.tp.n==="Muro"){var dmgToTower=tw.nQ?0.25:0.5;tw.hp-=dmgToTower;if(tw.hp<=0.5)grid[e.row][cc]=null;}else{tw.hp-=0.5;if(tw.hp<=0.5)grid[e.row][cc]=null;}}}}
+        if(!oa)e.x-=e.sp;
+        if(e.x+e.sz<0){endG(false);return;}
     }
-    function animBtn(b){var o=b.innerText;b.innerText="✓";b.classList.add("success");setTimeout(function(){b.innerText=o;b.classList.remove("success")},800)}
-    function buyNexoDureza(){if(goldPieces>=50){goldPieces-=50;nexoDurezaCharges++;updateInventoryUI();animBtn(document.getElementById("buy-nexo-dureza"))}}
-    function buyNexoFuncionamiento(){if(goldPieces>=70){goldPieces-=70;nexoFuncionamientoCharges++;updateInventoryUI();animBtn(document.getElementById("buy-nexo-funcionamiento"))}}
-    function buyNexoProduccion(){if(goldPieces>=60){goldPieces-=60;nexoProduccionCharges++;updateInventoryUI();animBtn(document.getElementById("buy-nexo-produccion"))}}
-    function buyNexoInfanteria(){if(goldPieces>=90){goldPieces-=90;nexoInfanteriaCharges++;updateInventoryUI();animBtn(document.getElementById("buy-nexo-infanteria"))}}
-    function toggleFullscreen(){try{if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(function(){});else document.exitFullscreen()}catch(e){}}
-    function rotateScreen(){try{if(screen.orientation&&screen.orientation.lock){if(screen.orientation.type.includes("portrait"))screen.orientation.lock("landscape").catch(function(){});else screen.orientation.unlock()}}catch(e){}}
-    function endGame(victory){
-        if(gameEnded)return;gameEnded=true;gameStarted=false;
-        if(victory){if(currentLevel===maxUnlockedLevel&&maxUnlockedLevel<10){maxUnlockedLevel++;saveProgress()}
-            document.getElementById("victory-level").innerText=currentLevel;document.getElementById("victory-gold").innerText=goldPieces;document.getElementById("victory-towers").innerText=towersBuilt;
-            document.getElementById("victory-overlay").classList.add("active")}
-        else{document.getElementById("defeat-level").innerText=currentLevel;document.getElementById("defeat-wave").innerText=currentWave;document.getElementById("defeat-overlay").classList.add("active")}
+}
+
+function draw(){
+    if(!start)return;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    if(lvl>=11){
+        for(var r=0;r<ROWS;r++){for(var c=0;c<COLS;c++){ctx.fillStyle=(r+c)%2===0?"#b3d9ff":"#66b3ff";ctx.fillRect(c*cw,r*ch,cw,ch);ctx.strokeStyle="rgba(255,255,255,0.5)";ctx.lineWidth=2;ctx.strokeRect(c*cw+1,r*ch+1,cw-2,ch-2);var t=grid[r][c];if(t){var p=4,x=c*cw+p,y=r*ch+p,w=cw-p*2,h=ch-p*2;var nc=0;if(t.nD)nc++;if(t.nF)nc++;if(t.nP)nc++;if(t.nI)nc++;if(t.nH)nc++;if(t.nE)nc++;if(t.nQ)nc++;if(t.nM)nc++;var tc="#888888";if(nc>=3)tc="#9c27b0";else if(nc===2)tc="#2196F3";else if(nc===1)tc="#4CAF50";ctx.fillStyle=tc;ctx.fillRect(x,y,w,h);ctx.strokeStyle=nc>=3?"#6a1b9a":(nc===2?"#1565C0":(nc===1?"#2E7D32":"#333"));ctx.lineWidth=2;ctx.strokeRect(x+1,y+1,w-2,h-2);if(t.hp<t.mx&&t.tp.n!=="Bomba"){ctx.fillStyle="rgba(0,0,0,0.7)";ctx.fillRect(x+2,y+2,w-4,5);ctx.fillStyle="#00ff00";ctx.fillRect(x+2,y+2,(w-4)*(t.hp/t.mx),5);}ctx.fillStyle="#fff";ctx.font="bold "+Math.floor(Math.min(cw,ch)*0.55)+"px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t.tp.e,x+w/2,y+h/2+2);}}}
+    }else{
+        for(var r=0;r<ROWS;r++){for(var c=0;c<COLS;c++){ctx.fillStyle=(r+c)%2===0?"#3b7a24":"#2e5c1e";ctx.fillRect(c*cw,r*ch,cw,ch);ctx.strokeStyle="rgba(255,255,255,0.4)";ctx.lineWidth=2;ctx.strokeRect(c*cw+1,r*ch+1,cw-2,ch-2);var t=grid[r][c];if(t){var p=4,x=c*cw+p,y=r*ch+p,w=cw-p*2,h=ch-p*2;var nc=0;if(t.nD)nc++;if(t.nF)nc++;if(t.nP)nc++;if(t.nI)nc++;if(t.nH)nc++;if(t.nE)nc++;if(t.nQ)nc++;if(t.nM)nc++;var tc="#888888";if(nc>=3)tc="#9c27b0";else if(nc===2)tc="#2196F3";else if(nc===1)tc="#4CAF50";ctx.fillStyle=tc;ctx.fillRect(x,y,w,h);ctx.strokeStyle=nc>=3?"#6a1b9a":(nc===2?"#1565C0":(nc===1?"#2E7D32":"#333"));ctx.lineWidth=2;ctx.strokeRect(x+1,y+1,w-2,h-2);if(t.hp<t.mx&&t.tp.n!=="Bomba"){ctx.fillStyle="rgba(0,0,0,0.7)";ctx.fillRect(x+2,y+2,w-4,5);ctx.fillStyle="#00ff00";ctx.fillRect(x+2,y+2,(w-4)*(t.hp/t.mx),5);}ctx.fillStyle="#fff";ctx.font="bold "+Math.floor(Math.min(cw,ch)*0.55)+"px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t.tp.e,x+w/2,y+h/2+2);}}}
     }
-    function gameLoop(timestamp){
-        if(!lastFrameTime)lastFrameTime=timestamp;
-        var delta=timestamp-lastFrameTime;
-        if(delta>=frameInterval){lastFrameTime=timestamp-(delta%frameInterval);updateGame();drawGame()}
-        requestAnimationFrame(gameLoop);
+    for(var i=0;i<earr.length;i++){var a=earr[i],ay=a.row*ch+ch/2;ctx.fillStyle="#ff6600";ctx.beginPath();ctx.moveTo(a.x,ay);ctx.lineTo(a.x-a.sz,ay-a.sz/3);ctx.lineTo(a.x-a.sz,ay+a.sz/3);ctx.closePath();ctx.fill();}
+    for(var i=0;i<exp.length;i++){var ex=exp[i];ctx.fillStyle="rgba(255,68,68,0.6)";for(var s=0;s<ex.sq.length;s++){var sq=ex.sq[s];if(sq.r>=0&&sq.r<ROWS&&sq.c>=0&&sq.c<COLS)ctx.fillRect(sq.c*cw,sq.r*ch,cw,ch);}}
+    for(var i=0;i<proj.length;i++){var p=proj[i];if(p.tesla)ctx.fillStyle="#00ffff";else if(p.vx!==undefined)ctx.fillStyle="#00ccff";else if(p.pc>0)ctx.fillStyle="#ff4400";else if(p.dmg>=2)ctx.fillStyle="#ff8800";else ctx.fillStyle="#ffff00";ctx.beginPath();ctx.arc(p.x,p.y,p.rad,0,Math.PI*2);ctx.fill();}
+    for(var i=0;i<en.length;i++){var e=en[i];if(e.hp<=0)continue;var ey,eh,es;if(e.bg){ey=e.row*ch;eh=ch*2;es=eh*0.9;}else{ey=e.row*ch+(ch-e.sz)/2;eh=e.sz;es=e.sz;}ctx.fillStyle=e.cl;ctx.beginPath();ctx.ellipse(e.x+es/2,ey+eh/2,es/2,eh/2,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=e.tp==="t"||e.tp==="arr"?3:1.5;ctx.stroke();ctx.fillStyle="#fff";ctx.font="bold "+Math.floor(es*0.45)+"px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(e.ic,e.x+es/2,ey+eh/2);ctx.fillStyle="#ff0000";ctx.fillRect(e.x,ey-8,es,e.bg?6:4);ctx.fillStyle="#00ff00";ctx.fillRect(e.x,ey-8,es*(e.hp/e.mx),e.bg?6:4);}// Dibujo del Cursor del Mando
+    if(gamepadConnected&&start&&!pause){ctx.strokeStyle="#00ffcc";ctx.lineWidth=4;ctx.strokeRect(gpCursor.c*cw+2,gpCursor.r*ch+2,cw-4,ch-4);}
+    if(pause){ctx.fillStyle="rgba(0,0,0,0.3)";ctx.fillRect(0,0,bw,bh);}
+}
+
+function updUI(){
+    var gv=document.getElementById("sgold");if(gv)gv.innerText=gold;
+    var sg=document.getElementById("shop-g");if(sg)sg.innerText=gold;
+    actT.forEach(function(tIdx,i){
+        var slot=document.getElementById("s-"+i);
+        if(slot){
+            var tw=TW[tIdx],ct="";
+            if(tw.n==="Mina"){if(mB>=12)ct="MAX";else if(mB===0)ct="0✨";else ct=gMC()+"✨";}
+            else if(tw.n==="Bomba")ct=tw.c+"✨<br>"+bB+"/"+bLim;
+            else if(tw.n==="Bala")ct=gBC()+"✨";
+            else ct=tw.c+"✨";
+            slot.innerHTML='<span class="e">'+tw.e+'</span><span class="cost">'+ct+'</span>';
+            slot.classList.toggle("sel",sel===i);
+            slot.classList.toggle("gp-sel",i===gpBarIdx); // Resaltado Mando
+            var can=false;
+            if(tw.n==="Mina"){if(mB===0)can=true;else if(mB<12)can=gold>=gMC();}
+            else if(tw.n==="Bomba")can=gold>=tw.c&&bB<bLim;
+            else if(tw.n==="Bala")can=gold>=gBC();
+            else can=gold>=tw.c;
+            slot.style.opacity=can?"1":"0.5";
+        }
+    });
+    actN.forEach(function(nIdx,i){
+        var slot=document.getElementById("ns-"+i);
+        if(slot){
+            var nexoType=actN[i];var cnt=nxC[nexoType];
+            slot.innerHTML='<span class="cnt">x'+cnt+'</span><span class="e">'+NX[nexoType].e+'</span><span class="cost">'+NX[nexoType].n+'</span>';
+            slot.classList.toggle("sel",selNexIdx===i);
+            slot.classList.toggle("gp-sel",(actT.length+i)===gpBarIdx); // Resaltado Mando
+            slot.style.opacity=cnt>0?"1":"0.4";
+            slot.style.display="flex";
+        }
+    });
+    var ds=document.getElementById("s-dem");
+    if(ds){
+        ds.classList.toggle("sel",sel==="dem");
+        ds.classList.toggle("gp-sel",(actT.length+actN.length)===gpBarIdx); // Resaltado Mando
     }
-    showMainMenu();
+    updShop();
+}
+
+function openShop(){if(end||pause)return;document.getElementById("shop-ov").classList.add("active");updShop();}
+function closeShop(){document.getElementById("shop-ov").classList.remove("active");}
+
+function updShop(){
+    var hasAnyNexo=false;
+    var shopItems=[{id:0,btnId:"b-d",cost:50},{id:1,btnId:"b-f",cost:70},{id:2,btnId:"b-p",cost:60},{id:3,btnId:"b-i",cost:90},{id:4,btnId:"b-h",cost:90},{id:5,btnId:"b-e",cost:120},{id:6,btnId:"b-q",cost:85},{id:7,btnId:"b-m",cost:50}];
+    shopItems.forEach(function(item){
+        var si=document.getElementById("si-"+item.id);var btn=document.getElementById(item.btnId);
+        var inInventory=actN.indexOf(item.id)!==-1;
+        if(inInventory){si.classList.add("visible");hasAnyNexo=true;if(btn){btn.classList.toggle("dis",gold<item.cost);btn.onclick=gold>=item.cost?function(){buyN(item.id)}:null;}}
+        else{si.classList.remove("visible");}
+    });
+    var noItems=document.getElementById("shop-no-items");if(noItems){noItems.style.display=hasAnyNexo?"none":"block";}
+}
+
+function buyN(idx){
+    var cost=NX[idx].c;
+    if(gold>=cost){
+        gold-=cost;nxC[idx]++;save();updUI();
+        var btnId="b-"+(idx===0?"d":idx===1?"f":idx===2?"p":idx===3?"i":idx===4?"h":idx===5?"e":idx===6?"q":"m");
+        var btn=document.getElementById(btnId);
+        if(btn){btn.innerText="✓";btn.style.background="#66BB6A";setTimeout(function(){btn.innerText="COMPRAR";btn.style.background="#4CAF50";},500);}
+    }
+}
+
+function toggleFull(){try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}else{document.exitFullscreen();}}catch(e){}}
+function rotate(){try{if(screen.orientation&&screen.orientation.lock){if(screen.orientation.type.includes("portrait")){screen.orientation.lock("landscape").catch(function(){});}else{screen.orientation.unlock();}}}catch(e){}}
+
+function endG(v){
+    if(end)return;end=true;start=false;
+    if(v){if(lvl===maxLvl&&maxLvl<20){maxLvl++;try{localStorage.setItem("td_p",maxLvl.toString())}catch(e){}}document.getElementById("v-lvl").innerText=lvl;document.getElementById("vict-ov").classList.add("active");}
+    else{document.getElementById("d-lvl").innerText=lvl;document.getElementById("def-ov").classList.add("active");}
+}
+
+function nextLvl(){if(lvl<20)startLvl(lvl+1);else{showMenu();}}
+function retry(){startLvl(lvl);}
+function restart(){document.getElementById("pause-ov").classList.remove("active");pause=false;startLvl(lvl);}
+
+function gameLoop(ts){
+    pollGamepad(); // Llamada al sondeo del mando
+    if(!lFT)lFT=ts;
+    var delta=ts-lFT;
+    if(delta>=fInt){lFT=ts-(delta%fInt);upd();draw();}
     requestAnimationFrame(gameLoop);
+}
+
+showMenu();
+requestAnimationFrame(gameLoop);
 </script>
 </body>
 </html>
