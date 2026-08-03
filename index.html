@@ -147,157 +147,158 @@ body,html{width:100%;height:100%;overflow:hidden;background:#0a0604;display:flex
 #battalion-overlay{flex-direction:column;justify-content:flex-start;align-items:stretch;text-align:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:410;background:rgba(5,2,1,.97);}
 #battalion-title{font-size:26px;color:#ff5252;margin:12px 0 4px;font-weight:900;text-shadow:2px 2px 5px rgba(0,0,0,.8);}
 #battalion-timer{font-size:34px;color:#ffd700;font-weight:900;margin-bottom:10px;}
-  <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Producción Ataque y Defensa</title>
-<style>
-:root{
-  --w1-bg1:#4ade80; --w1-bg2:#22c55e; --w1-panel:#261612; --w1-accent:#ffd700; --w1-frame:#1a0f08;
-  --w2-bg1:#8fd9f7; --w2-bg2:#5cb8e0; --w2-panel:#132a3a; --w2-accent:#9be8ff; --w2-frame:#0a1826;
-  --w3-bg1:#f4c96b; --w3-bg2:#e0a83e; --w3-panel:#3a2410; --w3-accent:#ffb347; --w3-frame:#26160a;
-  --w4-bg1:#7b5cff; --w4-bg2:#4a2fd6; --w4-panel:#160b33; --w4-accent:#00ffe1; --w4-frame:#0a0420;
-}
-*{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;font-family:'Segoe UI',system-ui,sans-serif;}
-body,html{width:100%;height:100%;overflow:hidden;background:#0a0604;display:flex;flex-direction:column;touch-action:none;}
-#worldmap-screen,#inventory-screen,#diamond-shop-screen,#chest-screen{position:fixed;inset:0;display:flex;flex-direction:column;background:linear-gradient(135deg,#1a0f08,#2a1810);z-index:300;}
-#main-menu{position:fixed;inset:0;display:flex;flex-direction:column;z-index:300;}
-#main-menu.hidden,#worldmap-screen:not(.active),#inventory-screen:not(.active),#diamond-shop-screen:not(.active),#chest-screen:not(.active){display:none;}
-#main-menu{justify-content:center;align-items:center;background-image:linear-gradient(rgba(10,6,4,.55),rgba(10,6,4,.75)),url('pantalla_principal.jpg');background-size:cover;background-position:center;}
-#diamond-shop-screen{justify-content:flex-start;align-items:center;text-align:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;background:linear-gradient(160deg,#1a0f08,#0d0704);}
-#diamond-shop-title{font-size:26px;color:#ffd700;margin-bottom:26px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;background:rgba(58,40,23,.55);border:2px solid #6b4423;border-radius:16px;padding:14px 28px;display:inline-flex;align-items:center;gap:10px;}
-#diamond-shop-total{display:flex;gap:16px;margin-bottom:24px;}
-.currency-pill{display:flex;align-items:center;gap:8px;background:rgba(58,40,23,.6);border:2px solid #6b4423;border-radius:30px;padding:10px 20px;font-size:22px;font-weight:800;text-shadow:2px 2px 5px rgba(0,0,0,.7);}
-.currency-pill .currency-icon{font-size:22px;}
-#gold-total-value{color:#ffd700;}
-#diamond-value{color:#7ee8ff;}
-#chest-roulette-btn{width:min(360px,90%);background:linear-gradient(160deg,#7a7a7a,#4a4a4a);border:3px solid #999;border-radius:16px;padding:16px;font-size:19px;font-weight:800;color:#eee;box-shadow:0 4px 12px rgba(0,0,0,.5);margin:0 auto 26px;letter-spacing:.5px;}
-#chest-roulette-btn:active{transform:scale(.96);}
-#diamond-exchange-title{color:#ffcf9e;font-size:14px;font-weight:bold;margin:6px 0 14px;}
-#diamond-exchange-list{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;}
-.exchange-card{background:linear-gradient(160deg,#3a2817,#2a1c0f);border:2px solid #6b4423;border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;text-align:left;}
-.exchange-icon{font-size:38px;min-width:52px;text-align:center;}
-.exchange-info{flex-grow:1;color:#fff;}
-.exchange-name{font-size:17px;font-weight:800;color:#fff;margin-bottom:4px;}
-.exchange-cost{font-size:13px;color:#ffcf9e;font-weight:bold;display:flex;align-items:center;gap:4px;}
-.exchange-cost .ex-diamond{color:#7ee8ff;}
-.exchange-cost .ex-gold{color:#ffd700;}
-#chest-screen{justify-content:flex-start;align-items:center;text-align:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-#chest-title{font-size:26px;color:#ffd700;margin-bottom:14px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;}
-#chest-currency-row{display:flex;gap:18px;font-size:18px;font-weight:bold;margin-bottom:20px;}
-#chest-gold-value{color:#ffd700;}
-#chest-diamond-value{color:#7ee8ff;}
-#chest-list{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;}
-.chest-card{border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;border:3px solid;}
-.chest-card.q-comun{background:#243a24;border-color:#4ade80;}
-.chest-card.q-raro{background:#1a2a3a;border-color:#4da3e0;}
-.chest-card.q-epico{background:#2e1a3a;border-color:#b06de0;}
-.chest-card.q-mitico{background:#3a3316;border-color:#ffd23f;}
-.chest-card.progression-locked{opacity:.5;filter:grayscale(.8);border-color:#4a3520!important;background:#241a10!important;}
-.chest-icon{font-size:38px;min-width:50px;text-align:center;}
-.chest-info{flex-grow:1;color:#fff;}
-.chest-name{font-size:15px;font-weight:bold;margin-bottom:3px;}
-.chest-cost{font-size:12px;color:#ccc;}
-.chest-spins{font-size:11px;color:#ffd700;font-weight:bold;margin-top:2px;}
-#chest-spin-overlay{background:rgba(5,2,1,.95);z-index:390;}
-#chest-spin-modal{display:flex;flex-direction:column;align-items:center;gap:30px;width:100%;padding:0 16px;}
-#chest-spin-title{font-size:34px;font-weight:900;color:#ffd700;letter-spacing:2px;text-shadow:3px 3px 6px rgba(0,0,0,.8);}
-#chest-spin-window{position:relative;width:min(360px,92vw);height:110px;border:3px solid #6b4423;border-radius:16px;background:#0a0503;overflow:hidden;display:flex;align-items:center;}
-#chest-spin-center-glow{position:absolute;left:50%;top:0;bottom:0;width:88px;transform:translateX(-50%);background:radial-gradient(circle,rgba(255,215,0,.35),transparent 70%);pointer-events:none;box-shadow:inset 0 0 0 3px rgba(255,215,0,.5);border-radius:12px;}
-#chest-spin-track{display:flex;align-items:center;gap:14px;position:absolute;left:0;top:0;bottom:0;padding:0 14px;will-change:transform;}
-.spin-tile{width:88px;height:88px;min-width:88px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 2px 4px rgba(255,255,255,.25);}
-.spin-tile.center-hit{box-shadow:0 0 22px 6px rgba(255,215,0,.85),inset 0 2px 4px rgba(255,255,255,.35);transform:scale(1.08);}
-.spin-tile.type-discount{background:linear-gradient(160deg,#4ade80,#16a34a);}
-.spin-tile.type-gold{background:linear-gradient(160deg,#facc15,#ca8a04);}
-.spin-tile.type-diamond{background:linear-gradient(160deg,#38bdf8,#0284c7);}
-.spin-tile.type-nexo{background:linear-gradient(160deg,#a78bfa,#6d28d9);}
-.spin-tile.type-tower{background:linear-gradient(160deg,#f87171,#b91c1c);}
-#chest-result-body{color:#fff;font-size:16px;line-height:1.6;margin-bottom:20px;max-height:60vh;overflow-y:auto;}
-.chest-result-line{padding:8px 4px;border-bottom:1px solid rgba(255,255,255,.12);}
-.chest-result-line:last-child{border-bottom:none;}
-#extra-storage-warning{background:rgba(255,80,50,.18);border:2px solid #ff5032;border-radius:8px;padding:10px;color:#ffcfc2;font-size:12px;margin-bottom:10px;text-align:center;}
-#extra-storage-title{color:#ffd23f;font-size:12px;font-weight:bold;text-align:center;margin-bottom:8px;}
-#extra-storage-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;justify-content:center;max-width:560px;margin:0 auto 16px;}
-.extra-slot{min-height:78px;background:#2a1810;border:3px dashed #6b4423;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;color:#999;font-size:11px;text-align:center;}
-.extra-slot.at-limit{opacity:.6;cursor:not-allowed;}
-.extra-slot.filled{border-style:solid;border-color:#ffd23f;background:#3a2f12;color:#fff;cursor:pointer;}
-.extra-slot.activated{border-color:#4ade80;background:#1a3a1e;}
-.extra-slot .extra-slot-icon{font-size:26px;margin-bottom:3px;}
-.extra-slot .extra-slot-name{font-weight:bold;font-size:11px;color:#ffd700;}
-.extra-slot .extra-slot-status{font-size:9px;margin-top:3px;color:#4ade80;}
-#chest-result-overlay{z-index:400;}
-#menu-title{font-size:30px;color:#ffd700;text-align:center;margin-bottom:44px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;line-height:1.3;letter-spacing:.5px;}
-.menu-title-shared{color:#ffd700;text-align:center;margin-bottom:6px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;line-height:1.3;letter-spacing:.5px;}
-.menu-btn{width:260px;height:58px;background:linear-gradient(135deg,#ff8c00,#ff6600);border:3px solid #cc5500;border-radius:12px;margin:9px;font-size:19px;font-weight:bold;color:#fff;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.5);}
-.menu-btn:active{transform:scale(.95);}
-.menu-btn.secondary{background:linear-gradient(135deg,#4a4a4a,#3a3a3a);border-color:#555;}
-#platform-select{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#1a0f08,#2a1810);z-index:400;}
-#platform-select.hidden{display:none;}
-#platform-sub{color:#ccc;font-size:14px;margin-bottom:26px;text-align:center;max-width:280px;}
-.platform-btn{width:220px;}
-#platform-change-btn{margin-top:18px;background:transparent;border:2px solid #555;border-radius:9px;color:#aaa;font-size:13px;padding:7px 16px;cursor:pointer;}
-#rotate-overlay{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;}
-#rotate-overlay.active{display:flex;}
-#rotate-icon{font-size:52px;margin-bottom:16px;}
-#rotate-text{color:#fff;font-size:17px;font-weight:bold;text-align:center;padding:0 30px;}
-#worldmap-screen{overflow:hidden;flex-direction:column;justify-content:flex-start;align-items:stretch;}
-#wm-header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(0,0,0,.35);z-index:5;}
-#wm-back{width:42px;height:42px;border-radius:10px;border:2px solid #ffd700;background:transparent;color:#ffd700;font-size:20px;cursor:pointer;}
-#wm-world-name{font-size:19px;font-weight:800;color:#ffd700;text-align:center;flex:1;text-shadow:0 2px 4px rgba(0,0,0,.6);}
-#wm-world-switch{display:flex;gap:6px;}
-.wm-dot{width:12px;height:12px;border-radius:50%;background:#555;border:2px solid #333;cursor:pointer;}
-.wm-dot.active{background:#ffd700;border-color:#fff;}
-.wm-dot.locked{opacity:.35;cursor:not-allowed;}
-#wm-scroll{flex:1;width:100%;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;}
-#wm-path-svg{position:absolute;top:0;left:0;width:100%;z-index:1;}
-#wm-nodes{position:relative;z-index:2;width:100%;padding:40px 0 70px;}
-.wm-node-wrap{position:relative;width:100%;height:120px;display:flex;align-items:center;}
-.wm-node{width:78px;height:78px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;cursor:pointer;border:4px solid #777;background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);box-shadow:0 6px 14px rgba(0,0,0,.55);}
-.wm-node:active{transform:scale(.94);}
-.wm-node.locked{opacity:.38;cursor:not-allowed;filter:grayscale(1);}
-.wm-node.boss{width:92px;height:92px;border-color:#ff5252;}
-.wm-node-num{font-size:26px;font-weight:800;color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.7);}
-.wm-node-sub{font-size:9px;color:#eee;margin-top:1px;}
-.wm-node-star{position:absolute;top:-8px;font-size:16px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6));z-index:3;}
-.wm-node-lock{font-size:22px;}
+#battalion-subtitle{font-size:13px;color:#ffcf9e;max-width:420px;margin:0 auto 10px;line-height:1.4;}
+#battalion-gold{font-size:16px;color:#fff;font-weight:bold;margin-bottom:14px;}
+.inventory-item.battalion-picked{outline:3px solid #ff5252;box-shadow:0 0 14px rgba(255,82,82,.8);}
+#inventory-screen{flex-direction:column;align-items:stretch;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;background-size:cover;background-position:center;background-repeat:no-repeat;}
+#inventory-screen.tab-storage{background-image:linear-gradient(rgba(10,6,4,.6),rgba(10,6,4,.8)),url('almacenamiento_16_slots.jpg');}
+#inventory-screen.tab-loadout{background-image:linear-gradient(rgba(10,6,4,.6),rgba(10,6,4,.8)),url('inventario.jpg');}
+#inventory-screen.tab-extra{background-image:linear-gradient(rgba(10,6,4,.85),rgba(30,20,5,.9)),radial-gradient(circle at 50% 20%,rgba(255,215,0,.15),transparent 60%);}
+.inventory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-width:640px;margin:0 auto;width:100%;padding:0 16px 16px;}
+@media (min-width:560px){ .inventory-grid{grid-template-columns:repeat(3,1fr);} }
+.inventory-item{background:#3a2817;border:2px solid #6b4423;border-radius:7px;padding:9px 6px;text-align:center;color:#fff;}
+.inventory-item .item-icon{font-size:26px;margin-bottom:3px;}
+.inventory-item .item-name{font-size:11px;font-weight:bold;color:#ffd700;line-height:1.2;}
+.inventory-item .item-desc{font-size:8.5px;color:#ccc;margin-top:3px;line-height:1.25;}
+.inventory-item{cursor:pointer;position:relative;transition:transform .12s,border-color .12s;}
+.inventory-item:active{transform:scale(.95);}
+.inventory-item.in-loadout{border-color:#4CAF50;background:#22381c;}
+.inventory-item.locked-out{opacity:.4;filter:grayscale(.6);}
+.inventory-item.progression-locked{opacity:.55;filter:grayscale(.85);cursor:not-allowed;border-color:#4a3520;}
+.inventory-item.progression-locked .item-name{color:#a89070;}
+.inventory-item.progression-locked .item-desc{color:#ffb347;font-weight:bold;}
+.inventory-item .item-badge{position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:#4CAF50;color:#fff;font-size:10px;font-weight:bold;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.5);}
+#inv-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:14px;flex-shrink:0;padding:0 16px;}
+.inv-tab{flex:1;max-width:220px;padding:11px 8px;border-radius:9px;border:2px solid #6b4423;background:#3a2817;color:#ccc;font-size:13px;font-weight:bold;cursor:pointer;}
+.inv-tab.active{background:linear-gradient(135deg,#ff8c00,#ff6600);border-color:#cc5500;color:#fff;}
+#inv-counters{display:flex;gap:16px;justify-content:center;margin-bottom:14px;flex-shrink:0;color:#ffd700;font-size:12px;font-weight:bold;}
+#game-container{position:relative;width:100vw;height:100vh;display:none;flex-direction:column;background:var(--frame,#1a0f08);transition:background .4s;}
+#game-container.active{display:flex;}
+#world-banner{flex-shrink:0;text-align:center;font-size:11px;font-weight:800;letter-spacing:1px;padding:3px 0;color:#fff;background:rgba(0,0,0,.25);}
+@keyframes phoenixPulse{0%,100%{box-shadow:0 0 12px rgba(255,100,0,.6);}50%{box-shadow:0 0 26px rgba(255,150,0,.95);}}
+#phoenix-banner{display:none;position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:150;background:linear-gradient(135deg,#8b1a00,#ff6600);border:2px solid #ffb347;border-radius:8px;padding:6px 14px;color:#fff;font-size:12px;font-weight:900;letter-spacing:.5px;text-shadow:1px 1px 2px rgba(0,0,0,.7);animation:phoenixPulse 1.2s ease-in-out infinite;pointer-events:none;white-space:nowrap;}
+#phoenix-banner.active{display:block;}
+#inventory-bar{width:100%;height:104px;background:linear-gradient(180deg,var(--panel,#261612),#0d0704);border-bottom:2px solid #000;display:flex;align-items:center;gap:7px;padding:9px 10px;z-index:10;flex-shrink:0;box-shadow:0 4px 6px rgba(0,0,0,.5);transition:background .4s,height .3s ease;overflow:hidden;}
+#inventory-bar.expanded{height:242px;align-items:flex-start;padding-top:12px;}
+#slots-scroll{display:flex;gap:10px;flex:1;overflow-x:auto;overflow-y:hidden;white-space:nowrap;align-items:center;height:100%;}
+#inventory-bar.expanded #slots-scroll{flex-wrap:wrap;overflow-y:auto;overflow-x:hidden;white-space:normal;align-items:flex-start;align-content:flex-start;justify-content:flex-start;}
+#drawer-toggle{min-width:54px;height:64px;flex-shrink:0;border-radius:9px;border:2px solid var(--accent,#ffd700);background:rgba(0,0,0,.35);color:var(--accent,#ffd700);font-size:10px;font-weight:bold;cursor:pointer;align-self:flex-start;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.1;padding:2px 4px;}
+#drawer-toggle .drawer-arrow{font-size:15px;}
+#shop-gold-counter,#shop-modal-gold-counter{height:64px;padding:0 13px;background:rgba(0,0,0,.25);border:2px solid var(--accent,#ffd700);border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--accent,#ffd700);min-width:66px;flex-shrink:0;transition:border-color .4s,color .4s;pointer-events:none;}
+#shop-gold-label,#shop-modal-gold-label{font-size:9px;font-weight:bold;letter-spacing:1px;}
+#shop-gold-value,#shop-modal-gold-value{font-size:17px;font-weight:bold;margin-top:2px;}
+#shop-modal-gold-counter{margin:0 auto 14px;}
+.slot{width:84px;height:84px;background:linear-gradient(160deg,#4a2e1c,#2c190f);border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:#f0e4d8;text-align:center;cursor:pointer;flex-shrink:0;position:relative;border:2px solid #6b4423;transition:transform .12s,border-color .12s;padding:4px;box-shadow:0 3px 6px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);}
+.slot .icon{font-size:24px;margin-bottom:3px;}
+.slot .name{font-size:11px;font-weight:700;color:#fff;line-height:1.1;text-shadow:0 1px 2px rgba(0,0,0,.7);}
+.slot .price{font-size:10px;color:#ffd700;font-weight:700;margin-top:2px;}
+.slot.selected{border-color:#ffd700;background:linear-gradient(160deg,#6b4a20,#4a3020);transform:scale(1.06);box-shadow:0 0 0 2px rgba(255,215,0,.35),0 4px 10px rgba(0,0,0,.6);}
+.slot.locked{background:#22150e;border-color:#3a281c;opacity:.45;}
+.slot.cant-afford{opacity:.55;border-color:#7a3a3a;}
+.slot.cant-afford .price{color:#ff6b6b;}
+.slot.demolition{background:linear-gradient(160deg,#7a2a2a,#4a1414);border-color:#a04040;color:#ffcccc;}
+.slot.demolition.selected{border-color:#ff5555;background:linear-gradient(160deg,#9a3a3a,#5a1c1c);}
+.slot.combo-tower{border-color:#ffd700;background:linear-gradient(160deg,#4a3a1c,#2c220f);}
+.slot.combo-tower .name{font-size:9px;}
+.slot.combo-tower.selected{background:linear-gradient(160deg,#6b5a20,#4a3a10);}
+#canvas-wrapper{flex-grow:1;display:flex;justify-content:center;align-items:center;position:relative;width:100%;padding:16px;overflow:hidden;}
+canvas{display:block;background:transparent;touch-action:none;border-radius:4px;box-shadow:0 0 15px rgba(0,0,0,.8);}
+#bottom-left-ui{position:absolute;bottom:16px;left:16px;display:flex;flex-direction:column;gap:12px;z-index:50;pointer-events:none;}
+.controls-col{display:flex;flex-direction:column;gap:9px;pointer-events:auto;}
+.ctrl-btn{width:42px;height:42px;background:transparent;border:2px solid var(--accent,#ffd700);border-radius:8px;color:var(--accent,#ffd700);font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:border-color .4s,color .4s;}
+.ctrl-btn:active{background:rgba(255,215,0,.2);}
+#wave-hud{background:transparent;border:2px solid var(--accent,#ffd700);border-radius:8px;padding:9px 13px;color:var(--accent,#ffd700);font-weight:bold;text-align:left;transition:border-color .4s,color .4s;}
+#wave-phase{font-size:13px;margin-bottom:3px;}
+.wave-time{font-size:11px;color:#fff;}
+#bottom-right-ui{position:absolute;bottom:16px;right:16px;display:flex;flex-direction:column;align-items:flex-end;gap:16px;z-index:100;pointer-events:none;}
+#pause-btn{width:42px;height:42px;background:transparent;border:2px solid var(--accent,#ffd700);border-radius:8px;color:var(--accent,#ffd700);font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;pointer-events:auto;touch-action:manipulation;transition:border-color .4s,color .4s;}
+#pause-btn:active{background:rgba(255,215,0,.2);}
+#shop-button{width:66px;height:66px;background:#e67e22;border:3px solid #fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:bold;cursor:pointer;pointer-events:auto;box-shadow:0 4px 10px rgba(0,0,0,.5);}
+#shop-button:active{transform:scale(.95);}
+#shop-button .shop-icon{font-size:21px;margin-bottom:2px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:250;pointer-events:auto;}
+.overlay.active{display:flex;}
+.modal-content{background:linear-gradient(135deg,#2a1810,#1a0f08);border:4px solid #8b4513;border-radius:12px;padding:20px;max-width:90%;max-height:80%;overflow-y:auto;text-align:center;box-shadow:0 0 30px rgba(255,140,0,.3);}
+@keyframes rewardPop{0%{transform:scale(.4) rotate(-8deg);opacity:0;}60%{transform:scale(1.12) rotate(3deg);opacity:1;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+@keyframes rewardGlow{0%,100%{box-shadow:0 0 20px rgba(255,215,0,.4);}50%{box-shadow:0 0 45px rgba(255,215,0,.85);}}
+#reward-unlock-overlay .modal-content{animation:rewardPop .5s cubic-bezier(.34,1.56,.64,1),rewardGlow 1.8s ease-in-out infinite;max-width:340px;}
+#reward-unlock-title{font-size:20px;color:#ffd700;font-weight:900;margin-bottom:14px;text-shadow:2px 2px 5px rgba(0,0,0,.8);}
+#reward-unlock-icon{font-size:64px;margin-bottom:10px;filter:drop-shadow(0 0 10px rgba(255,215,0,.6));}
+#reward-unlock-name{font-size:17px;color:#ffd700;font-weight:bold;margin-bottom:6px;}
+#reward-unlock-desc{font-size:13px;color:#ffcf9e;margin-bottom:18px;line-height:1.4;}
+#tutorial-page-icon,#entity-tutorial-icon{font-size:52px;margin-bottom:10px;}
+#tutorial-page-title,#entity-tutorial-title{font-size:18px;color:#4da3e0;font-weight:900;margin-bottom:12px;}
+#tutorial-page-body,#entity-tutorial-body{font-size:14px;color:#e8f0f5;line-height:1.5;margin-bottom:14px;}
+#entity-tutorial-name{font-size:16px;color:#4da3e0;font-weight:bold;margin-bottom:8px;}
+#tutorial-page-dots{display:flex;justify-content:center;gap:6px;margin-bottom:14px;}
+.tutorial-dot{width:8px;height:8px;border-radius:50%;background:#3a4a55;}
+.tutorial-dot.active{background:#4da3e0;}
+#tutorial-nav{display:flex;gap:8px;justify-content:center;}
+#tutorial-nav .result-btn{flex:1;min-width:0;}
+.pause-btn,.result-btn{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:2px solid #555;background:linear-gradient(135deg,#444,#333);color:#fff;font-size:16px;font-weight:bold;cursor:pointer;}
+.pause-btn:active,.result-btn:active{transform:scale(.95);}
+.btn-green{background:linear-gradient(135deg,#4CAF50,#45a049);border-color:#2e7d32;}
+.btn-orange{background:linear-gradient(135deg,#ff9800,#f57c00);border-color:#e65100;}
+.btn-red{background:linear-gradient(135deg,#f44336,#d32f2f);border-color:#b71c1c;}
+.btn-blue{background:linear-gradient(135deg,#4a4a4a,#3a3a3a);border-color:#555;}
+body.platform-pc #pause-rotate-btn,body.platform-xbox #pause-rotate-btn{display:none;}
+#shop-title,#pause-title,#victory-title,#defeat-title{font-size:27px;margin-bottom:18px;font-weight:bold;}
+#shop-title,#pause-title{color:#ffd700;}
+#victory-title{color:#4CAF50;}
+#defeat-title{color:#f44336;}
+.upgrade-card{background:#3a2817;border:3px solid #6b4423;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.upgrade-icon{font-size:34px;min-width:48px;text-align:center;}
+.upgrade-info{flex-grow:1;color:#fff;text-align:left;}
+.upgrade-name{font-size:13px;font-weight:bold;color:#ffd700;margin-bottom:3px;}
+.upgrade-desc{font-size:10px;color:#ccc;margin-bottom:5px;}
+.upgrade-cost{font-size:11px;color:#ffd700;font-weight:bold;}
+.buy-button{background:linear-gradient(135deg,#4CAF50,#45a049);border:2px solid #2e7d32;border-radius:6px;padding:8px 14px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer;min-width:76px;}
+.buy-button:active{transform:scale(.95);}
+.buy-button.disabled{background:#555;border-color:#333;opacity:.6;}
+.buy-button.success{background:#66BB6A!important;transform:scale(1.1);}
+.buy-button.free-chest-btn{background:linear-gradient(135deg,#ffd700,#e0a800);border-color:#b8860b;color:#3a2a00;}
+.chest-free-count{font-size:11px;color:#ffd700;font-weight:bold;margin-top:2px;}
+#world-modifier-note{font-size:11px;color:#ffcf7a;margin-top:10px;line-height:1.5;background:rgba(0,0,0,.25);border-radius:6px;padding:8px;}
+</style>
+</head>
+<body>
 
-/* Decoración temática por mundo, alrededor del círculo del nodo */
-.wm-node-deco{position:absolute;inset:-16px;pointer-events:none;z-index:1;}
-.wm-node-deco span{position:absolute;filter:drop-shadow(0 2px 2px rgba(0,0,0,.5));}
-.wm-node{z-index:2;}
-.wm-node-num,.wm-node-sub,.wm-node-lock{position:relative;z-index:2;}
+<div id="platform-select" class="hidden">
+  <div class="menu-title-shared" style="font-size:26px;">¿EN QUÉ VAS A JUGAR?</div>
+  <div id="platform-sub">Esto ajusta los controles y la pantalla para tu dispositivo</div>
+  <button class="menu-btn platform-btn" onclick="choosePlatform('pc')">🖥️ PC</button>
+  <button class="menu-btn platform-btn secondary" onclick="choosePlatform('mobile')">📱 TELÉFONO</button>
+  <button class="menu-btn platform-btn secondary" onclick="choosePlatform('xbox')">🎮 XBOX</button>
+</div>
 
-/* Mundo 1 — Tierras Fértiles: pasto y florecitas alrededor */
-.wm-node.w1{background:radial-gradient(circle at 35% 30%,#8fe89a,#2f8a3f);border-color:#3a9e4a;}
-.wm-node.w1.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
-.wm-node.w1.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#b6f5a8,#3fae4f);}
+<div id="rotate-overlay">
+  <div id="rotate-icon">📱↻</div>
+  <div id="rotate-text">Gira tu teléfono para continuar</div>
+</div>
 
-/* Mundo 2 — Tierras Congeladas: círculo blanco/hielo con copos */
-.wm-node.w2{background:radial-gradient(circle at 35% 30%,#eaf9ff,#8fd2ea);border-color:#bfe9f7;}
-.wm-node.w2 .wm-node-num,.wm-node.w2 .wm-node-sub{color:#0a3550;text-shadow:0 1px 2px rgba(255,255,255,.5);}
-.wm-node.w2.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
-.wm-node.w2.locked .wm-node-num,.wm-node.w2.locked .wm-node-sub{color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.7);}
-.wm-node.w2.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#ffffff,#7ee0ff);}
+<div id="main-menu">
+  <div id="menu-title">PRODUCCIÓN<br>ATAQUE Y DEFENSA 🛡️</div>
+  <button class="menu-btn" onclick="openWorldMap()">▶ JUGAR</button>
+  <button class="menu-btn secondary" onclick="showInventory()">📦 INVENTARIO</button>
+  <button class="menu-btn secondary" onclick="openWorldMap()">🗺️ NIVELES</button>
+  <button class="menu-btn secondary" onclick="openDiamondShop()">🏪 TIENDA</button>
+  <button class="menu-btn secondary" onclick="confirmReplayTutorial()">📖 TUTORIAL</button>
+  <button class="menu-btn secondary" onclick="toggleFullscreen()">⛶ PANTALLA COMPLETA</button>
+  <button id="platform-change-btn" onclick="openPlatformSelect()">⚙️ <span id="platform-current-label">PC</span></button>
+</div>
 
-/* Mundo 3 — Arenas Calientes: círculo arena/ámbar con calor */
-.wm-node.w3{background:radial-gradient(circle at 35% 30%,#ffd98a,#c4841f);border-color:#e0a83e;}
-.wm-node.w3.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
-.wm-node.w3.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#ffe9b3,#d99a2e);}
-
-/* Mundo 4 — Planeta Vecino: círculo espacial/alien */
-.wm-node.w4{background:radial-gradient(circle at 35% 30%,#b39dff,#4a2fd6);border-color:#00ffe1;}
-.wm-node.w4.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);border-color:#777;}
-.wm-node.w4.completed{border-color:#00ffe1;background:radial-gradient(circle at 35% 30%,#d6c9ff,#6a3fe6);}
-
-.wm-node.boss.completed{border-color:#ffd700;}
-#inventory-title{font-size:26px;color:#ffd700;margin:20px;text-align:center;flex-shrink:0;}
-#battalion-overlay{flex-direction:column;justify-content:flex-start;align-items:stretch;text-align:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:410;background:rgba(5,2,1,.97);}
-#battalion-title{font-size:26px;color:#ff5252;margin:12px 0 4px;font-weight:900;text-shadow:2px 2px 5px rgba(0,0,0,.8);}
-#battalion-timer{font-size:34px;color:#ffd700;font-weight:900;margin-bottom:10px;}
+<div id="diamond-shop-screen" class="overlay">
+  <div id="diamond-shop-title">🏪 TIENDA</div>
+  <div id="diamond-shop-total">
+    <div class="currency-pill"><span class="currency-icon">🟡</span><span id="gold-total-value">0</span></div>
+    <div class="currency-pill"><span class="currency-icon">💎</span><span id="diamond-value">0</span></div>
+  </div>
+  <button id="chest-roulette-btn" onclick="openChestScreen()">🎰 RULETA DE COFRES</button>
+  <div id="diamond-exchange-title">Cambiar oro por diamantes</div>
+  <div id="diamond-exchange-list">
+    <div class="exchange-card"><div class="exchange-icon">👝</div><div class="exchange-info"><div class="exchange-name">Bolsa</div><div class="exchange-cost"><span class="ex-diamond">200 💎</span><span>&nbsp;·&nbsp;</span><span class="ex-gold">18000 ✨</span></div></div><button class="buy-button" onclick="buyDiamondPack(200,18000)">COMPRAR</button></div>
     <div class="exchange-card"><div class="exchange-icon">🧳</div><div class="exchange-info"><div class="exchange-name">Maleta</div><div class="exchange-cost"><span class="ex-diamond">500 💎</span><span>&nbsp;·&nbsp;</span><span class="ex-gold">36000 ✨</span></div></div><button class="buy-button" onclick="buyDiamondPack(500,36000)">COMPRAR</button></div>
-   </div>
+  </div>
   <button class="menu-btn secondary" onclick="showMainMenu()" style="margin:20px auto">⬅ VOLVER</button>
 </div>
 
@@ -472,8 +473,8 @@ body,html{width:100%;height:100%;overflow:hidden;background:#0a0604;display:flex
       <div id="entity-tutorial-body">-</div>
       <button class="result-btn btn-green" onclick="closeEntityTutorial()">ENTENDIDO</button>
     </div>
-  </div> 
-  
+  </div>
+
 
   <div id="defeat-overlay" class="overlay">
     <div class="modal-content" style="border-color:#ff4444">
@@ -595,8 +596,9 @@ function unlockLevelForTower(idx){
 function unlockLevelForUpgrade(idx){
   for(var lvl=1;lvl<=TOTAL_LEVELS;lvl++){ var u=PROGRESSION_UNLOCKS[lvl]; if(u&&u.upgrades.indexOf(idx)!==-1) return lvl; }
   return 1;
-  }
-  // ===== Tutorial de bienvenida (mecánicas principales) =====
+}
+
+// ===== Tutorial de bienvenida (mecánicas principales) =====
 var TUTORIAL_PAGES=[
   {icon:"🛡️",title:"Cómo jugar",body:"Defiende tu base construyendo torres en el tablero. Cada oleada trae enemigos más fuertes — gana oro derrotándolos para construir y mejorar más torres."},
   {icon:"👾",title:"Tipos de enemigo",body:"Normal: equilibrado. Tanque: mucha vida. Arquero: ataca a distancia. Kamikaze: explota al llegar a una torre. Arrastrador: enorme y resistente, ocupa 2 filas."},
@@ -745,8 +747,8 @@ var freeChestsAvailable={comun:0,raro:0,epico:0,mitico:0};
 try{
   var svfc=localStorage.getItem("td_free_chests");
   if(svfc){ var parsed=JSON.parse(svfc); for(var kfc in parsed) freeChestsAvailable[kfc]=parsed[kfc]||0; }
-}catch(e){} 
-                    function saveFreeChests(){try{localStorage.setItem("td_free_chests",JSON.stringify(freeChestsAvailable))}catch(e){}}
+}catch(e){}
+function saveFreeChests(){try{localStorage.setItem("td_free_chests",JSON.stringify(freeChestsAvailable))}catch(e){}}
 
 try{var svd=localStorage.getItem("td_diamonds");if(svd)totalDiamonds=parseInt(svd)||0}catch(e){}
 function saveDiamonds(){try{localStorage.setItem("td_diamonds",totalDiamonds.toString())}catch(e){}}
@@ -897,8 +899,8 @@ function openChestScreen(){
   document.getElementById("diamond-shop-screen").classList.remove("active");
   document.getElementById("chest-screen").classList.add("active");
   renderChestScreen();
-  }
-  function closeChestScreen(){
+}
+function closeChestScreen(){
   document.getElementById("chest-screen").classList.remove("active");
   document.getElementById("diamond-shop-screen").classList.add("active");
 }
@@ -1047,7 +1049,7 @@ function prizeResultLine(prize,storageResult){
     if(storageResult.stored) return "⚙️ "+name+" gratis — guardado en tu Almacén Extra.";
     return "🏬 Almacén lleno — reclamas "+storageResult.goldGiven+" ✨ de oro en su lugar por "+name+".";
   }
-     if(prize.type==="torreSuelta"){
+  if(prize.type==="torreSuelta"){
     var tname=INV_TOWERS[prize.idx].n;
     if(storageResult.stored) return "🏗️ Torre "+tname+" gratis — guardada en tu Almacén Extra.";
     return "🏬 Almacén lleno — reclamas "+storageResult.goldGiven+" ✨ de oro en su lugar por "+tname+".";
@@ -1296,7 +1298,7 @@ var CHESTS={
 };
 
 // ReWork de Ruletas: cada premio de la lista pesa exactamente igual que los demás
-                        // dentro de su propia ruleta (no hay pesos distintos por tipo). Las 4 listas son
+// dentro de su propia ruleta (no hay pesos distintos por tipo). Las 4 listas son
 // independientes entre sí — comprar un cofre solo sortea dentro de SU lista.
 // kind:"nexoSuelto" = nexo suelto (se guarda como antes, kind:"upgrade" en Almacén Extra)
 // kind:"torreSuelta" = torre base sin nexos (se guarda como antes, kind:"tower")
@@ -1447,7 +1449,7 @@ function toggleTowerSelection(idx){
 function toggleUpgradeSelection(idx){
   var pos=selectedUpgrades.indexOf(idx);
   if(pos!==-1){ selectedUpgrades.splice(pos,1); }
-               else { if(!isUpgradeUnlocked(idx)) return; if(selectedUpgrades.length>=MAX_LOADOUT_UPGRADES) return; selectedUpgrades.push(idx); }
+  else { if(!isUpgradeUnlocked(idx)) return; if(selectedUpgrades.length>=MAX_LOADOUT_UPGRADES) return; selectedUpgrades.push(idx); }
   saveInventorySelection(); renderInventory();
 }
 
@@ -1597,8 +1599,8 @@ function applyWorldTheme(w){
   banner.innerText=w.name+" · Nivel "+levelLocal(currentLevel)+"/10";
   banner.style.background=w.accent+"33";
   banner.style.color=w.accent;
-  }
-                        
+}
+
 function confirmExitWithRewards(){
   var hasActiveReward=pendingShopDiscount>0||extraStorageActivated[0]||extraStorageActivated[1];
   if(hasActiveReward){
@@ -1746,7 +1748,7 @@ function spawnEnemy(type){
 var activeSlots=[];
 function buildActiveSlots(){
   activeSlots=[];
-    selectedTowers.forEach(function(idx){ activeSlots.push({kind:"tower",idx:idx}); });
+  selectedTowers.forEach(function(idx){ activeSlots.push({kind:"tower",idx:idx}); });
   selectedUpgrades.forEach(function(idx){ activeSlots.push({kind:"upgrade",idx:idx}); });
   // Premios exclusivos de ruleta: torres con nexos ya combinados de fábrica.
   // Aparecen SOLO cuando están activadas desde el Almacén Extra para este nivel —
@@ -1896,7 +1898,7 @@ function handleTouch(e){
       if(combo){
         var ctype=TOWER_TYPES[combo.baseIdx];
         var ct={type:ctype,hp:ctype.hp,maxHp:ctype.hp,cooldownTimer:0,row:row,col:col,fuseTimer:(ctype.name==="Bomba"||ctype.name==="GigaBomba")?1:0,goldTimer:0,hasNexoDureza:false,hasNexoFuncionamiento:false,hasNexoProduccion:false,hasNexoInfanteria:false,hasNexoInquebrantable:false,hasNexoCuracion:false,hasNexoExpansion:false,curacionTimer:0,hasNexoTesoro:false,tesoroCounter:0,mineAnimTimer:0,hasNexoSobreescudo:false,hasNexoEscopeta:false,hasNexoBlindaje:false,hasNexoCargado:false,shotCount:0};
-                        combo.nexos.forEach(function(nexoIdx){ applyNexoToNewTower(ct,nexoIdx); });
+        combo.nexos.forEach(function(nexoIdx){ applyNexoToNewTower(ct,nexoIdx); });
         grid[row][col]=ct;
         towersBuilt++; selectedSlotIndex=null;
         freeComboTowersThisLevel.splice(slot.comboIdx,1);
@@ -2045,7 +2047,8 @@ function onEnemyDeath(e){
       enemies.push(ne);
     }
   }
-  if(e.chaosFx&&e.chaosFx.haste){  var closest=null,bestDist=Infinity;
+  if(e.chaosFx&&e.chaosFx.haste){
+    var closest=null,bestDist=Infinity;
     for(var i=0;i<enemies.length;i++){
       var o=enemies[i]; if(Math.abs(o.row-e.row)>1) continue;
       var dist=Math.abs(o.x-e.x); if(dist<bestDist){ bestDist=dist; closest=o; }
@@ -2194,7 +2197,8 @@ function updateGame(dt){
       var e=enemies[j];
       if(p.hitEnemies&&p.hitEnemies.indexOf(e)!==-1) continue;
       if((p.row===e.row||(e.isBig&&p.row===e.row+1))&&p.x>=e.x&&p.x<=e.x+e.size){
-        if(!(e.invulnTimer>0)){          e.hp-=applyShieldReduction(e,p.damage);
+        if(!(e.invulnTimer>0)){
+          e.hp-=applyShieldReduction(e,p.damage);
           playImpactSound();
           if(p.cargado){ e.cargadoHits=(e.cargadoHits||0)+1; if(e.cargadoHits>=6){ e.cargadoArmed=true; e.cargadoTimer=9; } }
           if(e.hp<=0){
@@ -2344,7 +2348,7 @@ function drawGame(){
       ctx.strokeStyle="rgba(0,0,0,0.35)"; ctx.lineWidth=1;
       ctx.strokeRect(c*cellWidth+0.5,r*cellHeight+0.5,cellWidth-1,cellHeight-1);
     }
-      }
+  }
   ctx.strokeStyle=w.frame||"#1a0f08"; ctx.lineWidth=4;
   ctx.strokeRect(2,2,COLS*cellWidth-4,ROWS*cellHeight-4);
 
@@ -2493,8 +2497,8 @@ function closeShopOnOverlay(e){ if(e.target.id==="shop-overlay") closeShop(); }
 function updateShopButtons(){
   var btns=[{id:"buy-nexo-dureza",cost:50,fn:buyNexoDureza,idx:0},{id:"buy-nexo-funcionamiento",cost:70,fn:buyNexoFuncionamiento,idx:1},{id:"buy-nexo-produccion",cost:60,fn:buyNexoProduccion,idx:2},{id:"buy-nexo-infanteria",cost:90,fn:buyNexoInfanteria,idx:3},{id:"buy-nexo-inquebrantable",cost:85,fn:buyNexoInquebrantable,idx:4},{id:"buy-nexo-curacion",cost:75,fn:buyNexoCuracion,idx:5},{id:"buy-nexo-expansion",cost:110,fn:buyNexoExpansion,idx:6},{id:"buy-nexo-tesoro",cost:55,fn:buyNexoTesoro,idx:7},{id:"buy-nexo-sobreescudo",cost:45,fn:buyNexoSobreescudo,idx:8},{id:"buy-nexo-escopeta",cost:150,fn:buyNexoEscopeta,idx:9},{id:"buy-nexo-blindaje",cost:100,fn:buyNexoBlindaje,idx:10},{id:"buy-nexo-cargado",cost:180,fn:buyNexoCargado,idx:11}];
   btns.forEach(function(b){
-    var el=document.getElementById(b.id); 
-        if(el){
+    var el=document.getElementById(b.id);
+    if(el){
       var realCost=applyShopDiscount(b.cost);
       var card=el.closest(".upgrade-card");
       var inLoadout=selectedUpgrades.indexOf(b.idx)!==-1;
@@ -2644,7 +2648,7 @@ function pollGamepad(){
       var cur=selectedSlotIndex===null?0:selectedSlotIndex;
       if(gamepadJustPressed(gp,6)){ cur=(cur-1+activeSlots.length)%activeSlots.length; selectSlot(cur); }
       if(gamepadJustPressed(gp,7)){ cur=(cur+1)%activeSlots.length; selectSlot(cur); }
-          }
+    }
   }
   gpPrevButtons=gp.buttons.map(function(b){ return b&&b.pressed; });
 }
