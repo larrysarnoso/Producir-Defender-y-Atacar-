@@ -13,10 +13,72 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;font-family:'Segoe UI',system-ui,sans-serif;}
 body,html{width:100%;height:100%;overflow:hidden;background:#0a0604;display:flex;flex-direction:column;touch-action:none;}
-#worldmap-screen,#inventory-screen{position:fixed;inset:0;display:flex;flex-direction:column;background:linear-gradient(135deg,#1a0f08,#2a1810);z-index:300;}
+#worldmap-screen,#inventory-screen,#diamond-shop-screen,#chest-screen{position:fixed;inset:0;display:flex;flex-direction:column;background:linear-gradient(135deg,#1a0f08,#2a1810);z-index:300;}
 #main-menu{position:fixed;inset:0;display:flex;flex-direction:column;z-index:300;}
-#main-menu.hidden,#worldmap-screen:not(.active),#inventory-screen:not(.active){display:none;}
+#main-menu.hidden,#worldmap-screen:not(.active),#inventory-screen:not(.active),#diamond-shop-screen:not(.active),#chest-screen:not(.active){display:none;}
 #main-menu{justify-content:center;align-items:center;background-image:linear-gradient(rgba(10,6,4,.55),rgba(10,6,4,.75)),url('pantalla_principal.jpg');background-size:cover;background-position:center;}
+#diamond-shop-screen{justify-content:flex-start;align-items:center;text-align:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;background:linear-gradient(160deg,#1a0f08,#0d0704);}
+#diamond-shop-title{font-size:26px;color:#ffd700;margin-bottom:26px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;background:rgba(58,40,23,.55);border:2px solid #6b4423;border-radius:16px;padding:14px 28px;display:inline-flex;align-items:center;gap:10px;}
+#diamond-shop-total{display:flex;gap:16px;margin-bottom:24px;}
+.currency-pill{display:flex;align-items:center;gap:8px;background:rgba(58,40,23,.6);border:2px solid #6b4423;border-radius:30px;padding:10px 20px;font-size:22px;font-weight:800;text-shadow:2px 2px 5px rgba(0,0,0,.7);}
+.currency-pill .currency-icon{font-size:22px;}
+#gold-total-value{color:#ffd700;}
+#diamond-value{color:#7ee8ff;}
+#chest-roulette-btn{width:min(360px,90%);background:linear-gradient(160deg,#7a7a7a,#4a4a4a);border:3px solid #999;border-radius:16px;padding:16px;font-size:19px;font-weight:800;color:#eee;box-shadow:0 4px 12px rgba(0,0,0,.5);margin:0 auto 26px;letter-spacing:.5px;}
+#chest-roulette-btn:active{transform:scale(.96);}
+#diamond-exchange-title{color:#ffcf9e;font-size:14px;font-weight:bold;margin:6px 0 14px;}
+#diamond-exchange-list{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;}
+.exchange-card{background:linear-gradient(160deg,#3a2817,#2a1c0f);border:2px solid #6b4423;border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;text-align:left;}
+.exchange-icon{font-size:38px;min-width:52px;text-align:center;}
+.exchange-info{flex-grow:1;color:#fff;}
+.exchange-name{font-size:17px;font-weight:800;color:#fff;margin-bottom:4px;}
+.exchange-cost{font-size:13px;color:#ffcf9e;font-weight:bold;display:flex;align-items:center;gap:4px;}
+.exchange-cost .ex-diamond{color:#7ee8ff;}
+.exchange-cost .ex-gold{color:#ffd700;}
+#chest-screen{justify-content:flex-start;align-items:center;text-align:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#chest-title{font-size:26px;color:#ffd700;margin-bottom:14px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;}
+#chest-currency-row{display:flex;gap:18px;font-size:18px;font-weight:bold;margin-bottom:20px;}
+#chest-gold-value{color:#ffd700;}
+#chest-diamond-value{color:#7ee8ff;}
+#chest-list{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;}
+.chest-card{border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;border:3px solid;}
+.chest-card.q-comun{background:#243a24;border-color:#4ade80;}
+.chest-card.q-raro{background:#1a2a3a;border-color:#4da3e0;}
+.chest-card.q-epico{background:#2e1a3a;border-color:#b06de0;}
+.chest-card.q-mitico{background:#3a3316;border-color:#ffd23f;}
+.chest-card.progression-locked{opacity:.5;filter:grayscale(.8);border-color:#4a3520!important;background:#241a10!important;}
+.chest-icon{font-size:38px;min-width:50px;text-align:center;}
+.chest-info{flex-grow:1;color:#fff;}
+.chest-name{font-size:15px;font-weight:bold;margin-bottom:3px;}
+.chest-cost{font-size:12px;color:#ccc;}
+.chest-spins{font-size:11px;color:#ffd700;font-weight:bold;margin-top:2px;}
+#chest-spin-overlay{background:rgba(5,2,1,.95);z-index:390;}
+#chest-spin-modal{display:flex;flex-direction:column;align-items:center;gap:30px;width:100%;padding:0 16px;}
+#chest-spin-title{font-size:34px;font-weight:900;color:#ffd700;letter-spacing:2px;text-shadow:3px 3px 6px rgba(0,0,0,.8);}
+#chest-spin-window{position:relative;width:min(360px,92vw);height:110px;border:3px solid #6b4423;border-radius:16px;background:#0a0503;overflow:hidden;display:flex;align-items:center;}
+#chest-spin-center-glow{position:absolute;left:50%;top:0;bottom:0;width:88px;transform:translateX(-50%);background:radial-gradient(circle,rgba(255,215,0,.35),transparent 70%);pointer-events:none;box-shadow:inset 0 0 0 3px rgba(255,215,0,.5);border-radius:12px;}
+#chest-spin-track{display:flex;align-items:center;gap:14px;position:absolute;left:0;top:0;bottom:0;padding:0 14px;will-change:transform;}
+.spin-tile{width:88px;height:88px;min-width:88px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 2px 4px rgba(255,255,255,.25);}
+.spin-tile.center-hit{box-shadow:0 0 22px 6px rgba(255,215,0,.85),inset 0 2px 4px rgba(255,255,255,.35);transform:scale(1.08);}
+.spin-tile.type-discount{background:linear-gradient(160deg,#4ade80,#16a34a);}
+.spin-tile.type-gold{background:linear-gradient(160deg,#facc15,#ca8a04);}
+.spin-tile.type-diamond{background:linear-gradient(160deg,#38bdf8,#0284c7);}
+.spin-tile.type-nexo{background:linear-gradient(160deg,#a78bfa,#6d28d9);}
+.spin-tile.type-tower{background:linear-gradient(160deg,#f87171,#b91c1c);}
+#chest-result-body{color:#fff;font-size:16px;line-height:1.6;margin-bottom:20px;max-height:60vh;overflow-y:auto;}
+.chest-result-line{padding:8px 4px;border-bottom:1px solid rgba(255,255,255,.12);}
+.chest-result-line:last-child{border-bottom:none;}
+#extra-storage-warning{background:rgba(255,80,50,.18);border:2px solid #ff5032;border-radius:8px;padding:10px;color:#ffcfc2;font-size:12px;margin-bottom:10px;text-align:center;}
+#extra-storage-title{color:#ffd23f;font-size:12px;font-weight:bold;text-align:center;margin-bottom:8px;}
+#extra-storage-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;justify-content:center;max-width:560px;margin:0 auto 16px;}
+.extra-slot{min-height:78px;background:#2a1810;border:3px dashed #6b4423;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;color:#999;font-size:11px;text-align:center;}
+.extra-slot.at-limit{opacity:.6;cursor:not-allowed;}
+.extra-slot.filled{border-style:solid;border-color:#ffd23f;background:#3a2f12;color:#fff;cursor:pointer;}
+.extra-slot.activated{border-color:#4ade80;background:#1a3a1e;}
+.extra-slot .extra-slot-icon{font-size:26px;margin-bottom:3px;}
+.extra-slot .extra-slot-name{font-weight:bold;font-size:11px;color:#ffd700;}
+.extra-slot .extra-slot-status{font-size:9px;margin-top:3px;color:#4ade80;}
+#chest-result-overlay{z-index:400;}
 #menu-title{font-size:30px;color:#ffd700;text-align:center;margin-bottom:44px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;line-height:1.3;letter-spacing:.5px;}
 .menu-title-shared{color:#ffd700;text-align:center;margin-bottom:6px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;line-height:1.3;letter-spacing:.5px;}
 .menu-btn{width:260px;height:58px;background:linear-gradient(135deg,#ff8c00,#ff6600);border:3px solid #cc5500;border-radius:12px;margin:9px;font-size:19px;font-weight:bold;color:#fff;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.5);}
@@ -46,117 +108,225 @@ body,html{width:100%;height:100%;overflow:hidden;background:#0a0604;display:flex
 .wm-node{width:78px;height:78px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;cursor:pointer;border:4px solid #777;background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);box-shadow:0 6px 14px rgba(0,0,0,.55);}
 .wm-node:active{transform:scale(.94);}
 .wm-node.locked{opacity:.38;cursor:not-allowed;filter:grayscale(1);}
-.wm-node.completed{border-color:#4CAF50;background:radial-gradient(circle at 35% 30%,#5fce63,#1b5e20);}
 .wm-node.boss{width:92px;height:92px;border-color:#ff5252;}
-.wm-node.boss.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#ffe066,#b8860b);}
 .wm-node-num{font-size:26px;font-weight:800;color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.7);}
 .wm-node-sub{font-size:9px;color:#eee;margin-top:1px;}
-.wm-node-star{position:absolute;top:-8px;font-size:16px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6));}
+.wm-node-star{position:absolute;top:-8px;font-size:16px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6));z-index:3;}
 .wm-node-lock{font-size:22px;}
+
+/* Decoración temática por mundo, alrededor del círculo del nodo */
+.wm-node-deco{position:absolute;inset:-16px;pointer-events:none;z-index:1;}
+.wm-node-deco span{position:absolute;filter:drop-shadow(0 2px 2px rgba(0,0,0,.5));}
+.wm-node{z-index:2;}
+.wm-node-num,.wm-node-sub,.wm-node-lock{position:relative;z-index:2;}
+
+/* Mundo 1 — Tierras Fértiles: pasto y florecitas alrededor */
+.wm-node.w1{background:radial-gradient(circle at 35% 30%,#8fe89a,#2f8a3f);border-color:#3a9e4a;}
+.wm-node.w1.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
+.wm-node.w1.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#b6f5a8,#3fae4f);}
+
+/* Mundo 2 — Tierras Congeladas: círculo blanco/hielo con copos */
+.wm-node.w2{background:radial-gradient(circle at 35% 30%,#eaf9ff,#8fd2ea);border-color:#bfe9f7;}
+.wm-node.w2 .wm-node-num,.wm-node.w2 .wm-node-sub{color:#0a3550;text-shadow:0 1px 2px rgba(255,255,255,.5);}
+.wm-node.w2.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
+.wm-node.w2.locked .wm-node-num,.wm-node.w2.locked .wm-node-sub{color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.7);}
+.wm-node.w2.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#ffffff,#7ee0ff);}
+
+/* Mundo 3 — Arenas Calientes: círculo arena/ámbar con calor */
+.wm-node.w3{background:radial-gradient(circle at 35% 30%,#ffd98a,#c4841f);border-color:#e0a83e;}
+.wm-node.w3.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
+.wm-node.w3.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#ffe9b3,#d99a2e);}
+
+/* Mundo 4 — Planeta Vecino: círculo espacial/alien */
+.wm-node.w4{background:radial-gradient(circle at 35% 30%,#b39dff,#4a2fd6);border-color:#00ffe1;}
+.wm-node.w4.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);border-color:#777;}
+.wm-node.w4.completed{border-color:#00ffe1;background:radial-gradient(circle at 35% 30%,#d6c9ff,#6a3fe6);}
+
+.wm-node.boss.completed{border-color:#ffd700;}
 #inventory-title{font-size:26px;color:#ffd700;margin:20px;text-align:center;flex-shrink:0;}
-#inventory-screen{flex-direction:column;align-items:stretch;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;background-size:cover;background-position:center;background-repeat:no-repeat;}
-#inventory-screen.tab-storage{background-image:linear-gradient(rgba(10,6,4,.6),rgba(10,6,4,.8)),url('almacenamiento_16_slots.jpg');}
-#inventory-screen.tab-loadout{background-image:linear-gradient(rgba(10,6,4,.6),rgba(10,6,4,.8)),url('inventario.jpg');}
-.inventory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:500px;margin:0 auto;width:100%;padding:0 16px 16px;}
-.inventory-item{background:#3a2817;border:3px solid #6b4423;border-radius:8px;padding:14px;text-align:center;color:#fff;}
-.inventory-item .item-icon{font-size:36px;margin-bottom:7px;}
-.inventory-item .item-name{font-size:13px;font-weight:bold;color:#ffd700;}
-.inventory-item .item-desc{font-size:10px;color:#ccc;margin-top:4px;}
-.inventory-item{cursor:pointer;position:relative;transition:transform .12s,border-color .12s;}
-.inventory-item:active{transform:scale(.95);}
-.inventory-item.in-loadout{border-color:#4CAF50;background:#22381c;}
-.inventory-item.locked-out{opacity:.4;filter:grayscale(.6);}
-.inventory-item .item-badge{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#4CAF50;color:#fff;font-size:13px;font-weight:bold;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.5);}
-#inv-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:14px;flex-shrink:0;padding:0 16px;}
-.inv-tab{flex:1;max-width:220px;padding:11px 8px;border-radius:9px;border:2px solid #6b4423;background:#3a2817;color:#ccc;font-size:13px;font-weight:bold;cursor:pointer;}
-.inv-tab.active{background:linear-gradient(135deg,#ff8c00,#ff6600);border-color:#cc5500;color:#fff;}
-#inv-counters{display:flex;gap:16px;justify-content:center;margin-bottom:14px;flex-shrink:0;color:#ffd700;font-size:12px;font-weight:bold;}
-#game-container{position:relative;width:100vw;height:100vh;display:none;flex-direction:column;background:var(--frame,#1a0f08);transition:background .4s;}
-#game-container.active{display:flex;}
-#world-banner{flex-shrink:0;text-align:center;font-size:11px;font-weight:800;letter-spacing:1px;padding:3px 0;color:#fff;background:rgba(0,0,0,.25);}
-#inventory-bar{width:100%;height:104px;background:linear-gradient(180deg,var(--panel,#261612),#0d0704);border-bottom:2px solid #000;display:flex;align-items:center;gap:7px;padding:9px 10px;z-index:10;flex-shrink:0;box-shadow:0 4px 6px rgba(0,0,0,.5);transition:background .4s,height .3s ease;overflow:hidden;}
-#inventory-bar.expanded{height:242px;align-items:flex-start;padding-top:12px;}
-#slots-scroll{display:flex;gap:10px;flex:1;overflow-x:auto;overflow-y:hidden;white-space:nowrap;align-items:center;height:100%;}
-#inventory-bar.expanded #slots-scroll{flex-wrap:wrap;overflow-y:auto;overflow-x:hidden;white-space:normal;align-items:flex-start;align-content:flex-start;justify-content:flex-start;}
-#drawer-toggle{min-width:54px;height:64px;flex-shrink:0;border-radius:9px;border:2px solid var(--accent,#ffd700);background:rgba(0,0,0,.35);color:var(--accent,#ffd700);font-size:10px;font-weight:bold;cursor:pointer;align-self:flex-start;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.1;padding:2px 4px;}
-#drawer-toggle .drawer-arrow{font-size:15px;}
-#gold-counter{height:64px;padding:0 13px;background:rgba(0,0,0,.25);border:2px solid var(--accent,#ffd700);border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--accent,#ffd700);min-width:76px;flex-shrink:0;transition:border-color .4s,color .4s;}
-#gold-label{font-size:9px;font-weight:bold;letter-spacing:1px;}
-#gold-value{font-size:17px;font-weight:bold;margin-top:2px;}
-.slot{width:84px;height:84px;background:linear-gradient(160deg,#4a2e1c,#2c190f);border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:#f0e4d8;text-align:center;cursor:pointer;flex-shrink:0;position:relative;border:2px solid #6b4423;transition:transform .12s,border-color .12s;padding:4px;box-shadow:0 3px 6px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);}
-.slot .icon{font-size:24px;margin-bottom:3px;}
-.slot .name{font-size:11px;font-weight:700;color:#fff;line-height:1.1;text-shadow:0 1px 2px rgba(0,0,0,.7);}
-.slot .price{font-size:10px;color:#ffd700;font-weight:700;margin-top:2px;}
-.slot.selected{border-color:#ffd700;background:linear-gradient(160deg,#6b4a20,#4a3020);transform:scale(1.06);box-shadow:0 0 0 2px rgba(255,215,0,.35),0 4px 10px rgba(0,0,0,.6);}
-.slot.locked{background:#22150e;border-color:#3a281c;opacity:.45;}
-.slot.cant-afford{opacity:.55;border-color:#7a3a3a;}
-.slot.cant-afford .price{color:#ff6b6b;}
-.slot.demolition{background:linear-gradient(160deg,#7a2a2a,#4a1414);border-color:#a04040;color:#ffcccc;}
-.slot.demolition.selected{border-color:#ff5555;background:linear-gradient(160deg,#9a3a3a,#5a1c1c);}
-#canvas-wrapper{flex-grow:1;display:flex;justify-content:center;align-items:center;position:relative;width:100%;padding:16px;overflow:hidden;}
-canvas{display:block;background:transparent;touch-action:none;border-radius:4px;box-shadow:0 0 15px rgba(0,0,0,.8);}
-#bottom-left-ui{position:absolute;bottom:16px;left:16px;display:flex;flex-direction:column;gap:12px;z-index:50;pointer-events:none;}
-.controls-col{display:flex;flex-direction:column;gap:9px;pointer-events:auto;}
-.ctrl-btn{width:42px;height:42px;background:transparent;border:2px solid var(--accent,#ffd700);border-radius:8px;color:var(--accent,#ffd700);font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:border-color .4s,color .4s;}
-.ctrl-btn:active{background:rgba(255,215,0,.2);}
-#wave-hud{background:transparent;border:2px solid var(--accent,#ffd700);border-radius:8px;padding:9px 13px;color:var(--accent,#ffd700);font-weight:bold;text-align:left;transition:border-color .4s,color .4s;}
-#wave-phase{font-size:13px;margin-bottom:3px;}
-.wave-time{font-size:11px;color:#fff;}
-#bottom-right-ui{position:absolute;bottom:16px;right:16px;display:flex;flex-direction:column;align-items:flex-end;gap:16px;z-index:100;pointer-events:none;}
-#pause-btn{width:42px;height:42px;background:transparent;border:2px solid var(--accent,#ffd700);border-radius:8px;color:var(--accent,#ffd700);font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;pointer-events:auto;touch-action:manipulation;transition:border-color .4s,color .4s;}
-#pause-btn:active{background:rgba(255,215,0,.2);}
-#shop-button{width:66px;height:66px;background:#e67e22;border:3px solid #fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:bold;cursor:pointer;pointer-events:auto;box-shadow:0 4px 10px rgba(0,0,0,.5);}
-#shop-button:active{transform:scale(.95);}
-#shop-button .shop-icon{font-size:21px;margin-bottom:2px;}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:250;pointer-events:auto;}
-.overlay.active{display:flex;}
-.modal-content{background:linear-gradient(135deg,#2a1810,#1a0f08);border:4px solid #8b4513;border-radius:12px;padding:20px;max-width:90%;max-height:80%;overflow-y:auto;text-align:center;box-shadow:0 0 30px rgba(255,140,0,.3);}
-.pause-btn,.result-btn{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:2px solid #555;background:linear-gradient(135deg,#444,#333);color:#fff;font-size:16px;font-weight:bold;cursor:pointer;}
-.pause-btn:active,.result-btn:active{transform:scale(.95);}
-.btn-green{background:linear-gradient(135deg,#4CAF50,#45a049);border-color:#2e7d32;}
-.btn-orange{background:linear-gradient(135deg,#ff9800,#f57c00);border-color:#e65100;}
-.btn-red{background:linear-gradient(135deg,#f44336,#d32f2f);border-color:#b71c1c;}
-.btn-blue{background:linear-gradient(135deg,#4a4a4a,#3a3a3a);border-color:#555;}
-body.platform-pc #pause-rotate-btn,body.platform-xbox #pause-rotate-btn{display:none;}
-#shop-title,#pause-title,#victory-title,#defeat-title{font-size:27px;margin-bottom:18px;font-weight:bold;}
-#shop-title,#pause-title{color:#ffd700;}
-#victory-title{color:#4CAF50;}
-#defeat-title{color:#f44336;}
-.upgrade-card{background:#3a2817;border:3px solid #6b4423;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
-.upgrade-icon{font-size:34px;min-width:48px;text-align:center;}
-.upgrade-info{flex-grow:1;color:#fff;text-align:left;}
-.upgrade-name{font-size:13px;font-weight:bold;color:#ffd700;margin-bottom:3px;}
-.upgrade-desc{font-size:10px;color:#ccc;margin-bottom:5px;}
-.upgrade-cost{font-size:11px;color:#ffd700;font-weight:bold;}
-.buy-button{background:linear-gradient(135deg,#4CAF50,#45a049);border:2px solid #2e7d32;border-radius:6px;padding:8px 14px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer;min-width:76px;}
-.buy-button:active{transform:scale(.95);}
-.buy-button.disabled{background:#555;border-color:#333;opacity:.6;}
-.buy-button.success{background:#66BB6A!important;transform:scale(1.1);}
-#world-modifier-note{font-size:11px;color:#ffcf7a;margin-top:10px;line-height:1.5;background:rgba(0,0,0,.25);border-radius:6px;padding:8px;}
-</style>
-</head>
-<body>
+#battalion-overlay{flex-direction:column;justify-content:flex-start;align-items:stretch;text-align:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:410;background:rgba(5,2,1,.97);}
+#battalion-title{font-size:26px;color:#ff5252;margin:12px 0 4px;font-weight:900;text-shadow:2px 2px 5px rgba(0,0,0,.8);}
+#battalion-timer{font-size:34px;color:#ffd700;font-weight:900;margin-bottom:10px;}
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Producción Ataque y Defensa</title>
+<style>
+:root{
+  --w1-bg1:#4ade80; --w1-bg2:#22c55e; --w1-panel:#261612; --w1-accent:#ffd700; --w1-frame:#1a0f08;
+  --w2-bg1:#8fd9f7; --w2-bg2:#5cb8e0; --w2-panel:#132a3a; --w2-accent:#9be8ff; --w2-frame:#0a1826;
+  --w3-bg1:#f4c96b; --w3-bg2:#e0a83e; --w3-panel:#3a2410; --w3-accent:#ffb347; --w3-frame:#26160a;
+  --w4-bg1:#7b5cff; --w4-bg2:#4a2fd6; --w4-panel:#160b33; --w4-accent:#00ffe1; --w4-frame:#0a0420;
+}
+*{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;font-family:'Segoe UI',system-ui,sans-serif;}
+body,html{width:100%;height:100%;overflow:hidden;background:#0a0604;display:flex;flex-direction:column;touch-action:none;}
+#worldmap-screen,#inventory-screen,#diamond-shop-screen,#chest-screen{position:fixed;inset:0;display:flex;flex-direction:column;background:linear-gradient(135deg,#1a0f08,#2a1810);z-index:300;}
+#main-menu{position:fixed;inset:0;display:flex;flex-direction:column;z-index:300;}
+#main-menu.hidden,#worldmap-screen:not(.active),#inventory-screen:not(.active),#diamond-shop-screen:not(.active),#chest-screen:not(.active){display:none;}
+#main-menu{justify-content:center;align-items:center;background-image:linear-gradient(rgba(10,6,4,.55),rgba(10,6,4,.75)),url('pantalla_principal.jpg');background-size:cover;background-position:center;}
+#diamond-shop-screen{justify-content:flex-start;align-items:center;text-align:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;background:linear-gradient(160deg,#1a0f08,#0d0704);}
+#diamond-shop-title{font-size:26px;color:#ffd700;margin-bottom:26px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;background:rgba(58,40,23,.55);border:2px solid #6b4423;border-radius:16px;padding:14px 28px;display:inline-flex;align-items:center;gap:10px;}
+#diamond-shop-total{display:flex;gap:16px;margin-bottom:24px;}
+.currency-pill{display:flex;align-items:center;gap:8px;background:rgba(58,40,23,.6);border:2px solid #6b4423;border-radius:30px;padding:10px 20px;font-size:22px;font-weight:800;text-shadow:2px 2px 5px rgba(0,0,0,.7);}
+.currency-pill .currency-icon{font-size:22px;}
+#gold-total-value{color:#ffd700;}
+#diamond-value{color:#7ee8ff;}
+#chest-roulette-btn{width:min(360px,90%);background:linear-gradient(160deg,#7a7a7a,#4a4a4a);border:3px solid #999;border-radius:16px;padding:16px;font-size:19px;font-weight:800;color:#eee;box-shadow:0 4px 12px rgba(0,0,0,.5);margin:0 auto 26px;letter-spacing:.5px;}
+#chest-roulette-btn:active{transform:scale(.96);}
+#diamond-exchange-title{color:#ffcf9e;font-size:14px;font-weight:bold;margin:6px 0 14px;}
+#diamond-exchange-list{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;}
+.exchange-card{background:linear-gradient(160deg,#3a2817,#2a1c0f);border:2px solid #6b4423;border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;text-align:left;}
+.exchange-icon{font-size:38px;min-width:52px;text-align:center;}
+.exchange-info{flex-grow:1;color:#fff;}
+.exchange-name{font-size:17px;font-weight:800;color:#fff;margin-bottom:4px;}
+.exchange-cost{font-size:13px;color:#ffcf9e;font-weight:bold;display:flex;align-items:center;gap:4px;}
+.exchange-cost .ex-diamond{color:#7ee8ff;}
+.exchange-cost .ex-gold{color:#ffd700;}
+#chest-screen{justify-content:flex-start;align-items:center;text-align:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#chest-title{font-size:26px;color:#ffd700;margin-bottom:14px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;}
+#chest-currency-row{display:flex;gap:18px;font-size:18px;font-weight:bold;margin-bottom:20px;}
+#chest-gold-value{color:#ffd700;}
+#chest-diamond-value{color:#7ee8ff;}
+#chest-list{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;}
+.chest-card{border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;border:3px solid;}
+.chest-card.q-comun{background:#243a24;border-color:#4ade80;}
+.chest-card.q-raro{background:#1a2a3a;border-color:#4da3e0;}
+.chest-card.q-epico{background:#2e1a3a;border-color:#b06de0;}
+.chest-card.q-mitico{background:#3a3316;border-color:#ffd23f;}
+.chest-card.progression-locked{opacity:.5;filter:grayscale(.8);border-color:#4a3520!important;background:#241a10!important;}
+.chest-icon{font-size:38px;min-width:50px;text-align:center;}
+.chest-info{flex-grow:1;color:#fff;}
+.chest-name{font-size:15px;font-weight:bold;margin-bottom:3px;}
+.chest-cost{font-size:12px;color:#ccc;}
+.chest-spins{font-size:11px;color:#ffd700;font-weight:bold;margin-top:2px;}
+#chest-spin-overlay{background:rgba(5,2,1,.95);z-index:390;}
+#chest-spin-modal{display:flex;flex-direction:column;align-items:center;gap:30px;width:100%;padding:0 16px;}
+#chest-spin-title{font-size:34px;font-weight:900;color:#ffd700;letter-spacing:2px;text-shadow:3px 3px 6px rgba(0,0,0,.8);}
+#chest-spin-window{position:relative;width:min(360px,92vw);height:110px;border:3px solid #6b4423;border-radius:16px;background:#0a0503;overflow:hidden;display:flex;align-items:center;}
+#chest-spin-center-glow{position:absolute;left:50%;top:0;bottom:0;width:88px;transform:translateX(-50%);background:radial-gradient(circle,rgba(255,215,0,.35),transparent 70%);pointer-events:none;box-shadow:inset 0 0 0 3px rgba(255,215,0,.5);border-radius:12px;}
+#chest-spin-track{display:flex;align-items:center;gap:14px;position:absolute;left:0;top:0;bottom:0;padding:0 14px;will-change:transform;}
+.spin-tile{width:88px;height:88px;min-width:88px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 2px 4px rgba(255,255,255,.25);}
+.spin-tile.center-hit{box-shadow:0 0 22px 6px rgba(255,215,0,.85),inset 0 2px 4px rgba(255,255,255,.35);transform:scale(1.08);}
+.spin-tile.type-discount{background:linear-gradient(160deg,#4ade80,#16a34a);}
+.spin-tile.type-gold{background:linear-gradient(160deg,#facc15,#ca8a04);}
+.spin-tile.type-diamond{background:linear-gradient(160deg,#38bdf8,#0284c7);}
+.spin-tile.type-nexo{background:linear-gradient(160deg,#a78bfa,#6d28d9);}
+.spin-tile.type-tower{background:linear-gradient(160deg,#f87171,#b91c1c);}
+#chest-result-body{color:#fff;font-size:16px;line-height:1.6;margin-bottom:20px;max-height:60vh;overflow-y:auto;}
+.chest-result-line{padding:8px 4px;border-bottom:1px solid rgba(255,255,255,.12);}
+.chest-result-line:last-child{border-bottom:none;}
+#extra-storage-warning{background:rgba(255,80,50,.18);border:2px solid #ff5032;border-radius:8px;padding:10px;color:#ffcfc2;font-size:12px;margin-bottom:10px;text-align:center;}
+#extra-storage-title{color:#ffd23f;font-size:12px;font-weight:bold;text-align:center;margin-bottom:8px;}
+#extra-storage-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;justify-content:center;max-width:560px;margin:0 auto 16px;}
+.extra-slot{min-height:78px;background:#2a1810;border:3px dashed #6b4423;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;color:#999;font-size:11px;text-align:center;}
+.extra-slot.at-limit{opacity:.6;cursor:not-allowed;}
+.extra-slot.filled{border-style:solid;border-color:#ffd23f;background:#3a2f12;color:#fff;cursor:pointer;}
+.extra-slot.activated{border-color:#4ade80;background:#1a3a1e;}
+.extra-slot .extra-slot-icon{font-size:26px;margin-bottom:3px;}
+.extra-slot .extra-slot-name{font-weight:bold;font-size:11px;color:#ffd700;}
+.extra-slot .extra-slot-status{font-size:9px;margin-top:3px;color:#4ade80;}
+#chest-result-overlay{z-index:400;}
+#menu-title{font-size:30px;color:#ffd700;text-align:center;margin-bottom:44px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;line-height:1.3;letter-spacing:.5px;}
+.menu-title-shared{color:#ffd700;text-align:center;margin-bottom:6px;text-shadow:3px 3px 6px rgba(0,0,0,.8);font-weight:800;line-height:1.3;letter-spacing:.5px;}
+.menu-btn{width:260px;height:58px;background:linear-gradient(135deg,#ff8c00,#ff6600);border:3px solid #cc5500;border-radius:12px;margin:9px;font-size:19px;font-weight:bold;color:#fff;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.5);}
+.menu-btn:active{transform:scale(.95);}
+.menu-btn.secondary{background:linear-gradient(135deg,#4a4a4a,#3a3a3a);border-color:#555;}
+#platform-select{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#1a0f08,#2a1810);z-index:400;}
+#platform-select.hidden{display:none;}
+#platform-sub{color:#ccc;font-size:14px;margin-bottom:26px;text-align:center;max-width:280px;}
+.platform-btn{width:220px;}
+#platform-change-btn{margin-top:18px;background:transparent;border:2px solid #555;border-radius:9px;color:#aaa;font-size:13px;padding:7px 16px;cursor:pointer;}
+#rotate-overlay{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;}
+#rotate-overlay.active{display:flex;}
+#rotate-icon{font-size:52px;margin-bottom:16px;}
+#rotate-text{color:#fff;font-size:17px;font-weight:bold;text-align:center;padding:0 30px;}
+#worldmap-screen{overflow:hidden;flex-direction:column;justify-content:flex-start;align-items:stretch;}
+#wm-header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(0,0,0,.35);z-index:5;}
+#wm-back{width:42px;height:42px;border-radius:10px;border:2px solid #ffd700;background:transparent;color:#ffd700;font-size:20px;cursor:pointer;}
+#wm-world-name{font-size:19px;font-weight:800;color:#ffd700;text-align:center;flex:1;text-shadow:0 2px 4px rgba(0,0,0,.6);}
+#wm-world-switch{display:flex;gap:6px;}
+.wm-dot{width:12px;height:12px;border-radius:50%;background:#555;border:2px solid #333;cursor:pointer;}
+.wm-dot.active{background:#ffd700;border-color:#fff;}
+.wm-dot.locked{opacity:.35;cursor:not-allowed;}
+#wm-scroll{flex:1;width:100%;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;}
+#wm-path-svg{position:absolute;top:0;left:0;width:100%;z-index:1;}
+#wm-nodes{position:relative;z-index:2;width:100%;padding:40px 0 70px;}
+.wm-node-wrap{position:relative;width:100%;height:120px;display:flex;align-items:center;}
+.wm-node{width:78px;height:78px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;cursor:pointer;border:4px solid #777;background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);box-shadow:0 6px 14px rgba(0,0,0,.55);}
+.wm-node:active{transform:scale(.94);}
+.wm-node.locked{opacity:.38;cursor:not-allowed;filter:grayscale(1);}
+.wm-node.boss{width:92px;height:92px;border-color:#ff5252;}
+.wm-node-num{font-size:26px;font-weight:800;color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.7);}
+.wm-node-sub{font-size:9px;color:#eee;margin-top:1px;}
+.wm-node-star{position:absolute;top:-8px;font-size:16px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6));z-index:3;}
+.wm-node-lock{font-size:22px;}
 
-<div id="platform-select" class="hidden">
-  <div class="menu-title-shared" style="font-size:26px;">¿EN QUÉ VAS A JUGAR?</div>
-  <div id="platform-sub">Esto ajusta los controles y la pantalla para tu dispositivo</div>
-  <button class="menu-btn platform-btn" onclick="choosePlatform('pc')">🖥️ PC</button>
-  <button class="menu-btn platform-btn secondary" onclick="choosePlatform('mobile')">📱 TELÉFONO</button>
-  <button class="menu-btn platform-btn secondary" onclick="choosePlatform('xbox')">🎮 XBOX</button>
+/* Decoración temática por mundo, alrededor del círculo del nodo */
+.wm-node-deco{position:absolute;inset:-16px;pointer-events:none;z-index:1;}
+.wm-node-deco span{position:absolute;filter:drop-shadow(0 2px 2px rgba(0,0,0,.5));}
+.wm-node{z-index:2;}
+.wm-node-num,.wm-node-sub,.wm-node-lock{position:relative;z-index:2;}
+
+/* Mundo 1 — Tierras Fértiles: pasto y florecitas alrededor */
+.wm-node.w1{background:radial-gradient(circle at 35% 30%,#8fe89a,#2f8a3f);border-color:#3a9e4a;}
+.wm-node.w1.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
+.wm-node.w1.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#b6f5a8,#3fae4f);}
+
+/* Mundo 2 — Tierras Congeladas: círculo blanco/hielo con copos */
+.wm-node.w2{background:radial-gradient(circle at 35% 30%,#eaf9ff,#8fd2ea);border-color:#bfe9f7;}
+.wm-node.w2 .wm-node-num,.wm-node.w2 .wm-node-sub{color:#0a3550;text-shadow:0 1px 2px rgba(255,255,255,.5);}
+.wm-node.w2.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
+.wm-node.w2.locked .wm-node-num,.wm-node.w2.locked .wm-node-sub{color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.7);}
+.wm-node.w2.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#ffffff,#7ee0ff);}
+
+/* Mundo 3 — Arenas Calientes: círculo arena/ámbar con calor */
+.wm-node.w3{background:radial-gradient(circle at 35% 30%,#ffd98a,#c4841f);border-color:#e0a83e;}
+.wm-node.w3.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);}
+.wm-node.w3.completed{border-color:#ffd700;background:radial-gradient(circle at 35% 30%,#ffe9b3,#d99a2e);}
+
+/* Mundo 4 — Planeta Vecino: círculo espacial/alien */
+.wm-node.w4{background:radial-gradient(circle at 35% 30%,#b39dff,#4a2fd6);border-color:#00ffe1;}
+.wm-node.w4.locked{background:radial-gradient(circle at 35% 30%,#666,#3a3a3a);border-color:#777;}
+.wm-node.w4.completed{border-color:#00ffe1;background:radial-gradient(circle at 35% 30%,#d6c9ff,#6a3fe6);}
+
+.wm-node.boss.completed{border-color:#ffd700;}
+#inventory-title{font-size:26px;color:#ffd700;margin:20px;text-align:center;flex-shrink:0;}
+#battalion-overlay{flex-direction:column;justify-content:flex-start;align-items:stretch;text-align:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:410;background:rgba(5,2,1,.97);}
+#battalion-title{font-size:26px;color:#ff5252;margin:12px 0 4px;font-weight:900;text-shadow:2px 2px 5px rgba(0,0,0,.8);}
+#battalion-timer{font-size:34px;color:#ffd700;font-weight:900;margin-bottom:10px;}
+    <div class="exchange-card"><div class="exchange-icon">🧳</div><div class="exchange-info"><div class="exchange-name">Maleta</div><div class="exchange-cost"><span class="ex-diamond">500 💎</span><span>&nbsp;·&nbsp;</span><span class="ex-gold">36000 ✨</span></div></div><button class="buy-button" onclick="buyDiamondPack(500,36000)">COMPRAR</button></div>
+   </div>
+  <button class="menu-btn secondary" onclick="showMainMenu()" style="margin:20px auto">⬅ VOLVER</button>
 </div>
 
-<div id="rotate-overlay">
-  <div id="rotate-icon">📱↻</div>
-  <div id="rotate-text">Gira tu teléfono para continuar</div>
+<div id="chest-screen" class="overlay">
+  <div id="chest-title">🎰 RULETA DE COFRES</div>
+  <div id="chest-currency-row">
+    <span id="chest-gold-value">0 ✨</span>
+    <span id="chest-diamond-value">0 💎</span>
+  </div>
+  <div id="chest-list"></div>
+  <button class="menu-btn secondary" onclick="closeChestScreen()" style="margin:20px auto">⬅ VOLVER A LA TIENDA</button>
 </div>
 
-<div id="main-menu">
-  <div id="menu-title">PRODUCCIÓN<br>ATAQUE Y DEFENSA 🛡️</div>
-  <button class="menu-btn" onclick="openWorldMap()">▶ JUGAR</button>
-  <button class="menu-btn secondary" onclick="showInventory()">📦 INVENTARIO</button>
-  <button class="menu-btn secondary" onclick="openWorldMap()">🗺️ NIVELES</button>
-  <button class="menu-btn secondary" onclick="toggleFullscreen()">⛶ PANTALLA COMPLETA</button>
-  <button id="platform-change-btn" onclick="openPlatformSelect()">⚙️ <span id="platform-current-label">PC</span></button>
+<div id="chest-spin-overlay" class="overlay">
+  <div id="chest-spin-modal">
+    <div id="chest-spin-title">RULETAS</div>
+    <div id="chest-spin-window">
+      <div id="chest-spin-track"></div>
+      <div id="chest-spin-center-glow"></div>
+    </div>
+  </div>
+</div>
+
+<div id="chest-result-overlay" class="overlay">
+  <div class="modal-content" id="chest-result-modal">
+    <div id="chest-result-title">🎉 ¡PREMIO! 🎉</div>
+    <div id="chest-result-body"></div>
+    <button class="result-btn btn-green" onclick="closeChestResult()">ACEPTAR</button>
+  </div>
 </div>
 
 <div id="worldmap-screen" class="overlay">
@@ -176,24 +346,36 @@ body.platform-pc #pause-rotate-btn,body.platform-xbox #pause-rotate-btn{display:
   <div id="inv-tabs">
     <button class="inv-tab active" id="tab-storage" onclick="switchInvTab('storage')">🏪 ALMACÉN</button>
     <button class="inv-tab" id="tab-loadout" onclick="switchInvTab('loadout')">🎒 INVENTARIO</button>
+    <button class="inv-tab" id="tab-extra" onclick="switchInvTab('extra')">🎁 OBJETOS EXTRA</button>
   </div>
   <div id="inv-counters">
     <span id="inv-count-towers">Torres: 0/5</span>
     <span id="inv-count-upgrades">Mejoras: 0/5</span>
   </div>
+  <div id="extra-storage-warning" style="display:none"></div>
+  <div id="extra-storage-title">🎁 OBJETOS EXTRA — premios de cofres (activa hasta 2 para tu próxima partida)</div>
+  <div id="extra-storage-slots"></div>
   <div class="inventory-grid" id="inventory-grid"></div>
   <button class="menu-btn secondary" onclick="showMainMenu()" style="margin:12px auto 24px">⬅ VOLVER</button>
+</div>
+
+<div id="battalion-overlay" class="overlay">
+  <div id="battalion-title">⚔️ MODO BATALLÓN</div>
+  <div id="battalion-timer">50s</div>
+  <div id="battalion-subtitle">Toca una carta de tu inventario activo para sacarla, luego toca una del almacén para ponerla — 500 ✨ por intercambio</div>
+  <div id="battalion-gold">Oro: 0 ✨</div>
+  <div class="inventory-grid" id="battalion-grid"></div>
+  <button class="menu-btn" onclick="closeBattalionPanel()" style="margin:12px auto 24px">CONTINUAR PARTIDA</button>
 </div>
 
 <div id="game-container">
   <div id="world-banner"></div>
   <div id="inventory-bar">
-    <div id="gold-counter"><span id="gold-label">ORO</span><div id="gold-value">4 ✨</div></div>
     <div id="slots-scroll"></div>
     <button id="drawer-toggle" onclick="toggleDrawer()"><span class="drawer-arrow">⌄</span><span>Nexos</span></button>
   </div>
 
-  <div id="canvas-wrapper"><canvas id="gameCanvas"></canvas></div>
+  <div id="canvas-wrapper"><canvas id="gameCanvas"></canvas><div id="phoenix-banner">🔥 REENCARNACIÓN FÉNIX <span id="phoenix-banner-time">30</span>s 🔥</div></div>
 
   <div id="bottom-left-ui">
     <div id="wave-hud">
@@ -204,12 +386,14 @@ body.platform-pc #pause-rotate-btn,body.platform-xbox #pause-rotate-btn{display:
 
   <div id="bottom-right-ui">
     <button id="pause-btn" onclick="togglePause()">⏸</button>
+    <div id="shop-gold-counter"><span id="shop-gold-label">ORO</span><div id="shop-gold-value">4 ✨</div></div>
     <div id="shop-button" onclick="openShop()"><div class="shop-icon">🛒</div><div>TIENDA</div></div>
   </div>
 
   <div id="shop-overlay" class="overlay" onclick="closeShopOnOverlay(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div id="shop-title">TIENDA DE MEJORAS</div>
+      <div id="shop-modal-gold-counter"><span id="shop-modal-gold-label">ORO</span><div id="shop-modal-gold-value">4 ✨</div></div>
       <div class="upgrade-card"><div class="upgrade-icon">🔩</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Dureza</div><div class="upgrade-desc">+40% HP a Muros y Ataque</div><div class="upgrade-cost">Costo: 50 ✨</div></div><button class="buy-button" id="buy-nexo-dureza" onclick="buyNexoDureza()">COMPRAR</button></div>
       <div class="upgrade-card"><div class="upgrade-icon">⚙️</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Funcionamiento</div><div class="upgrade-desc">Mejora efectos de Asistencia</div><div class="upgrade-cost">Costo: 70 ✨</div></div><button class="buy-button" id="buy-nexo-funcionamiento" onclick="buyNexoFuncionamiento()">COMPRAR</button></div>
       <div class="upgrade-card"><div class="upgrade-icon">💰</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Producción</div><div class="upgrade-desc">+20% producción de Minas</div><div class="upgrade-cost">Costo: 60 ✨</div></div><button class="buy-button" id="buy-nexo-produccion" onclick="buyNexoProduccion()">COMPRAR</button></div>
@@ -218,6 +402,10 @@ body.platform-pc #pause-rotate-btn,body.platform-xbox #pause-rotate-btn{display:
       <div class="upgrade-card"><div class="upgrade-icon">💚</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Curación</div><div class="upgrade-desc">+45 HP cada 15s — Muro/M.Inquebrantable</div><div class="upgrade-cost">Costo: 75 ✨</div></div><button class="buy-button" id="buy-nexo-curacion" onclick="buyNexoCuracion()">COMPRAR</button></div>
       <div class="upgrade-card"><div class="upgrade-icon">✴️</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Expansión</div><div class="upgrade-desc">Estrella de 10 puntas — solo Tesla</div><div class="upgrade-cost">Costo: 110 ✨</div></div><button class="buy-button" id="buy-nexo-expansion" onclick="buyNexoExpansion()">COMPRAR</button></div>
       <div class="upgrade-card"><div class="upgrade-icon">🪙</div><div class="upgrade-info"><div class="upgrade-name">Nexo de Tesoro</div><div class="upgrade-desc">20% prob. de +20 oro cada 4 de oro — solo Mina</div><div class="upgrade-cost">Costo: 55 ✨</div></div><button class="buy-button" id="buy-nexo-tesoro" onclick="buyNexoTesoro()">COMPRAR</button></div>
+      <div class="upgrade-card"><div class="upgrade-icon">🔰</div><div class="upgrade-info"><div class="upgrade-name">Nexo Sobreescudo</div><div class="upgrade-desc">+90 HP extra — Ataque/Mina/Asist/Muros/Tesla/Bala</div><div class="upgrade-cost">Costo: 45 ✨</div></div><button class="buy-button" id="buy-nexo-sobreescudo" onclick="buyNexoSobreescudo()">COMPRAR</button></div>
+      <div class="upgrade-card"><div class="upgrade-icon">🎯</div><div class="upgrade-info"><div class="upgrade-name">Nexo Escopeta</div><div class="upgrade-desc">Ráfaga de escopeta — Ataque/Bala</div><div class="upgrade-cost">Costo: 150 ✨</div></div><button class="buy-button" id="buy-nexo-escopeta" onclick="buyNexoEscopeta()">COMPRAR</button></div>
+      <div class="upgrade-card"><div class="upgrade-icon">🧯</div><div class="upgrade-info"><div class="upgrade-name">Nexo Blindaje Antiexplosión</div><div class="upgrade-desc">-55% daño de explosión Kamikaze — Muro/Asist</div><div class="upgrade-cost">Costo: 100 ✨</div></div><button class="buy-button" id="buy-nexo-blindaje" onclick="buyNexoBlindaje()">COMPRAR</button></div>
+      <div class="upgrade-card"><div class="upgrade-icon">🔋</div><div class="upgrade-info"><div class="upgrade-name">Nexo Cargado</div><div class="upgrade-desc">6+ impactos: libera 10 cargas al morir en 9s — solo Tesla</div><div class="upgrade-cost">Costo: 180 ✨</div></div><button class="buy-button" id="buy-nexo-cargado" onclick="buyNexoCargado()">COMPRAR</button></div>
       <div id="world-modifier-note"></div>
       <button class="pause-btn" onclick="closeShop()" style="margin-top:15px">CERRAR</button>
     </div>
@@ -230,23 +418,67 @@ body.platform-pc #pause-rotate-btn,body.platform-xbox #pause-rotate-btn{display:
       <button class="pause-btn btn-orange" onclick="restartFromPause()">🔄 REINICIAR NIVEL</button>
       <button class="pause-btn btn-blue" id="pause-rotate-btn" onclick="rotateScreen()">🔄 ROTAR PANTALLA</button>
       <button class="pause-btn btn-blue" onclick="toggleFullscreen()">⛶ PANTALLA COMPLETA</button>
-      <button class="pause-btn btn-red" onclick="backToMenu()">🏠 MENÚ PRINCIPAL</button>
+      <button class="pause-btn btn-red" onclick="confirmExitWithRewards()">🏠 MENÚ PRINCIPAL</button>
     </div>
   </div>
 
   <div id="victory-overlay" class="overlay">
     <div class="modal-content" style="border-color:#ffd700">
       <div id="victory-title">🏆 ¡VICTORIA! 🏆</div>
-      <div style="color:#fff;margin-bottom:20px;line-height:1.6">Nivel <span id="victory-level">1</span> completado<br>Oro: <span id="victory-gold">0</span> ✨<br>Torres: <span id="victory-towers">0</span></div>
-      <button class="result-btn btn-green" onclick="nextLevel()">▶ SIGUIENTE</button>
-      <button class="result-btn btn-red" onclick="backToMenu()">🏠 MENÚ</button>
+      <div style="color:#fff;margin-bottom:20px;line-height:1.6">Nivel <span id="victory-level">1</span> completado<br>Oro: <span id="victory-gold">0</span> ✨<br>Diamantes: <span id="victory-diamonds">0</span> 💎<br>Torres: <span id="victory-towers">0</span></div>
+      <button class="result-btn btn-green" onclick="closeVictoryThen(nextLevel)">▶ SIGUIENTE</button>
+      <button class="result-btn btn-red" onclick="closeVictoryThen(backToMenu)">🏠 MENÚ</button>
     </div>
   </div>
+
+  <div id="reward-unlock-overlay" class="overlay">
+    <div class="modal-content" id="reward-unlock-modal" style="border-color:#ffd700">
+      <div id="reward-unlock-title">✨ ¡NUEVO DESBLOQUEO! ✨</div>
+      <div id="reward-unlock-icon">🎁</div>
+      <div id="reward-unlock-name">-</div>
+      <div id="reward-unlock-desc">-</div>
+      <button class="result-btn btn-green" onclick="advanceRewardQueue()">CONTINUAR</button>
+    </div>
+  </div>
+
+  <div id="tutorial-confirm-overlay" class="overlay">
+    <div class="modal-content" style="border-color:#4da3e0;max-width:300px;">
+      <div style="font-size:16px;color:#4da3e0;font-weight:bold;margin-bottom:16px;">¿Quieres volver a cursar el tutorial?</div>
+      <button class="result-btn btn-green" onclick="closeTutorialConfirm();openTutorial(0);">SÍ</button>
+      <button class="result-btn btn-red" onclick="closeTutorialConfirm()">NO</button>
+    </div>
+  </div>
+
+  <div id="tutorial-overlay" class="overlay">
+    <div class="modal-content" id="tutorial-modal" style="border-color:#4da3e0;max-width:380px;">
+      <div id="tutorial-page-title">-</div>
+      <div id="tutorial-page-icon">📖</div>
+      <div id="tutorial-page-body">-</div>
+      <div id="tutorial-page-dots"></div>
+      <div id="tutorial-nav">
+        <button class="result-btn btn-orange" id="tutorial-prev-btn" onclick="tutorialGoTo(tutorialPage-1)">◀ ANTERIOR</button>
+        <button class="result-btn btn-green" id="tutorial-next-btn" onclick="tutorialGoTo(tutorialPage+1)">SIGUIENTE ▶</button>
+      </div>
+      <button class="result-btn btn-red" onclick="closeTutorial()" style="margin-top:8px;">CERRAR</button>
+    </div>
+  </div>
+
+
+  <div id="entity-tutorial-overlay" class="overlay">
+    <div class="modal-content" id="entity-tutorial-modal" style="border-color:#4da3e0;max-width:340px;">
+      <div id="entity-tutorial-title">📖 ¿Qué es esto?</div>
+      <div id="entity-tutorial-icon">❓</div>
+      <div id="entity-tutorial-name">-</div>
+      <div id="entity-tutorial-body">-</div>
+      <button class="result-btn btn-green" onclick="closeEntityTutorial()">ENTENDIDO</button>
+    </div>
+  </div> 
+  
 
   <div id="defeat-overlay" class="overlay">
     <div class="modal-content" style="border-color:#ff4444">
       <div id="defeat-title">💀 ¡DERROTA! 💀</div>
-      <div style="color:#fff;margin-bottom:20px;line-height:1.6">Un enemigo cruzó tu defensa<br>Nivel <span id="defeat-level">1</span><br>Oleada: <span id="defeat-wave">0</span></div>
+      <div style="color:#fff;margin-bottom:20px;line-height:1.6">Un enemigo cruzó tu defensa<br>Nivel <span id="defeat-level">1</span><br>Oleada: <span id="defeat-wave">0</span><br>Diamantes: <span id="defeat-diamonds">0</span> 💎</div>
       <button class="result-btn btn-orange" onclick="retryLevel()">🔄 REINTENTAR</button>
       <button class="result-btn btn-red" onclick="backToMenu()">🏠 MENÚ</button>
     </div>
@@ -294,8 +526,160 @@ var LEVEL_WAVES=[
 function levelWorld(n){ return Math.floor((n-1)/10)+1; }
 function levelLocal(n){ return ((n-1)%10)+1; }
 function worldOf(n){ return WORLDS[levelWorld(n)-1]; }
-function getLevelConfig(n){ return {rows:LEVEL_ROWS[n-1], maxWave:LEVEL_WAVES[n-1]}; }
+function getLevelConfig(n){
+  var rows=LEVEL_ROWS[n-1];
+  var cols=11;
+  if(rows===9) cols=(levelWorld(n)===4)?13:12;
+  return {rows:rows,cols:cols,maxWave:LEVEL_WAVES[n-1]};
+}
 var TOTAL_LEVELS=40;
+
+// ===== Sistema de progresión =====
+// PROGRESSION_UNLOCKS[nivelGlobal] = {towers:[idx,...], upgrades:[idx,...]}
+// El nivel 1 empieza con SOLO Ataque(0) y Mina(2) — ninguna otra torre/nexo disponible.
+// Cada entrada siguiente sigue acumulando; no hace falta repetir lo ya desbloqueado antes.
+var PROGRESSION_UNLOCKS={
+  1:{towers:[0,2],upgrades:[]},                 // Mundo1 N1: Ataque, Mina
+  2:{towers:[],upgrades:[1]},                    // Mundo1 N2: Nexo Funcionamiento
+  3:{towers:[1],upgrades:[]},                    // Mundo1 N3: Torre Asistencia
+  4:{towers:[3],upgrades:[0]},                   // Mundo1 N4: Torre Muro, Nexo Dureza
+  5:{towers:[4],upgrades:[3]},                   // Mundo1 N5: Torre Bomba, Nexo Infantería
+  6:{towers:[],upgrades:[5]},                    // Mundo1 N6: Nexo Curación
+  8:{towers:[5],upgrades:[]},                    // Mundo1 N8: Torre Bala
+  9:{towers:[],upgrades:[8]},                    // Mundo1 N9: Nexo Sobreescudo
+  10:{towers:[6],upgrades:[]},                   // Mundo1 N10: Muro Inquebrantable
+  11:{towers:[8],upgrades:[]},                   // Mundo2 N1: GigaBomba
+  12:{towers:[],upgrades:[10]},                  // Mundo2 N2: Nexo Blindaje (junto al regalo de 2x Ruleta Rara)
+  13:{towers:[],upgrades:[2]},                   // Mundo2 N3: Nexo Producción
+  15:{towers:[7],upgrades:[]},                   // Mundo2 N5: Torre Tesla
+  16:{towers:[],upgrades:[6]},                   // Mundo2 N6: Nexo Expansión
+  17:{towers:[],upgrades:[7]},                   // Mundo2 N7: Nexo Tesoro
+  18:{towers:[],upgrades:[4]},                   // Mundo2 N8: Nexo Inquebrantable
+  19:{towers:[],upgrades:[11]},                  // Mundo2 N9: Nexo Cargado
+  20:{towers:[],upgrades:[9]}                    // Mundo2 N10: Nexo Escopeta (último elemento)
+};
+
+// Regalos de ruleta entregados una sola vez al alcanzar ese nivel global.
+var PROGRESSION_GIFTS={
+  7:{quality:"comun",count:2},    // Mundo1 N7: 2x Ruleta Común
+  12:{quality:"raro",count:2}     // Mundo2 N2: 2x Ruleta Rara
+};
+
+// Calcula, acumulando PROGRESSION_UNLOCKS desde el nivel 1 hasta el nivel global dado,
+// qué torres/nexos están desbloqueados. Se recalcula bajo demanda (no se cachea) porque
+// es una tabla pequeña y así siempre queda consistente con maxUnlockedLevel actual.
+function computeUnlockedSets(uptoGlobalLevel){
+  var towers={}, upgrades={};
+  for(var lvl=1;lvl<=uptoGlobalLevel&&lvl<=TOTAL_LEVELS;lvl++){
+    var u=PROGRESSION_UNLOCKS[lvl]; if(!u) continue;
+    u.towers.forEach(function(i){ towers[i]=true; });
+    u.upgrades.forEach(function(i){ upgrades[i]=true; });
+  }
+  return {towers:towers,upgrades:upgrades};
+}
+function isTowerUnlocked(idx){ return !!computeUnlockedSets(maxUnlockedLevel).towers[idx]; }
+function isUpgradeUnlocked(idx){ return !!computeUnlockedSets(maxUnlockedLevel).upgrades[idx]; }
+// Ruletas: Común y Rara desde el inicio; Épica al llegar a Mundo2 (nivel global 11);
+// Mítica al llegar a Mundo3 (nivel global 21). Independiente de si el jugador tiene o no
+// desbloqueada la torre/nexo que le pueda tocar como premio — eso se entrega igual.
+function isChestUnlocked(quality){
+  if(quality==="comun"||quality==="raro") return true;
+  if(quality==="epico") return maxUnlockedLevel>=11;
+  if(quality==="mitico") return maxUnlockedLevel>=21;
+  return false;
+}
+function unlockLevelForTower(idx){
+  for(var lvl=1;lvl<=TOTAL_LEVELS;lvl++){ var u=PROGRESSION_UNLOCKS[lvl]; if(u&&u.towers.indexOf(idx)!==-1) return lvl; }
+  return 1;
+}
+function unlockLevelForUpgrade(idx){
+  for(var lvl=1;lvl<=TOTAL_LEVELS;lvl++){ var u=PROGRESSION_UNLOCKS[lvl]; if(u&&u.upgrades.indexOf(idx)!==-1) return lvl; }
+  return 1;
+  }
+  // ===== Tutorial de bienvenida (mecánicas principales) =====
+var TUTORIAL_PAGES=[
+  {icon:"🛡️",title:"Cómo jugar",body:"Defiende tu base construyendo torres en el tablero. Cada oleada trae enemigos más fuertes — gana oro derrotándolos para construir y mejorar más torres."},
+  {icon:"👾",title:"Tipos de enemigo",body:"Normal: equilibrado. Tanque: mucha vida. Arquero: ataca a distancia. Kamikaze: explota al llegar a una torre. Arrastrador: enorme y resistente, ocupa 2 filas."},
+  {icon:"📦",title:"Almacén",body:"Aquí guardas todas tus torres y Nexos. Equipa hasta un máximo por partida — lo que no esté desbloqueado aparece con 🔒 y el nivel donde lo consigues."},
+  {icon:"🎰",title:"Ruletas de cofres",body:"Compra cofres con oro o diamantes para ganar premios: oro, diamantes, torres, Nexos, e incluso torres exclusivas ya combinadas con varios Nexos. Algunas ruletas se desbloquean más adelante."},
+  {icon:"⚔️",title:"Modo Batallón",body:"Al llegar a la oleada 10 de cualquier nivel, el juego se pausa y puedes intercambiar tu equipo activo por otras torres/Nexos de tu Almacén — cada intercambio cuesta oro de la partida."}
+];
+var tutorialPage=0;
+function confirmReplayTutorial(){
+  document.getElementById("tutorial-confirm-overlay").classList.add("active");
+}
+function closeTutorialConfirm(){
+  document.getElementById("tutorial-confirm-overlay").classList.remove("active");
+}
+function openTutorial(startPage){
+  tutorialPage=startPage||0;
+  renderTutorialPage();
+  document.getElementById("tutorial-overlay").classList.add("active");
+}
+function closeTutorial(){ document.getElementById("tutorial-overlay").classList.remove("active"); }
+function tutorialGoTo(page){
+  if(page<0||page>=TUTORIAL_PAGES.length) return;
+  tutorialPage=page; renderTutorialPage();
+}
+function renderTutorialPage(){
+  var p=TUTORIAL_PAGES[tutorialPage];
+  document.getElementById("tutorial-page-icon").innerText=p.icon;
+  document.getElementById("tutorial-page-title").innerText=p.title;
+  document.getElementById("tutorial-page-body").innerText=p.body;
+  var dots=document.getElementById("tutorial-page-dots"); dots.innerHTML="";
+  TUTORIAL_PAGES.forEach(function(_,i){
+    var dot=document.createElement("span");
+    dot.className="tutorial-dot"+(i===tutorialPage?" active":"");
+    dots.appendChild(dot);
+  });
+  document.getElementById("tutorial-prev-btn").style.visibility=(tutorialPage===0)?"hidden":"visible";
+  document.getElementById("tutorial-next-btn").style.visibility=(tutorialPage===TUTORIAL_PAGES.length-1)?"hidden":"visible";
+}
+function maybeShowWelcomeTutorial(){
+  try{
+    if(!localStorage.getItem("td_tutorial_seen")){
+      localStorage.setItem("td_tutorial_seen","1");
+      openTutorial(0);
+    }
+  }catch(e){}
+}
+
+// ===== Explicación individual de torre/nexo al desbloquearse (modal separado) =====
+function openEntityTutorial(kind,idx){
+  var it=(kind==="tower")?INV_TOWERS[idx]:INV_UPGRADES[idx];
+  document.getElementById("entity-tutorial-icon").innerText=it.i;
+  document.getElementById("entity-tutorial-name").innerText=(kind==="tower"?"Torre ":"")+it.n;
+  document.getElementById("entity-tutorial-body").innerText=it.d;
+  document.getElementById("entity-tutorial-overlay").classList.add("active");
+}
+function closeEntityTutorial(){
+  document.getElementById("entity-tutorial-overlay").classList.remove("active");
+  showNextRewardOrRun();
+}
+
+// Cola de recompensas desbloqueadas pendientes de mostrar (torre, nexo o regalo de ruleta).
+// Se muestran una por una tras cerrar la pantalla de victoria, para no competir con ella.
+var pendingRewardAnimations=[];
+function applyProgressionRewardsForLevel(globalLevel){
+  var u=PROGRESSION_UNLOCKS[globalLevel];
+  if(u){
+    u.towers.forEach(function(idx){ pendingRewardAnimations.push({kind:"tower",idx:idx}); });
+    u.upgrades.forEach(function(idx){ pendingRewardAnimations.push({kind:"upgrade",idx:idx}); });
+  }
+  var gift=PROGRESSION_GIFTS[globalLevel];
+  if(gift){
+    var giftKey="td_gift_given_"+globalLevel;
+    var already=false;
+    try{ already=!!localStorage.getItem(giftKey); }catch(e){}
+    if(!already){
+      freeChestsAvailable[gift.quality]=(freeChestsAvailable[gift.quality]||0)+gift.count;
+      saveFreeChests();
+      try{ localStorage.setItem(giftKey,"1"); }catch(e){}
+      pendingRewardAnimations.push({kind:"chestGift",quality:gift.quality,count:gift.count});
+    }
+  }
+}
+
 var TOWER_TYPES=[
   {name:"Ataque",icon:"⚔️",hp:220,shootCooldown:1.5},
   {name:"Asist",icon:"🛡️",hp:240,shootCooldown:0},
@@ -304,14 +688,19 @@ var TOWER_TYPES=[
   {name:"Bomba",icon:"💣",hp:99999,shootCooldown:0},
   {name:"Bala",icon:"🔫",hp:80,shootCooldown:4.0},
   {name:"MuroInq",icon:"🏰",hp:700,shootCooldown:0},
-  {name:"Tesla",icon:"⚡",hp:80,shootCooldown:6}
+  {name:"Tesla",icon:"⚡",hp:80,shootCooldown:6},
+  {name:"GigaBomba",icon:"🧨",hp:99999,shootCooldown:0}
 ];
 
 var currentLevel=1, maxUnlockedLevel=1, ROWS=1, COLS=11;
 var WAVES=[], selectedSlotIndex=null;
 var nexoDurezaCharges=0,nexoFuncionamientoCharges=0,nexoProduccionCharges=0,nexoInfanteriaCharges=0;
 var nexoInquebrantableCharges=0,nexoCuracionCharges=0,nexoExpansionCharges=0,nexoTesoroCharges=0;
-var grid=[], enemies=[], projectiles=[], enemyArrows=[], visualExplosions=[], starProjectiles=[];
+var nexoSobreescudoCharges=0,nexoEscopetaCharges=0,nexoBlindajeCharges=0,nexoCargadoCharges=0;
+var battalionActive=false, battalionTimer=0, battalionTriggeredThisLevel=false, battalionPickedIdx=null, battalionPickedKind=null;
+var BATTALION_SWAP_COST=500;
+var grid=[], enemies=[], projectiles=[], enemyArrows=[], visualExplosions=[], starProjectiles=[], diamondPickups=[];
+var phoenixTimer=0; // segundos restantes de Reencarnación Fénix activa (0 = inactivo)
 var goldPieces=4, cellWidth=0, cellHeight=0, towersBuilt=0;
 var currentWave=0, waveTimer=0, normalSpawnTimer=0, tankSpawnTimer=0, archerSpawnTimer=0, kamikazeSpawnTimer=0;
 var gameEnded=false, gameStarted=false, gamePaused=false;
@@ -320,17 +709,62 @@ var minesBought=0, bombsBought=0, bombLimit=0, bulletsBought=0, arrastradorSpawn
 var lastTs=0;
 var uiRefreshAcc=0;
 var wmSelectedWorld=1;
+var totalDiamonds=0;
+var levelDiamondsTarget=0, levelDiamondsDropped=0, levelDiamondsGained=0;
+var freeTowerIdxThisLevel=[];
+var freeComboTowersThisLevel=[]; // premios exclusivos de ruleta: {baseIdx,nexos,slotIdx}
+var totalGold=0;
+var EXTRA_STORAGE_SLOTS=6;
+var EXTRA_STORAGE_MAX_ACTIVE=2;
+var extraStorage=[null,null,null,null,null,null];
+var extraStorageActivated=[false,false,false,false,false,false];
+var pendingShopDiscount=0;
+
+try{var svg2=localStorage.getItem("td_gold");if(svg2)totalGold=parseInt(svg2)||0}catch(e){}
+function saveGold(){try{localStorage.setItem("td_gold",totalGold.toString())}catch(e){}}
+
+try{var svx=localStorage.getItem("td_extra_storage");if(svx)extraStorage=JSON.parse(svx);}catch(e){}
+function saveExtraStorage(){try{localStorage.setItem("td_extra_storage",JSON.stringify(extraStorage))}catch(e){}}
+
+try{var sva=localStorage.getItem("td_extra_activated");if(sva)extraStorageActivated=JSON.parse(sva);}catch(e){}
+function saveExtraActivated(){try{localStorage.setItem("td_extra_activated",JSON.stringify(extraStorageActivated))}catch(e){}}
+
+try{
+  var svpd=localStorage.getItem("td_pending_discount"); if(svpd) pendingShopDiscount=parseFloat(svpd)||0;
+}catch(e){}
+function savePendingRewards(){
+  try{
+    localStorage.setItem("td_pending_discount",pendingShopDiscount.toString());
+  }catch(e){}
+}
 
 try{var sv=localStorage.getItem("td_progress");if(sv)maxUnlockedLevel=parseInt(sv)||1}catch(e){}
 function saveProgress(){try{localStorage.setItem("td_progress",maxUnlockedLevel.toString())}catch(e){}}
+
+var freeChestsAvailable={comun:0,raro:0,epico:0,mitico:0};
+try{
+  var svfc=localStorage.getItem("td_free_chests");
+  if(svfc){ var parsed=JSON.parse(svfc); for(var kfc in parsed) freeChestsAvailable[kfc]=parsed[kfc]||0; }
+}catch(e){} 
+                    function saveFreeChests(){try{localStorage.setItem("td_free_chests",JSON.stringify(freeChestsAvailable))}catch(e){}}
+
+try{var svd=localStorage.getItem("td_diamonds");if(svd)totalDiamonds=parseInt(svd)||0}catch(e){}
+function saveDiamonds(){try{localStorage.setItem("td_diamonds",totalDiamonds.toString())}catch(e){}}
+function getDiamondRangeForLevel(n){
+  var lv=levelLocal(n);
+  if(lv<=3) return 5;
+  if(lv<=6) return 8;
+  return 10;
+}
 
 function getMineCost(){ if(minesBought===0) return 0; return Math.pow(2,minesBought); }
 function mineIsMaxed(){ return minesBought>14; }
 function getBulletCost(){ return 20+5*bulletsBought; }
 function bulletIsMaxed(){ return bulletsBought>=16; }
 function getBombLimit(){ return Math.max(0,(levelLocal(currentLevel)-1)*5); }
-function getTowerCost(i){ if(i===0)return 5; if(i===1)return 10; if(i===2)return getMineCost(); if(i===3)return 20; if(i===4)return 15; if(i===5)return getBulletCost(); if(i===6)return 45; if(i===7)return 35; return 0; }
-function canAfford(i){ if(i===2&&mineIsMaxed()) return false; if(i===4&&bombsBought>=bombLimit) return false; if(i===5&&bulletIsMaxed()) return false; return goldPieces>=getTowerCost(i); }
+function applyShopDiscount(cost){ if(pendingShopDiscount<=0) return cost; return Math.max(0,Math.floor(cost*(1-pendingShopDiscount))); }
+function getTowerCost(i){ var base; if(i===0)base=5; else if(i===1)base=10; else if(i===2)base=getMineCost(); else if(i===3)base=20; else if(i===4)base=15; else if(i===5)base=getBulletCost(); else if(i===6)base=45; else if(i===7)base=35; else if(i===8)base=30; else return 0; return base; }
+function canAfford(i){ if(i===2&&mineIsMaxed()) return false; if(i===4&&bombsBought>=bombLimit) return false; if(i===5&&bulletIsMaxed()) return false; if(freeTowerIdxThisLevel.indexOf(i)!==-1) return true; return goldPieces>=getTowerCost(i); }
 function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
 function currentWorld(){ return worldOf(currentLevel); }
 
@@ -441,7 +875,249 @@ function showMainMenu(){
   gameStarted=false; gamePaused=false; gameEnded=false;
   playMenuMusic();
 }
-function showInventory(){ document.getElementById("main-menu").classList.add("hidden"); var invScreen=document.getElementById("inventory-screen"); invScreen.classList.add("active"); invScreen.classList.toggle("tab-storage",invCurrentTab==="storage"); invScreen.classList.toggle("tab-loadout",invCurrentTab==="loadout"); renderInventory(); playMenuMusic(); }
+function showInventory(){ document.getElementById("main-menu").classList.add("hidden"); var invScreen=document.getElementById("inventory-screen"); invScreen.classList.add("active"); invScreen.classList.toggle("tab-storage",invCurrentTab==="storage"); invScreen.classList.toggle("tab-loadout",invCurrentTab==="loadout"); invScreen.classList.toggle("tab-extra",invCurrentTab==="extra"); renderInventory(); playMenuMusic(); }
+function refreshDiamondShopCounters(){
+  var dv=document.getElementById("diamond-value"); if(dv) dv.innerText=totalDiamonds;
+  var gv=document.getElementById("gold-total-value"); if(gv) gv.innerText=totalGold;
+}
+function openDiamondShop(){
+  document.getElementById("main-menu").classList.add("hidden");
+  document.getElementById("diamond-shop-screen").classList.add("active");
+  refreshDiamondShopCounters();
+  playMenuMusic();
+}
+function buyDiamondPack(diamondAmount,goldCost){
+  if(totalGold<goldCost) return;
+  totalGold-=goldCost; saveGold();
+  totalDiamonds+=diamondAmount; saveDiamonds();
+  refreshDiamondShopCounters();
+}
+
+function openChestScreen(){
+  document.getElementById("diamond-shop-screen").classList.remove("active");
+  document.getElementById("chest-screen").classList.add("active");
+  renderChestScreen();
+  }
+  function closeChestScreen(){
+  document.getElementById("chest-screen").classList.remove("active");
+  document.getElementById("diamond-shop-screen").classList.add("active");
+}
+function renderChestScreen(){
+  var gv=document.getElementById("chest-gold-value"); if(gv) gv.innerText=totalGold+" ✨";
+  var dv=document.getElementById("chest-diamond-value"); if(dv) dv.innerText=totalDiamonds+" 💎";
+  var list=document.getElementById("chest-list"); list.innerHTML="";
+  ["comun","raro","epico","mitico"].forEach(function(q){
+    var c=CHESTS[q];
+    var unlocked=isChestUnlocked(q);
+    var freeCount=freeChestsAvailable[q]||0;
+    var card=document.createElement("div"); card.className="chest-card q-"+q+(unlocked?"":" progression-locked");
+    var costLabel=c.cost+(c.currency==="gold"?" ✨":" 💎");
+    var unlockWorldName=q==="epico"?"Tierras Congeladas":"Arenas Calientes";
+    var freeHtml=freeCount>0?'<div class="chest-free-count">🎁 '+freeCount+' cofre(s) gratis disponibles</div>':"";
+    var infoHtml=unlocked
+      ?freeHtml+'<div class="chest-cost">Costo: '+costLabel+'</div><div class="chest-spins">🎰 '+c.spins+' giros por compra</div>'
+      :'<div class="chest-cost">🔒 Se desbloquea al llegar a '+unlockWorldName+'</div>';
+    card.innerHTML='<div class="chest-icon">'+(unlocked?c.icon:"🔒")+'</div><div class="chest-info"><div class="chest-name">Cofre '+c.name+'</div>'+infoHtml+'</div>';
+    if(unlocked){
+      var btn=document.createElement("button"); btn.className="buy-button"+(freeCount>0?" free-chest-btn":""); btn.innerText=freeCount>0?"ABRIR GRATIS 🎁":"ABRIR";
+      btn.onclick=function(){ openChest(q); };
+      card.appendChild(btn);
+    }
+    list.appendChild(card);
+  });
+}
+function comboTowerLabel(prize){
+  var baseName=INV_TOWERS[prize.baseIdx].n;
+  var nexNames=prize.nexos.map(function(ni){ return INV_UPGRADES[ni].n; });
+  return baseName+" ("+nexNames.join(" + ")+")";
+}
+function comboTowerIcon(prize){ return INV_TOWERS[prize.baseIdx].i; }
+
+function openChest(quality){
+  if(!isChestUnlocked(quality)) return;
+  var c=CHESTS[quality];
+  var usingFreeChest=(freeChestsAvailable[quality]||0)>0;
+  if(usingFreeChest){ freeChestsAvailable[quality]--; saveFreeChests(); }
+  else if(c.currency==="gold"){ if(totalGold<c.cost) return; totalGold-=c.cost; saveGold(); }
+  else { if(totalDiamonds<c.cost) return; totalDiamonds-=c.cost; saveDiamonds(); }
+  var prizes=rollChestPrizes(quality,c.spins);
+  renderChestScreen();
+  playChestSpinSequence(prizes,0,[]);
+}
+
+function prizeSpinIcon(prize){
+  if(prize.type==="gold") return "✨";
+  if(prize.type==="diamond") return "💎";
+  if(prize.type==="nexoSuelto") return INV_UPGRADES[prize.idx].i;
+  if(prize.type==="torreSuelta") return INV_TOWERS[prize.idx].i;
+  if(prize.type==="comboTower") return comboTowerIcon(prize);
+  return "✨";
+}
+function prizeSpinTypeClass(prize){
+  if(prize.type==="comboTower") return "tower";
+  if(prize.type==="nexoSuelto") return "nexo";
+  if(prize.type==="torreSuelta") return "tower";
+  return prize.type;
+}
+function randomSpinIcon(){
+  var pool=[
+    {t:"gold",i:"✨"},{t:"diamond",i:"💎"},
+    {t:"nexo",i:INV_UPGRADES[Math.floor(Math.random()*INV_UPGRADES.length)].i},
+    {t:"tower",i:INV_TOWERS[Math.floor(Math.random()*INV_TOWERS.length)].i}
+  ];
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+// Encadena una animación de giro por cada premio de la compra (spins de esa calidad),
+// aplicando cada premio real justo cuando su giro individual termina, y al final
+// muestra un único resumen con todos los premios obtenidos en esa apertura.
+function playChestSpinSequence(prizes,i,results){
+  if(i>=prizes.length){ showChestResultSummary(results); return; }
+  var prize=prizes[i];
+  var storageResult=applyChestPrize(prize);
+  results.push({prize:prize,storageResult:storageResult});
+  playChestSpinAnimation(prize,function(){
+    playChestSpinSequence(prizes,i+1,results);
+  });
+}
+function playChestSpinAnimation(prize,onDone){
+  var overlay=document.getElementById("chest-spin-overlay");
+  var track=document.getElementById("chest-spin-track");
+  var win=document.getElementById("chest-spin-window");
+  track.innerHTML=""; track.style.transition="none"; track.style.transform="translateX(0px)";
+
+  var tileW=88, gap=14, step=tileW+gap;
+  var totalTiles=26, winningIndex=20;
+  for(var i=0;i<totalTiles;i++){
+    var def = (i===winningIndex) ? {t:prizeSpinTypeClass(prize),i:prizeSpinIcon(prize)} : randomSpinIcon();
+    var el=document.createElement("div");
+    el.className="spin-tile type-"+def.t;
+    el.innerText=def.i;
+    if(i===winningIndex) el.id="chest-spin-winning-tile";
+    track.appendChild(el);
+  }
+
+  overlay.classList.add("active");
+  var winCenterX=winningIndex*step+tileW/2+14;
+  var windowCenterX=win.clientWidth/2;
+  var finalOffset=windowCenterX-winCenterX;
+
+  requestAnimationFrame(function(){
+    track.style.transition="transform 2.4s cubic-bezier(0.11,0.79,0.16,1)";
+    track.style.transform="translateX("+finalOffset+"px)";
+  });
+
+  setTimeout(function(){
+    var wt=document.getElementById("chest-spin-winning-tile");
+    if(wt) wt.classList.add("center-hit");
+  },2450);
+
+  setTimeout(function(){
+    overlay.classList.remove("active");
+    if(onDone) onDone();
+  },3100);
+}
+function applyChestPrize(prize){
+  if(prize.type==="gold"){ totalGold+=prize.amount; saveGold(); return null; }
+  if(prize.type==="diamond"){ totalDiamonds+=prize.amount; saveDiamonds(); return null; }
+  if(prize.type==="nexoSuelto") return grantExtraStorageOrGold({kind:"upgrade",idx:prize.idx});
+  if(prize.type==="torreSuelta") return grantExtraStorageOrGold({kind:"tower",idx:prize.idx});
+  if(prize.type==="comboTower") return grantExtraStorageOrGold({kind:"comboTower",baseIdx:prize.baseIdx,nexos:prize.nexos});
+  return null;
+}
+function grantExtraStorageOrGold(item){
+  var freeSlot=extraStorage.indexOf(null);
+  if(freeSlot!==-1){
+    extraStorage[freeSlot]=item; saveExtraStorage();
+    return {stored:true};
+  }
+  var value=item.kind==="tower"?towerSellValue(item.idx):(item.kind==="comboTower"?comboTowerSellValue(item):nexoSellValue(item.idx));
+  totalGold+=value; saveGold();
+  return {stored:false,goldGiven:value};
+}
+function comboTowerSellValue(item){
+  var base=TOWER_BASE_COST[item.baseIdx]||0;
+  var nexTotal=item.nexos.reduce(function(s,ni){ return s+(NEXO_BASE_COST[ni]||0); },0);
+  return Math.round((base+nexTotal)*0.7)||1;
+}
+function prizeResultLine(prize,storageResult){
+  if(prize.type==="gold") return "✨ +"+prize.amount+" de oro guardado en la Tienda.";
+  if(prize.type==="diamond") return "💎 +"+prize.amount+" diamantes.";
+  if(prize.type==="nexoSuelto"){
+    var name=INV_UPGRADES[prize.idx].n;
+    if(storageResult.stored) return "⚙️ "+name+" gratis — guardado en tu Almacén Extra.";
+    return "🏬 Almacén lleno — reclamas "+storageResult.goldGiven+" ✨ de oro en su lugar por "+name+".";
+  }
+     if(prize.type==="torreSuelta"){
+    var tname=INV_TOWERS[prize.idx].n;
+    if(storageResult.stored) return "🏗️ Torre "+tname+" gratis — guardada en tu Almacén Extra.";
+    return "🏬 Almacén lleno — reclamas "+storageResult.goldGiven+" ✨ de oro en su lugar por "+tname+".";
+  }
+  if(prize.type==="comboTower"){
+    var label=comboTowerLabel(prize);
+    if(storageResult.stored) return "🎖️ Torre exclusiva "+label+" gratis — guardada en tu Almacén Extra.";
+    return "🏬 Almacén lleno — reclamas "+storageResult.goldGiven+" ✨ de oro en su lugar por "+label+".";
+  }
+  return "";
+}
+function showChestResultSummary(results){
+  var title=document.getElementById("chest-result-title");
+  if(title) title.innerText=results.length>1?("🎉 ¡"+results.length+" PREMIOS! 🎉"):"🎉 ¡PREMIO! 🎉";
+  var body=document.getElementById("chest-result-body");
+  body.innerHTML="";
+  results.forEach(function(r){
+    var line=document.createElement("div");
+    line.className="chest-result-line";
+    line.innerText=prizeResultLine(r.prize,r.storageResult);
+    body.appendChild(line);
+  });
+  document.getElementById("chest-result-overlay").classList.add("active");
+}
+function closeChestResult(){ document.getElementById("chest-result-overlay").classList.remove("active"); }
+
+function applyPendingFreeRewards(){
+  freeTowerIdxThisLevel=[];
+  freeComboTowersThisLevel=[];
+  for(var i=0;i<extraStorage.length;i++){
+    var item=extraStorage[i];
+    if(!item||!extraStorageActivated[i]) continue;
+    if(item.kind==="upgrade") grantNexoCharge(item.idx);
+    else if(item.kind==="tower") freeTowerIdxThisLevel.push(item.idx);
+    else if(item.kind==="comboTower") freeComboTowersThisLevel.push({baseIdx:item.baseIdx,nexos:item.nexos,slotIdx:i});
+  }
+}
+function grantNexoCharge(idx){
+  if(idx===0) nexoDurezaCharges++;
+  else if(idx===1) nexoFuncionamientoCharges++;
+  else if(idx===2) nexoProduccionCharges++;
+  else if(idx===3) nexoInfanteriaCharges++;
+  else if(idx===4) nexoInquebrantableCharges++;
+  else if(idx===5) nexoCuracionCharges++;
+  else if(idx===6) nexoExpansionCharges++;
+  else if(idx===7) nexoTesoroCharges++;
+  else if(idx===8) nexoSobreescudoCharges++;
+  else if(idx===9) nexoEscopetaCharges++;
+  else if(idx===10) nexoBlindajeCharges++;
+  else if(idx===11) nexoCargadoCharges++;
+}
+function toggleExtraStorageActivation(slotIdx){
+  if(!extraStorage[slotIdx]) return;
+  if(!extraStorageActivated[slotIdx]){
+    var activeCount=extraStorageActivated.filter(function(a){ return a; }).length;
+    if(activeCount>=EXTRA_STORAGE_MAX_ACTIVE) return;
+  }
+  extraStorageActivated[slotIdx]=!extraStorageActivated[slotIdx];
+  saveExtraActivated();
+  renderInventory();
+}
+function sellExtraStorageItem(slotIdx){
+  var item=extraStorage[slotIdx]; if(!item) return;
+  var value=extraStorageItemInfo(item).sellValue;
+  totalGold+=value; saveGold();
+  extraStorage[slotIdx]=null; extraStorageActivated[slotIdx]=false;
+  saveExtraStorage(); saveExtraActivated();
+  renderInventory();
+}
+
 
 function openWorldMap(){
   document.getElementById("main-menu").classList.add("hidden");
@@ -458,6 +1134,37 @@ function maxUnlockedInWorld(w){
 }
 function worldIsUnlocked(w){ return w===1 || maxUnlockedInWorld(w-1)>=10 || maxUnlockedLevel>=(w-1)*10+1; }
 
+var NODE_DECO_BY_WORLD={
+  1:["🌼","🌱","🍃","🌸"],
+  2:["❄️","🧊","❄️","✨"],
+  3:["🌵","☀️","🔥","🌵"],
+  4:["✨","👾","⭐","✨"]
+};
+function seededAngleOffset(seedIndex,slot){
+  var x=Math.sin(seedIndex*12.9898+slot*78.233)*43758.5453;
+  return x-Math.floor(x);
+}
+function buildNodeDeco(worldId,seedIndex,isBoss){
+  var icons=NODE_DECO_BY_WORLD[worldId]; if(!icons) return null;
+  var wrap=document.createElement("div"); wrap.className="wm-node-deco";
+  var nodeRadius=isBoss?46:39;
+  var wrapHalf=nodeRadius+16;
+  var placeRadius=nodeRadius+7;
+  var count=isBoss?5:4;
+  for(var k=0;k<count;k++){
+    var baseAngle=(Math.PI*2*k)/count;
+    var jitter=(seededAngleOffset(seedIndex,k)-0.5)*0.7;
+    var ang=baseAngle+jitter;
+    var px=wrapHalf+Math.cos(ang)*placeRadius, py=wrapHalf+Math.sin(ang)*placeRadius;
+    var span=document.createElement("span");
+    span.innerText=icons[k%icons.length];
+    span.style.left=px+"px"; span.style.top=py+"px";
+    span.style.transform="translate(-50%,-50%)";
+    span.style.fontSize=(isBoss?15:13)+"px";
+    wrap.appendChild(span);
+  }
+  return wrap;
+}
 function renderWorldMap(){
   var w=WORLDS[wmSelectedWorld-1];
   document.getElementById("wm-world-name").innerText=w.name;
@@ -518,7 +1225,7 @@ function renderWorldMap(){
     var localNum=i+1, globalNum=(w.id-1)*10+localNum;
     var p=positions[i];
     var node=document.createElement("div");
-    node.className="wm-node";
+    node.className="wm-node w"+w.id;
     var isBoss=(localNum===10);
     if(isBoss) node.className+=" boss";
     node.style.left=(p.x-39)+"px"; node.style.top=(p.y-39)+"px";
@@ -534,6 +1241,8 @@ function renderWorldMap(){
         var star=document.createElement("div"); star.className="wm-node-star"; star.innerText="⭐";
         node.appendChild(star);
       }
+      var deco=buildNodeDeco(w.id,i,isBoss);
+      if(deco) node.appendChild(deco);
       node.onclick=(function(lv){ return function(){ startLevel(lv); }; })(globalNum);
     }
     nodesWrap.appendChild(node);
@@ -557,7 +1266,8 @@ var INV_TOWERS=[
   {n:"Bomba",i:"💣",d:"Explota en cruz (+45✨ kill) — $15"},
   {n:"Bala",i:"🔫",d:"Traspasa 3 enemigos, 4 dmg — $20+"},
   {n:"Muro Inquebrantable",i:"🏰",d:"700 HP, devuelve el daño recibido — $45"},
-  {n:"Tesla",i:"⚡",d:"Bala que se divide en estrella — $35"}
+  {n:"Tesla",i:"⚡",d:"Bala que se divide en estrella — $35"},
+  {n:"GigaBomba",i:"🧨",d:"Explota en cuadrado 3x3 (+20✨ kill) — $30"}
 ];
 var INV_UPGRADES=[
   {n:"Nexo Dureza",i:"🔩",d:"+40% HP Muro/Ataque — $50"},
@@ -565,13 +1275,133 @@ var INV_UPGRADES=[
   {n:"Nexo Producción",i:"💰",d:"+20% producción Mina — $60"},
   {n:"Nexo Infantería",i:"🗡️",d:"x2 daño Ataque/Bala — $90"},
   {n:"Nexo Inquebrantable",i:"⚒️",d:"-50% daño recibido, Muro/M.Inq — $85"},
-  {n:"Nexo Curación",i:"💚",d:"+45 HP cada 15s, Muro/M.Inq — $75"},
+  {n:"Nexo Curación",i:"💚",d:"+45 HP cada 15s, Muro/M.Inq/Asist/Mina — $75"},
   {n:"Nexo de Expansión",i:"✴️",d:"Estrella de 10 puntas, solo Tesla — $110"},
-  {n:"Nexo de Tesoro",i:"🪙",d:"20% prob. +20 oro cada 4 oro, solo Mina — $55"}
+  {n:"Nexo de Tesoro",i:"🪙",d:"20% prob. +20 oro cada 4 oro, solo Mina — $55"},
+  {n:"Nexo Sobreescudo",i:"🔰",d:"+90 HP extra — Ataque/Mina/Asist/Muros/Tesla/Bala — $45"},
+  {n:"Nexo Escopeta",i:"🎯",d:"Ráfaga de escopeta — Ataque/Bala — $150"},
+  {n:"Nexo Blindaje Antiexplosión",i:"🧯",d:"-55% daño de explosión Kamikaze — Muro/Asist — $100"},
+  {n:"Nexo Cargado",i:"🔋",d:"6+ impactos: libera 10 cargas de estrella al morir en 9s — solo Tesla — $180"}
 ];
+var NEXO_BASE_COST=[50,70,60,90,85,75,110,55,45,150,100,180];
+var TOWER_BASE_COST=[5,10,4,20,15,20,45,35,30];
+function towerSellValue(idx){ return Math.round(TOWER_BASE_COST[idx]*0.7)||1; }
+function nexoSellValue(idx){ return Math.round(NEXO_BASE_COST[idx]*0.7)||1; }
+
+var CHESTS={
+  comun:{name:"Común",icon:"🟩",cost:400,currency:"gold",spins:5},
+  raro:{name:"Raro",icon:"🟦",cost:700,currency:"gold",spins:4},
+  epico:{name:"Épico",icon:"🟪",cost:50,currency:"diamond",spins:3},
+  mitico:{name:"Mítico",icon:"🟨",cost:90,currency:"diamond",spins:2}
+};
+
+// ReWork de Ruletas: cada premio de la lista pesa exactamente igual que los demás
+                        // dentro de su propia ruleta (no hay pesos distintos por tipo). Las 4 listas son
+// independientes entre sí — comprar un cofre solo sortea dentro de SU lista.
+// kind:"nexoSuelto" = nexo suelto (se guarda como antes, kind:"upgrade" en Almacén Extra)
+// kind:"torreSuelta" = torre base sin nexos (se guarda como antes, kind:"tower")
+// kind:"comboTower" = torre base + nexos YA aplicados de fábrica (premio exclusivo de
+//   ruleta, ocupa uno de los 2 slots del Almacén Extra, nunca aparece en Almacén/Inventario normal)
+var CHEST_PRIZE_TABLES={
+  comun:[
+    {type:"torreSuelta",idx:0},{type:"torreSuelta",idx:1},{type:"torreSuelta",idx:2},
+    {type:"torreSuelta",idx:3},{type:"torreSuelta",idx:4},{type:"torreSuelta",idx:5},
+    {type:"torreSuelta",idx:6},{type:"torreSuelta",idx:7},{type:"torreSuelta",idx:8},
+    {type:"nexoSuelto",idx:0},{type:"nexoSuelto",idx:1},{type:"nexoSuelto",idx:2},
+    {type:"nexoSuelto",idx:3},{type:"nexoSuelto",idx:4},{type:"nexoSuelto",idx:5},
+    {type:"nexoSuelto",idx:6},{type:"nexoSuelto",idx:7},{type:"nexoSuelto",idx:8},
+    {type:"nexoSuelto",idx:9},{type:"nexoSuelto",idx:10},{type:"nexoSuelto",idx:11},
+    {type:"gold",amount:20},{type:"gold",amount:30},{type:"gold",amount:40},
+    {type:"gold",amount:50},{type:"gold",amount:60},{type:"gold",amount:70},
+    {type:"diamond",amount:1},{type:"diamond",amount:2},{type:"diamond",amount:3}
+  ],
+  raro:[
+    {type:"comboTower",baseIdx:0,nexos:[3,0]},          // Ataque: Infanteria+Dureza
+    {type:"comboTower",baseIdx:3,nexos:[0,5]},          // Muro: Dureza+Curacion
+    {type:"comboTower",baseIdx:2,nexos:[7,2]},          // Mina: Tesoro+Produccion
+    {type:"comboTower",baseIdx:5,nexos:[3]},            // Bala: Infanteria
+    {type:"comboTower",baseIdx:7,nexos:[6]},            // Tesla: Expansion
+    {type:"comboTower",baseIdx:3,nexos:[0,5,4]},        // Muro: Dureza+Curacion+Inquebrantable
+    {type:"comboTower",baseIdx:6,nexos:[0]},            // MuroInq: Dureza
+    {type:"comboTower",baseIdx:6,nexos:[5,4]},          // MuroInq: Curacion+Inquebrantable
+    {type:"comboTower",baseIdx:1,nexos:[1,5]},          // Asist: Funcionamiento+Curacion
+    {type:"comboTower",baseIdx:0,nexos:[3,8]},          // Ataque: Infanteria+Sobreescudo
+    {type:"comboTower",baseIdx:1,nexos:[1,8]},          // Asist: Funcionamiento+Sobreescudo
+    {type:"comboTower",baseIdx:3,nexos:[0,8]},          // Muro: Dureza+Sobreescudo
+    {type:"nexoSuelto",idx:9},{type:"nexoSuelto",idx:8},
+    {type:"nexoSuelto",idx:11},{type:"nexoSuelto",idx:10},
+    {type:"gold",amount:80},{type:"gold",amount:90},{type:"gold",amount:100},
+    {type:"gold",amount:120},{type:"gold",amount:140},{type:"gold",amount:160},
+    {type:"diamond",amount:4},{type:"diamond",amount:8},{type:"diamond",amount:12}
+  ],
+  epico:[
+    {type:"comboTower",baseIdx:0,nexos:[3,8,0]},        // Ataque: Infanteria+Sobreescudo+Dureza
+    {type:"comboTower",baseIdx:2,nexos:[7,2]},          // Mina: Tesoro+Produccion
+    {type:"comboTower",baseIdx:1,nexos:[5]},            // Asist: Curacion
+    {type:"comboTower",baseIdx:1,nexos:[1]},            // Asist: Funcionamiento
+    {type:"comboTower",baseIdx:3,nexos:[0,5,4]},        // Muro: Dureza+Curacion+Inquebrantable
+    {type:"comboTower",baseIdx:6,nexos:[5,4]},          // MuroInq: Curacion+Inquebrantable
+    {type:"comboTower",baseIdx:6,nexos:[0,5,4]},        // MuroInq: Dureza+Curacion+Inquebrantable
+    {type:"comboTower",baseIdx:0,nexos:[9,0,8]},        // Ataque: Escopeta+Dureza+Sobreescudo
+    {type:"comboTower",baseIdx:3,nexos:[10,8,5]},       // Muro: Blindaje+Sobreescudo+Curacion
+    {type:"comboTower",baseIdx:7,nexos:[6,11]},         // Tesla: Expansion+Cargado
+    {type:"comboTower",baseIdx:0,nexos:[9,0]},          // Ataque: Escopeta+Dureza
+    {type:"comboTower",baseIdx:7,nexos:[6]},            // Tesla: Expansion
+    {type:"comboTower",baseIdx:0,nexos:[8,9]},          // Ataque: Sobreescudo+Escopeta
+    {type:"comboTower",baseIdx:0,nexos:[0,3,8]},        // Ataque: Dureza+Infanteria+Sobreescudo
+    {type:"comboTower",baseIdx:1,nexos:[8,5]},          // Asist: Sobreescudo+Curacion
+    {type:"comboTower",baseIdx:5,nexos:[3,9]},          // Bala: Infanteria+Escopeta
+    {type:"comboTower",baseIdx:3,nexos:[0,5,4]},        // Muro: Dureza+Curacion+Inquebrantable (repetido, permitido)
+    {type:"comboTower",baseIdx:5,nexos:[9,8]},          // Bala: Escopeta+Sobreescudo
+    {type:"comboTower",baseIdx:5,nexos:[9,8,3]},        // Bala: Escopeta+Sobreescudo+Infanteria
+    {type:"gold",amount:200},{type:"gold",amount:250},{type:"gold",amount:300},
+    {type:"gold",amount:350},{type:"gold",amount:400},{type:"gold",amount:450},
+    {type:"gold",amount:500},{type:"gold",amount:550},
+    {type:"diamond",amount:12},{type:"diamond",amount:14},
+    {type:"diamond",amount:16},{type:"diamond",amount:18}
+  ],
+  mitico:[
+    {type:"comboTower",baseIdx:1,nexos:[1,8,5]},        // Asist: Funcionamiento+Sobreescudo+Curacion
+    {type:"comboTower",baseIdx:0,nexos:[3,9,0,8]},      // Ataque: Infanteria+Escopeta+Dureza+Sobreescudo
+    {type:"comboTower",baseIdx:2,nexos:[7,2,5]},        // Mina: Tesoro+Produccion+Curacion
+    {type:"comboTower",baseIdx:3,nexos:[0,4,5,10]},     // Muro: Dureza+Inquebrantable+Curacion+Blindaje
+    {type:"comboTower",baseIdx:6,nexos:[4,5,0]},        // MuroInq: Inquebrantable+Curacion+Dureza
+    {type:"comboTower",baseIdx:6,nexos:[4,5,0,8]},      // MuroInq: Inquebrantable+Curacion+Dureza+Sobreescudo
+    {type:"comboTower",baseIdx:2,nexos:[7,2,5,8]},      // Mina: Tesoro+Produccion+Curacion+Sobreescudo
+    {type:"comboTower",baseIdx:5,nexos:[3,8,9]},        // Bala: Infanteria+Sobreescudo+Escopeta
+    {type:"comboTower",baseIdx:7,nexos:[6,11]},         // Tesla: Expansion+Cargado
+    {type:"comboTower",baseIdx:0,nexos:[3,9,0]},        // Ataque: Infanteria+Escopeta+Dureza
+    {type:"comboTower",baseIdx:2,nexos:[7,2]},          // Mina: Tesoro+Produccion
+    {type:"comboTower",baseIdx:3,nexos:[10,4,0]},       // Muro: Blindaje+Inquebrantable+Dureza
+    {type:"gold",amount:350},{type:"gold",amount:400},{type:"gold",amount:450},
+    {type:"gold",amount:500},{type:"gold",amount:550},{type:"gold",amount:600},
+    {type:"gold",amount:650},{type:"gold",amount:700},{type:"gold",amount:750},
+    {type:"gold",amount:800},{type:"gold",amount:850},{type:"gold",amount:900},
+    {type:"gold",amount:950},
+    {type:"diamond",amount:20},{type:"diamond",amount:25},{type:"diamond",amount:30},
+    {type:"diamond",amount:35},{type:"diamond",amount:40},{type:"diamond",amount:45},
+    {type:"diamond",amount:50}
+  ]
+};
+function rollChestPrize(quality){
+  var table=CHEST_PRIZE_TABLES[quality];
+  var chosen=table[Math.floor(Math.random()*table.length)];
+  if(chosen.type==="gold") return {type:"gold",amount:chosen.amount};
+  if(chosen.type==="diamond") return {type:"diamond",amount:chosen.amount};
+  if(chosen.type==="nexoSuelto") return {type:"nexoSuelto",idx:chosen.idx};
+  if(chosen.type==="torreSuelta") return {type:"torreSuelta",idx:chosen.idx};
+  if(chosen.type==="comboTower") return {type:"comboTower",baseIdx:chosen.baseIdx,nexos:chosen.nexos.slice()};
+  return {type:"gold",amount:50};
+}
+function rollChestPrizes(quality,count){
+  var out=[];
+  for(var i=0;i<count;i++) out.push(rollChestPrize(quality));
+  return out;
+}
+
 var MAX_LOADOUT_TOWERS=5, MAX_LOADOUT_UPGRADES=5;
-var selectedTowers=[0,1,2,3,5];
-var selectedUpgrades=[0,1,2,3];
+var selectedTowers=[0,2];
+var selectedUpgrades=[];
 var invCurrentTab="storage";
 
 function loadInventorySelection(){
@@ -580,9 +1410,15 @@ function loadInventorySelection(){
     var su=localStorage.getItem("td_sel_upgrades"); if(su) selectedUpgrades=JSON.parse(su);
     var oldDefaultNoBala=[0,1,2,3,4];
     if(st&&JSON.stringify(selectedTowers)===JSON.stringify(oldDefaultNoBala)){
-      selectedTowers=[0,1,2,3,5];
+      var unlockedNow=computeUnlockedSets(maxUnlockedLevel).towers;
+      selectedTowers=[0,1,2,3,5].filter(function(i){ return !!unlockedNow[i]; });
       saveInventorySelection();
     }
+    // Nunca dejar equipado algo que la progresión actual no tenga desbloqueado
+    // (protege contra guardados de una versión anterior sin sistema de progresión).
+    var unlockedSets=computeUnlockedSets(maxUnlockedLevel);
+    selectedTowers=selectedTowers.filter(function(i){ return !!unlockedSets.towers[i]; });
+    selectedUpgrades=selectedUpgrades.filter(function(i){ return !!unlockedSets.upgrades[i]; });
   }catch(e){}
 }
 function saveInventorySelection(){
@@ -596,34 +1432,93 @@ loadInventorySelection();
 function switchInvTab(tab){ invCurrentTab=tab;
   document.getElementById("tab-storage").classList.toggle("active",tab==="storage");
   document.getElementById("tab-loadout").classList.toggle("active",tab==="loadout");
+  document.getElementById("tab-extra").classList.toggle("active",tab==="extra");
   var invScreen=document.getElementById("inventory-screen");
   invScreen.classList.toggle("tab-storage",tab==="storage");
   invScreen.classList.toggle("tab-loadout",tab==="loadout");
+  invScreen.classList.toggle("tab-extra",tab==="extra");
   renderInventory();
 }
 function toggleTowerSelection(idx){
   var pos=selectedTowers.indexOf(idx);
-  if(pos!==-1){ selectedTowers.splice(pos,1); }else { if(selectedTowers.length>=MAX_LOADOUT_TOWERS) return; selectedTowers.push(idx); }
+  if(pos!==-1){ selectedTowers.splice(pos,1); }else { if(!isTowerUnlocked(idx)) return; if(selectedTowers.length>=MAX_LOADOUT_TOWERS) return; selectedTowers.push(idx); }
   saveInventorySelection(); renderInventory();
 }
 function toggleUpgradeSelection(idx){
   var pos=selectedUpgrades.indexOf(idx);
   if(pos!==-1){ selectedUpgrades.splice(pos,1); }
-  else { if(selectedUpgrades.length>=MAX_LOADOUT_UPGRADES) return; selectedUpgrades.push(idx); }
+               else { if(!isUpgradeUnlocked(idx)) return; if(selectedUpgrades.length>=MAX_LOADOUT_UPGRADES) return; selectedUpgrades.push(idx); }
   saveInventorySelection(); renderInventory();
 }
 
+function extraStorageItemInfo(item){
+  if(item.kind==="tower") return {name:INV_TOWERS[item.idx].n,icon:INV_TOWERS[item.idx].i,sellValue:towerSellValue(item.idx)};
+  if(item.kind==="comboTower") return {name:comboTowerLabel(item),icon:comboTowerIcon(item),sellValue:comboTowerSellValue(item)};
+  return {name:INV_UPGRADES[item.idx].n,icon:INV_UPGRADES[item.idx].i,sellValue:nexoSellValue(item.idx)};
+}
+function renderExtraStorageSlots(){
+  var wrap=document.getElementById("extra-storage-slots"); wrap.innerHTML="";
+  var warning=document.getElementById("extra-storage-warning");
+  var storageFull=extraStorage.every(function(item){ return item!==null; });
+  var activeCount=extraStorageActivated.filter(function(a){ return a; }).length;
+  var warnParts=[];
+  if(storageFull) warnParts.push("⚠️ Almacén lleno (6/6) — el próximo premio de torre o Nexo se venderá por oro automáticamente.");
+  warnParts.push("Activados: "+activeCount+"/"+EXTRA_STORAGE_MAX_ACTIVE+" para tu próxima partida.");
+  warning.style.display="block";
+  warning.innerText=warnParts.join(" ");
+  extraStorage.forEach(function(item,idx){
+    var d=document.createElement("div");
+    if(!item){
+      d.className="extra-slot";
+      d.innerHTML='<div class="extra-slot-icon">➕</div><div>Vacío</div>';
+    } else {
+      var info=extraStorageItemInfo(item);
+      var isActive=extraStorageActivated[idx];
+      var atLimit=!isActive&&activeCount>=EXTRA_STORAGE_MAX_ACTIVE;
+      d.className="extra-slot filled"+(isActive?" activated":"")+(atLimit?" at-limit":"");
+      var statusText=isActive?"✓ Listo para tu próxima partida":(atLimit?"Límite de 2 alcanzado":"Toca para activar");
+      d.innerHTML='<div class="extra-slot-icon">'+info.icon+'</div><div class="extra-slot-name">'+info.name+'</div><div class="extra-slot-status">'+statusText+'</div>';
+      d.onclick=function(){ toggleExtraStorageActivation(idx); };
+      var sellBtn=document.createElement("div");
+      sellBtn.style.cssText="font-size:9px;color:#ff8877;margin-top:4px;text-decoration:underline;";
+      sellBtn.innerText="Vender por "+info.sellValue+" ✨";
+      sellBtn.onclick=function(e){ e.stopPropagation(); sellExtraStorageItem(idx); };
+      d.appendChild(sellBtn);
+    }
+    wrap.appendChild(d);
+  });
+}
 function renderInventory(){
   var g=document.getElementById("inventory-grid"); g.innerHTML="";
+  var countersEl=document.getElementById("inv-counters");
+  var extraTitleEl=document.getElementById("extra-storage-title");
+  var extraSlotsEl=document.getElementById("extra-storage-slots");
+  var extraWarnEl=document.getElementById("extra-storage-warning");
+
+  if(invCurrentTab==="extra"){
+    countersEl.style.display="none";
+    extraTitleEl.style.display="block";
+    extraSlotsEl.style.display="flex";
+    g.style.display="none";
+    renderExtraStorageSlots();
+    return;
+  }
+  countersEl.style.display="flex";
+  extraTitleEl.style.display="none";
+  extraSlotsEl.style.display="none";
+  extraWarnEl.style.display="none";
+  g.style.display="grid";
   document.getElementById("inv-count-towers").innerText="Torres: "+selectedTowers.length+"/"+MAX_LOADOUT_TOWERS;
   document.getElementById("inv-count-upgrades").innerText="Mejoras: "+selectedUpgrades.length+"/"+MAX_LOADOUT_UPGRADES;
 
-  function buildCard(it,idx,isSelected,onTap,capReached){
+  function buildCard(it,idx,isSelected,onTap,capReached,progLocked,progLevel){
     var d=document.createElement("div"); d.className="inventory-item";
     if(isSelected) d.className+=" in-loadout";
     if(!isSelected&&capReached) d.className+=" locked-out";
-    d.innerHTML='<div class="item-icon">'+it.i+'</div><div class="item-name">'+it.n+'</div><div class="item-desc">'+it.d+'</div>'+(isSelected?'<div class="item-badge">✓</div>':'');
-    d.onclick=onTap;
+    if(progLocked) d.className+=" progression-locked";
+    var desc=progLocked?('🔒 Se desbloquea en el nivel '+progLevel):it.d;
+    d.innerHTML='<div class="item-icon">'+(progLocked?"🔒":it.i)+'</div><div class="item-name">'+it.n+'</div><div class="item-desc">'+desc+'</div>'+(isSelected?'<div class="item-badge">✓</div>':'');
+    d.onclick=progLocked?null:onTap;
     return d;
   }
 
@@ -631,16 +1526,18 @@ function renderInventory(){
     INV_TOWERS.forEach(function(it,idx){
       var isSel=selectedTowers.indexOf(idx)!==-1;
       var cap=selectedTowers.length>=MAX_LOADOUT_TOWERS;
-      g.appendChild(buildCard(it,idx,isSel,function(){ toggleTowerSelection(idx); },cap));
+      var locked=!isTowerUnlocked(idx);
+      g.appendChild(buildCard(it,idx,isSel,function(){ toggleTowerSelection(idx); },cap,locked,unlockLevelForTower(idx)));
     });
     INV_UPGRADES.forEach(function(it,idx){
       var isSel=selectedUpgrades.indexOf(idx)!==-1;
       var cap=selectedUpgrades.length>=MAX_LOADOUT_UPGRADES;
-      g.appendChild(buildCard(it,idx,isSel,function(){ toggleUpgradeSelection(idx); },cap));
+      var locked=!isUpgradeUnlocked(idx);
+      g.appendChild(buildCard(it,idx,isSel,function(){ toggleUpgradeSelection(idx); },cap,locked,unlockLevelForUpgrade(idx)));
     });
-  } else {
-    selectedTowers.forEach(function(idx){ g.appendChild(buildCard(INV_TOWERS[idx],idx,true,function(){ toggleTowerSelection(idx); },false)); });
-    selectedUpgrades.forEach(function(idx){ g.appendChild(buildCard(INV_UPGRADES[idx],idx,true,function(){ toggleUpgradeSelection(idx); },false)); });
+  } else if(invCurrentTab==="loadout"){
+    selectedTowers.forEach(function(idx){ g.appendChild(buildCard(INV_TOWERS[idx],idx,true,function(){ toggleTowerSelection(idx); },false,false,0)); });
+    selectedUpgrades.forEach(function(idx){ g.appendChild(buildCard(INV_UPGRADES[idx],idx,true,function(){ toggleUpgradeSelection(idx); },false,false,0)); });
     if(selectedTowers.length===0&&selectedUpgrades.length===0){
       var empty=document.createElement("div"); empty.style.cssText="grid-column:1/-1;color:#999;text-align:center;padding:30px;";
       empty.innerText="Vacío — toca items en ALMACÉN para equiparlos aquí"; g.appendChild(empty);
@@ -650,7 +1547,7 @@ function renderInventory(){
 
 function startLevel(level){
   currentLevel=level;
-  var cfg=getLevelConfig(level); ROWS=cfg.rows; var mw=cfg.maxWave;
+  var cfg=getLevelConfig(level); ROWS=cfg.rows; COLS=cfg.cols; var mw=cfg.maxWave;
   var w=currentWorld();
 
   WAVES=[];
@@ -664,12 +1561,20 @@ function startLevel(level){
   }
 
   grid=[]; for(var r=0;r<ROWS;r++){ grid[r]=[]; for(var c=0;c<COLS;c++) grid[r][c]=null; }
-  enemies=[]; projectiles=[]; enemyArrows=[]; visualExplosions=[]; starProjectiles=[];
+  enemies=[]; projectiles=[]; enemyArrows=[]; visualExplosions=[]; starProjectiles=[]; diamondPickups=[]; phoenixTimer=0;
   goldPieces=4; towersBuilt=0; currentWave=0; waveTimer=0;
+  var diamondRange=getDiamondRangeForLevel(level);
+  levelDiamondsTarget=1+Math.floor(Math.random()*diamondRange);
+  levelDiamondsDropped=0; levelDiamondsGained=0;
   normalSpawnTimer=0; tankSpawnTimer=0; archerSpawnTimer=0; kamikazeSpawnTimer=0; uiRefreshAcc=0;
   gameEnded=false; gamePaused=false; selectedSlotIndex=null;
   nexoDurezaCharges=0; nexoFuncionamientoCharges=0; nexoProduccionCharges=0; nexoInfanteriaCharges=0;
+  nexoInquebrantableCharges=0; nexoCuracionCharges=0; nexoExpansionCharges=0; nexoTesoroCharges=0;
+  nexoSobreescudoCharges=0; nexoEscopetaCharges=0; nexoBlindajeCharges=0; nexoCargadoCharges=0;
+  battalionActive=false; battalionTimer=0; battalionTriggeredThisLevel=false; battalionPickedIdx=null; battalionPickedKind=null;
+  document.getElementById("battalion-overlay").classList.remove("active");
   minesBought=0; bombsBought=0; bombLimit=getBombLimit(); bulletsBought=0; arrastradorSpawned=0;
+  applyPendingFreeRewards();
   buildActiveSlots();
 
   applyWorldTheme(w);
@@ -692,10 +1597,52 @@ function applyWorldTheme(w){
   banner.innerText=w.name+" · Nivel "+levelLocal(currentLevel)+"/10";
   banner.style.background=w.accent+"33";
   banner.style.color=w.accent;
+  }
+                        
+function confirmExitWithRewards(){
+  var hasActiveReward=pendingShopDiscount>0||extraStorageActivated[0]||extraStorageActivated[1];
+  if(hasActiveReward){
+    var msg="Si sales del nivel ahora, perderás las ventajas obtenidas (descuento o estructura gratis de esta partida). ¿Deseas continuar?";
+    if(!confirm(msg)) return;
+  }
+  backToMenu();
 }
-
-function backToMenu(){ gameEnded=true; gameStarted=false; gamePaused=false; document.querySelectorAll(".overlay").forEach(function(el){el.classList.remove("active");}); showMainMenu(); }
+function backToMenu(){ gameEnded=true; gameStarted=false; gamePaused=false; battalionActive=false; document.querySelectorAll(".overlay").forEach(function(el){el.classList.remove("active");}); showMainMenu(); }
 function nextLevel(){ if(currentLevel<TOTAL_LEVELS) startLevel(currentLevel+1); else backToMenu(); }
+
+var rewardQueueDeferredAction=null;
+function closeVictoryThen(action){
+  document.getElementById("victory-overlay").classList.remove("active");
+  rewardQueueDeferredAction=action;
+  showNextRewardOrRun();
+}
+function rewardInfo(r){
+  if(r.kind==="tower"){ var t=INV_TOWERS[r.idx]; return {icon:t.i,name:"Torre "+t.n,desc:t.d}; }
+  if(r.kind==="upgrade"){ var u=INV_UPGRADES[r.idx]; return {icon:u.i,name:u.n,desc:u.d}; }
+  if(r.kind==="chestGift"){ var c=CHESTS[r.quality]; return {icon:"🎁",name:r.count+"x Cofre "+c.name,desc:"Regalo — ¡ábrelos gratis en la pantalla de Ruletas!"}; }
+  return {icon:"✨",name:"Recompensa",desc:""};
+}
+function showNextRewardOrRun(){
+  if(pendingRewardAnimations.length===0){
+    if(rewardQueueDeferredAction){ var act=rewardQueueDeferredAction; rewardQueueDeferredAction=null; act(); }
+    return;
+  }
+  var r=pendingRewardAnimations[0], info=rewardInfo(r);
+  document.getElementById("reward-unlock-icon").innerText=info.icon;
+  document.getElementById("reward-unlock-name").innerText=info.name;
+  document.getElementById("reward-unlock-desc").innerText=info.desc;
+  document.getElementById("reward-unlock-overlay").classList.add("active");
+}
+function advanceRewardQueue(){
+  document.getElementById("reward-unlock-overlay").classList.remove("active");
+  var r=pendingRewardAnimations[0];
+  pendingRewardAnimations.shift();
+  if(r&&(r.kind==="tower"||r.kind==="upgrade")){
+    openEntityTutorial(r.kind,r.idx);
+    return; // closeEntityTutorial() continúa la cola al cerrarse
+  }
+  showNextRewardOrRun();
+}
 function retryLevel(){ startLevel(currentLevel); }
 function restartFromPause(){ document.getElementById("pause-overlay").classList.remove("active"); gamePaused=false; startLevel(currentLevel); }
 
@@ -721,7 +1668,7 @@ function updateWaveHUD(){
   } else { p.innerText="¡COMPLETADO!"; t.innerText=""; }
 }
 
-function togglePause(){ if(gameEnded||!gameStarted) return; gamePaused=!gamePaused; document.getElementById("pause-overlay").classList.toggle("active",gamePaused); if(bgMusicEl){ try{ if(gamePaused) bgMusicEl.pause(); else bgMusicEl.play().catch(function(){}); }catch(e){} } }
+function togglePause(){ if(gameEnded||!gameStarted||battalionActive) return; gamePaused=!gamePaused; document.getElementById("pause-overlay").classList.toggle("active",gamePaused); if(bgMusicEl){ try{ if(gamePaused) bgMusicEl.pause(); else bgMusicEl.play().catch(function(){}); }catch(e){} } }
 function resumeGame(){ gamePaused=false; document.getElementById("pause-overlay").classList.remove("active"); lastTs=0; if(bgMusicEl){ try{ bgMusicEl.play().catch(function(){}); }catch(e){} } }
 function closePauseOnOverlay(e){ if(e.target.id==="pause-overlay") resumeGame(); }
 
@@ -739,13 +1686,48 @@ function rollChaosEffects(){
   return fx;
 }
 
+// ===== Sistema de Encantamientos =====
+// Independiente del sistema chaosFx (exclusivo de Mundo4/Planeta Vecino, sin cambios) —
+// este sistema aplica en TODO el juego. Cada enemigo, al aparecer, sortea un nivel:
+// 20% normal puro (sin cambios), 60% "encantado" (mejora moderada), 20% "exclusivo"
+// (habilidad especial fuerte, única por tipo de enemigo).
+function rollEnchantLevel(){
+  var r=Math.random();
+  if(r<0.20) return "exclusive"; // 20%
+  if(r<0.80) return "enchanted"; // 60% (0.20 a 0.80)
+  return "none"; // 20% restante (0.80 a 1.00)
+}
+// Aplica el nivel de encantamiento sorteado a un enemigo recién creado. No modifica
+// maxHp/hp para el nivel "enchanted" mediante multiplicación aquí para Tanque/Arrastrador
+// porque el enemigo ya trae su hp/maxHp base asignado en spawnEnemy; se multiplica in-place.
+function applyEnchantment(e){
+  e.enchantLevel=rollEnchantLevel();
+  e.enchantLabel=null;
+  if(e.enchantLevel==="none") return;
+  if(e.enchantLevel==="enchanted"){
+    if(e.type==="normal"){ e.speed*=1.15; e.baseSpeed=e.speed; e.enchantLabel="⚡ Veloz"; }
+    else if(e.type==="tanque"){ e.maxHp*=1.20; e.hp=e.maxHp; e.enchantLabel="🛡️ Reforzado"; }
+    else if(e.type==="arquero"){ e.arrowCooldownMult=(e.arrowCooldownMult||1)*1.15; e.enchantLabel="🏹 Certero"; }
+    else if(e.type==="kamikaze"){ e.enchantDetectRangeMult=1.20; e.enchantLabel="💥 Alerta"; }
+    else if(e.type==="arrastrador"){ e.maxHp*=1.15; e.hp=e.maxHp; e.enchantLabel="🐍 Robusto"; }
+    return;
+  }
+  // exclusive
+  if(e.type==="normal"){ e.enchantExclusive="relay"; e.enchantLabel="⭐ Relevo"; }
+  else if(e.type==="tanque"){ e.enchantExclusive="shieldOnDeath"; e.enchantLabel="⭐ Guardián"; }
+  else if(e.type==="arquero"){ e.arrowCooldownMult=(e.arrowCooldownMult||1)*1.80; e.enchantExclusive="rapidFire"; e.enchantLabel="⭐ Ráfaga"; }
+  else if(e.type==="kamikaze"){ e.enchantExclusive="instantBigBlast"; e.enchantLabel="⭐ Detonador"; }
+  else if(e.type==="arrastrador"){ e.enchantExclusive="phoenix"; e.enchantLabel="⭐ Fénix"; }
+}
+
 function spawnEnemy(type){
   var w=currentWorld();
   var rr=Math.floor(Math.random()*ROWS), bs=Math.min(cellWidth,cellHeight);
   var e;
-  if(type==="tanque") e={type:"tanque",x:boardWidth+10,row:rr,maxHp:120,hp:120,speed:3.96,size:bs*0.85,color:"#ff4444",isEating:false,isBig:false};
+  if(type==="tanque") e={type:"tanque",x:boardWidth+10,row:rr,maxHp:100,hp:100,speed:3.96,size:bs*0.85,color:"#ff4444",isEating:false,isBig:false};
   else if(type==="arquero") e={type:"arquero",x:boardWidth+10,row:rr,maxHp:24,hp:24,speed:0.2*60,size:bs*0.75,color:"#ff4444",isEating:false,arrowTimer:0,isBig:false};
-  else if(type==="arrastrador"){ var ar=Math.max(0,Math.floor(ROWS/2)-1); e={type:"arrastrador",x:boardWidth+10,row:ar,maxHp:780,hp:780,speed:3.402,size:cellHeight*2,color:"#cc0000",isEating:false,isBig:true}; }else if(type==="kamikaze") e={type:"kamikaze",x:boardWidth+10,row:rr,maxHp:6,hp:6,speed:9.828*1.25,size:bs*0.65,color:"#ff9900",isEating:false,isBig:false};
+  else if(type==="arrastrador"){ var ar=Math.floor(Math.random()*Math.max(1,ROWS-1)); e={type:"arrastrador",x:boardWidth+10,row:ar,maxHp:780,hp:780,speed:3.402,size:cellHeight*2,color:"#cc0000",isEating:false,isBig:true}; }
+  else if(type==="kamikaze") e={type:"kamikaze",x:boardWidth+10,row:rr,maxHp:6,hp:6,speed:9.828*1.25,size:bs*0.65,color:"#ff9900",isEating:false,isBig:false,fuseTimer:0,fuseLit:false};
   else e={type:"normal",x:boardWidth+10,row:rr,maxHp:10,hp:10,speed:9.828,size:bs*0.7,color:"#ff4444",isEating:false,isBig:false};
 
   e.maxHp=e.maxHp*w.enemyHpMult; e.hp=e.maxHp;
@@ -756,6 +1738,7 @@ function spawnEnemy(type){
     if(e.chaosFx.hp){ e.maxHp*=1.3; e.hp=e.maxHp; }
     if(e.chaosFx.speed){ e.speed*=1.4; e.baseSpeed=e.speed; }
   }
+  applyEnchantment(e);
   enemies.push(e);
   return e;
 }
@@ -763,18 +1746,106 @@ function spawnEnemy(type){
 var activeSlots=[];
 function buildActiveSlots(){
   activeSlots=[];
-  selectedTowers.forEach(function(idx){ activeSlots.push({kind:"tower",idx:idx}); });
+    selectedTowers.forEach(function(idx){ activeSlots.push({kind:"tower",idx:idx}); });
   selectedUpgrades.forEach(function(idx){ activeSlots.push({kind:"upgrade",idx:idx}); });
+  // Premios exclusivos de ruleta: torres con nexos ya combinados de fábrica.
+  // Aparecen SOLO cuando están activadas desde el Almacén Extra para este nivel —
+  // nunca se agregan a selectedTowers/Almacén/Inventario normal.
+  freeComboTowersThisLevel.forEach(function(combo,comboIdx){ activeSlots.push({kind:"comboTower",comboIdx:comboIdx}); });
   activeSlots.push({kind:"demolition"});
 }
-function getNexoCharges(idx){ if(idx===0)return nexoDurezaCharges; if(idx===1)return nexoFuncionamientoCharges; if(idx===2)return nexoProduccionCharges; if(idx===3)return nexoInfanteriaCharges; if(idx===4)return nexoInquebrantableCharges; if(idx===5)return nexoCuracionCharges; if(idx===6)return nexoExpansionCharges; if(idx===7)return nexoTesoroCharges; return 0; }
-function decNexoCharges(idx){ if(idx===0)nexoDurezaCharges--; else if(idx===1)nexoFuncionamientoCharges--; else if(idx===2)nexoProduccionCharges--; else if(idx===3)nexoInfanteriaCharges--; else if(idx===4)nexoInquebrantableCharges--; else if(idx===5)nexoCuracionCharges--; else if(idx===6)nexoExpansionCharges--; else if(idx===7)nexoTesoroCharges--; }
+
+function openBattalionPanel(){
+  battalionActive=true; battalionTimer=50; battalionPickedIdx=null; battalionPickedKind=null;
+  gamePaused=true;
+  document.getElementById("battalion-overlay").classList.add("active");
+  renderBattalionGrid();
+}
+function closeBattalionPanel(){
+  battalionActive=false; battalionPickedIdx=null; battalionPickedKind=null;
+  document.getElementById("battalion-overlay").classList.remove("active");
+  gamePaused=false;
+}
+function battalionUpdateTick(dt){
+  if(!battalionActive) return;
+  battalionTimer-=dt;
+  var tEl=document.getElementById("battalion-timer"); if(tEl) tEl.innerText=Math.max(0,Math.ceil(battalionTimer))+"s";
+  if(battalionTimer<=0) closeBattalionPanel();
+}
+function battalionPick(kind,idx){
+  var list=(kind==="tower")?selectedTowers:selectedUpgrades;
+  var inLoadout=list.indexOf(idx)!==-1;
+  if(battalionPickedIdx===null){
+    if(!inLoadout) return;
+    battalionPickedIdx=idx; battalionPickedKind=kind;
+    renderBattalionGrid();
+    return;
+  }
+  if(battalionPickedKind===kind&&battalionPickedIdx===idx){ battalionPickedIdx=null; battalionPickedKind=null; renderBattalionGrid(); return; }
+  if(battalionPickedKind!==kind||inLoadout){ return; }
+  if(goldPieces<BATTALION_SWAP_COST) return;
+  goldPieces-=BATTALION_SWAP_COST;
+  var removePos=list.indexOf(battalionPickedIdx);
+  if(removePos!==-1) list.splice(removePos,1);
+  list.push(idx);
+  saveInventorySelection();
+  buildActiveSlots();
+  updateInventoryUI();
+  updateShopButtons();
+  battalionPickedIdx=null; battalionPickedKind=null;
+  renderBattalionGrid();
+}
+function renderBattalionGrid(){
+  var g=document.getElementById("battalion-grid"); if(!g) return; g.innerHTML="";
+  var gv=document.getElementById("battalion-gold"); if(gv) gv.innerText="Oro: "+Math.floor(goldPieces)+" ✨ (costo: "+BATTALION_SWAP_COST+" ✨ por intercambio)";
+  function buildCard(it,idx,kind){
+    var list=(kind==="tower")?selectedTowers:selectedUpgrades;
+    var inLoadout=list.indexOf(idx)!==-1;
+    var isPicked=battalionPickedKind===kind&&battalionPickedIdx===idx;
+    var locked=kind==="tower"?!isTowerUnlocked(idx):!isUpgradeUnlocked(idx);
+    var unlockLvl=kind==="tower"?unlockLevelForTower(idx):unlockLevelForUpgrade(idx);
+    var d=document.createElement("div"); d.className="inventory-item";
+    if(inLoadout) d.className+=" in-loadout";
+    if(isPicked) d.className+=" battalion-picked";
+    if(locked) d.className+=" progression-locked";
+    var desc=locked?('🔒 Se desbloquea en el nivel '+unlockLvl):it.d;
+    d.innerHTML='<div class="item-icon">'+(locked?"🔒":it.i)+'</div><div class="item-name">'+it.n+'</div><div class="item-desc">'+desc+'</div>'+(inLoadout?'<div class="item-badge">✓</div>':'');
+    d.onclick=locked?null:function(){ battalionPick(kind,idx); };
+    return d;
+  }
+  INV_TOWERS.forEach(function(it,idx){ g.appendChild(buildCard(it,idx,"tower")); });
+  INV_UPGRADES.forEach(function(it,idx){ g.appendChild(buildCard(it,idx,"upgrade")); });
+}
+
+function getNexoCharges(idx){ if(idx===0)return nexoDurezaCharges; if(idx===1)return nexoFuncionamientoCharges; if(idx===2)return nexoProduccionCharges; if(idx===3)return nexoInfanteriaCharges; if(idx===4)return nexoInquebrantableCharges; if(idx===5)return nexoCuracionCharges; if(idx===6)return nexoExpansionCharges; if(idx===7)return nexoTesoroCharges; if(idx===8)return nexoSobreescudoCharges; if(idx===9)return nexoEscopetaCharges; if(idx===10)return nexoBlindajeCharges; if(idx===11)return nexoCargadoCharges; return 0; }
+function decNexoCharges(idx){ if(idx===0)nexoDurezaCharges--; else if(idx===1)nexoFuncionamientoCharges--; else if(idx===2)nexoProduccionCharges--; else if(idx===3)nexoInfanteriaCharges--; else if(idx===4)nexoInquebrantableCharges--; else if(idx===5)nexoCuracionCharges--; else if(idx===6)nexoExpansionCharges--; else if(idx===7)nexoTesoroCharges--; else if(idx===8)nexoSobreescudoCharges--; else if(idx===9)nexoEscopetaCharges--; else if(idx===10)nexoBlindajeCharges--; else if(idx===11)nexoCargadoCharges--; }
 
 function selectSlot(pos){
   var slot=activeSlots[pos]; if(!slot) return;
   if(slot.kind==="upgrade"&&getNexoCharges(slot.idx)===0) return;
   if(slot.kind==="tower"&&!canAfford(slot.idx)) return;
+  if(slot.kind==="comboTower"&&!freeComboTowersThisLevel[slot.comboIdx]) return;
   selectedSlotIndex=(selectedSlotIndex===pos)?null:pos; updateInventoryUI();
+}
+
+// Aplica el efecto de un nexo a una torre recién creada (premio de ruleta con
+// nexos ya combinados de fábrica). Mismos valores exactos que el bloque
+// slot.kind==="upgrade" de más abajo, pero sin gastar carga de inventario
+// (la torre-combo no sale del Almacén de Nexos normal) y sin volver a chequear
+// compatibilidad de torre (la tabla de premios ya solo genera combos válidos).
+function applyNexoToNewTower(t,idx){
+  if(idx===0){ var inc=Math.floor(t.maxHp*0.40); t.maxHp+=inc; t.hp+=inc; t.hasNexoDureza=true; }
+  else if(idx===1) t.hasNexoFuncionamiento=true;
+  else if(idx===2) t.hasNexoProduccion=true;
+  else if(idx===3) t.hasNexoInfanteria=true;
+  else if(idx===4) t.hasNexoInquebrantable=true;
+  else if(idx===5) t.hasNexoCuracion=true;
+  else if(idx===6) t.hasNexoExpansion=true;
+  else if(idx===7) t.hasNexoTesoro=true;
+  else if(idx===8){ t.maxHp+=90; t.hp+=90; t.hasNexoSobreescudo=true; }
+  else if(idx===9) t.hasNexoEscopeta=true;
+  else if(idx===10) t.hasNexoBlindaje=true;
+  else if(idx===11) t.hasNexoCargado=true;
 }
 
 function handleTouch(e){
@@ -798,22 +1869,52 @@ function handleTouch(e){
       else if(slot.idx===2){ if(t&&t.type.name==="Mina"&&!t.hasNexoProduccion){ t.hasNexoProduccion=true; applied=true; } }
       else if(slot.idx===3){ if(t&&(t.type.name==="Ataque"||t.type.name==="Bala")&&!t.hasNexoInfanteria){ t.hasNexoInfanteria=true; applied=true; } }
       else if(slot.idx===4){ if(t&&(t.type.name==="Muro"||t.type.name==="MuroInq")&&!t.hasNexoInquebrantable){ t.hasNexoInquebrantable=true; applied=true; } }
-      else if(slot.idx===5){ if(t&&(t.type.name==="Muro"||t.type.name==="MuroInq")&&!t.hasNexoCuracion){ t.hasNexoCuracion=true; applied=true; } }
+      else if(slot.idx===5){ if(t&&(t.type.name==="Muro"||t.type.name==="MuroInq"||t.type.name==="Asist"||t.type.name==="Mina")&&!t.hasNexoCuracion){ t.hasNexoCuracion=true; applied=true; } }
       else if(slot.idx===6){ if(t&&t.type.name==="Tesla"&&!t.hasNexoExpansion){ t.hasNexoExpansion=true; applied=true; } }
       else if(slot.idx===7){ if(t&&t.type.name==="Mina"&&!t.hasNexoTesoro){ t.hasNexoTesoro=true; applied=true; } }
+      else if(slot.idx===8){ if(t&&(t.type.name==="Ataque"||t.type.name==="Mina"||t.type.name==="Asist"||t.type.name==="Muro"||t.type.name==="MuroInq"||t.type.name==="Tesla"||t.type.name==="Bala")&&!t.hasNexoSobreescudo){ t.maxHp+=90; t.hp+=90; t.hasNexoSobreescudo=true; applied=true; } }
+      else if(slot.idx===9){ if(t&&(t.type.name==="Ataque"||t.type.name==="Bala")&&!t.hasNexoEscopeta){ t.hasNexoEscopeta=true; applied=true; } }
+      else if(slot.idx===10){ if(t&&(t.type.name==="Muro"||t.type.name==="Asist")&&!t.hasNexoBlindaje){ t.hasNexoBlindaje=true; applied=true; } }
+      else if(slot.idx===11){ if(t&&t.type.name==="Tesla"&&!t.hasNexoCargado){ t.hasNexoCargado=true; applied=true; } }
       if(applied){ decNexoCharges(slot.idx); selectedSlotIndex=null; updateInventoryUI(); }
     }
     else if(slot.kind==="tower"&&grid[row][col]===null){
       var ti=slot.idx, cost=getTowerCost(ti);
+      var isFreeTower=(freeTowerIdxThisLevel.indexOf(ti)!==-1);
+      if(isFreeTower) cost=0;
       if(goldPieces>=cost&&canAfford(ti)){
         goldPieces-=cost; var type=TOWER_TYPES[ti];
         if(ti===2) minesBought++; if(ti===4) bombsBought++; if(ti===5) bulletsBought++;
-        grid[row][col]={type:type,hp:type.hp,maxHp:type.hp,cooldownTimer:0,row:row,col:col,fuseTimer:type.name==="Bomba"?1:0,goldTimer:0,hasNexoDureza:false,hasNexoFuncionamiento:false,hasNexoProduccion:false,hasNexoInfanteria:false,hasNexoInquebrantable:false,hasNexoCuracion:false,hasNexoExpansion:false,curacionTimer:0,hasNexoTesoro:false,tesoroCounter:0,mineAnimTimer:0};
-        towersBuilt++; selectedSlotIndex=null; updateInventoryUI();
+        grid[row][col]={type:type,hp:type.hp,maxHp:type.hp,cooldownTimer:0,row:row,col:col,fuseTimer:(type.name==="Bomba"||type.name==="GigaBomba")?1:0,goldTimer:0,hasNexoDureza:false,hasNexoFuncionamiento:false,hasNexoProduccion:false,hasNexoInfanteria:false,hasNexoInquebrantable:false,hasNexoCuracion:false,hasNexoExpansion:false,curacionTimer:0,hasNexoTesoro:false,tesoroCounter:0,mineAnimTimer:0,hasNexoSobreescudo:false,hasNexoEscopeta:false,hasNexoBlindaje:false,hasNexoCargado:false,shotCount:0};
+        towersBuilt++; selectedSlotIndex=null;
+        if(isFreeTower){ var fi=freeTowerIdxThisLevel.indexOf(ti); freeTowerIdxThisLevel.splice(fi,1); }
+        updateInventoryUI();
+      }
+    }
+    else if(slot.kind==="comboTower"&&grid[row][col]===null){
+      var combo=freeComboTowersThisLevel[slot.comboIdx];
+      if(combo){
+        var ctype=TOWER_TYPES[combo.baseIdx];
+        var ct={type:ctype,hp:ctype.hp,maxHp:ctype.hp,cooldownTimer:0,row:row,col:col,fuseTimer:(ctype.name==="Bomba"||ctype.name==="GigaBomba")?1:0,goldTimer:0,hasNexoDureza:false,hasNexoFuncionamiento:false,hasNexoProduccion:false,hasNexoInfanteria:false,hasNexoInquebrantable:false,hasNexoCuracion:false,hasNexoExpansion:false,curacionTimer:0,hasNexoTesoro:false,tesoroCounter:0,mineAnimTimer:0,hasNexoSobreescudo:false,hasNexoEscopeta:false,hasNexoBlindaje:false,hasNexoCargado:false,shotCount:0};
+                        combo.nexos.forEach(function(nexoIdx){ applyNexoToNewTower(ct,nexoIdx); });
+        grid[row][col]=ct;
+        towersBuilt++; selectedSlotIndex=null;
+        freeComboTowersThisLevel.splice(slot.comboIdx,1);
+        buildActiveSlots();
+        updateInventoryUI();
       }
     }
   }}
 if(canvas){ canvas.addEventListener("touchstart",handleTouch,{passive:false}); canvas.addEventListener("mousedown",handleTouch); }
+
+function fireShotgunBurst(x,y,count,damage,pierce){
+  var spread=0.55;
+  for(var k=0;k<count;k++){
+    var t2=count>1?(k/(count-1)):0.5;
+    var ang=(t2-0.5)*spread;
+    starProjectiles.push({x:x,y:y,vx:Math.cos(ang)*340,vy:Math.sin(ang)*340,radius:3,damage:damage,pierce:pierce,hitEnemies:[],life:1.0,spawnGrace:0.12,isShotgun:true});
+  }
+}
 
 function explodeBomb(row,col){
   var sq=[{r:row,c:col},{r:row-1,c:col},{r:row+1,c:col},{r:row,c:col-1},{r:row,c:col+1}];
@@ -822,14 +1923,118 @@ function explodeBomb(row,col){
     var e=enemies[i], ec=Math.floor((e.x+e.size/2)/cellWidth);
     for(var s=0;s<sq.length;s++){
       if(sq[s].r===e.row&&sq[s].c===ec){
-        if(!e.invulnTimer||e.invulnTimer<=0){ e.hp-=30; if(e.hp<=0){ goldPieces+=45; enemies.splice(i,1); onEnemyDeath(e); } }
+        if(!e.invulnTimer||e.invulnTimer<=0){ e.hp-=applyShieldReduction(e,30); if(e.hp<=0){ tryReviveOrDie(enemies,i,e,45); } }
         break;
       }
     }
   }
 }
 
+function explodeGigaBomba(row,col){
+  var sq=[];
+  for(var dr=-1;dr<=1;dr++){ for(var dc=-1;dc<=1;dc++){ sq.push({r:row+dr,c:col+dc}); } }
+  visualExplosions.push({squares:sq,duration:0.3});
+  for(var i=enemies.length-1;i>=0;i--){
+    var e=enemies[i], ec=Math.floor((e.x+e.size/2)/cellWidth);
+    for(var s=0;s<sq.length;s++){
+      if(sq[s].r===e.row&&sq[s].c===ec){
+        if(!e.invulnTimer||e.invulnTimer<=0){ e.hp-=applyShieldReduction(e,80); if(e.hp<=0){ tryReviveOrDie(enemies,i,e,20); } }
+        break;
+      }
+    }
+  }
+}
+
+function explodeKamikaze(row,col,isExclusive){
+  var sq=isExclusive
+    ? (function(){ var s=[]; for(var dr=-1;dr<=1;dr++){ for(var dc=-1;dc<=1;dc++){ s.push({r:row+dr,c:col+dc}); } } return s; })()
+    : [{r:row,c:col},{r:row-1,c:col},{r:row+1,c:col},{r:row,c:col-1},{r:row,c:col+1}];
+  visualExplosions.push({squares:sq,duration:0.25});
+  for(var s=0;s<sq.length;s++){
+    var r=sq[s].r,c=sq[s].c; if(r<0||r>=ROWS||c<0||c>=COLS) continue;
+    var t=grid[r][c]; if(!t||t.type.name==="Bomba") continue;
+    var dmg=45; if(t.hasNexoBlindaje) dmg=dmg*0.45;
+    t.hp-=dmg;
+    if(t.hp<=0.5) grid[r][c]=null;
+  }
+}
+
+// Efectos de muerte de los encantamientos exclusivos (20% de probabilidad al spawnear).
+// Se llama para TODO enemigo que muere, sin importar la causa, sin importar el mundo.
+// Reduce un monto de daño en 30% si el enemigo tiene el escudo del encantamiento
+// exclusivo de Tanque activo (shieldTimer>0). Usar en TODO punto que reste HP a un enemigo.
+function applyShieldReduction(e,dmg){
+  return (e.shieldTimer>0) ? dmg*0.70 : dmg;
+}
+
+function showPhoenixBanner(){
+  var b=document.getElementById("phoenix-banner"); if(!b) return;
+  b.classList.add("active");
+  updatePhoenixBannerTime();
+}
+function hidePhoenixBanner(){
+  var b=document.getElementById("phoenix-banner"); if(!b) return;
+  b.classList.remove("active");
+}
+function updatePhoenixBannerTime(){
+  var t=document.getElementById("phoenix-banner-time"); if(!t) return;
+  t.innerText=Math.ceil(phoenixTimer);
+}
+
+// Punto único de decisión para toda muerte de enemigo en el juego: si la ventana de
+// Reencarnación Fénix está activa y este enemigo no ha revivido aún en ESA ventana,
+// revive con 50% de su vida máxima en el mismo lugar (sin soltar oro/diamante esa vez).
+// Si no corresponde revivir, hace la muerte normal: da el oro, saca del array, dispara
+// onEnemyDeath (que a su vez puede activar otro efecto de muerte exclusivo, como un
+// segundo Tanque-escudo o incluso extender Fénix de nuevo si es otro Arrastrador).
+// El propio Arrastrador nunca revive (won't have phoenixEligible true — ver abajo).
+function tryReviveOrDie(arr,idx,e,goldOnDeath){
+  var canRevive=phoenixTimer>0 && !e.phoenixRevived && e.type!=="arrastrador" && e.type!=="kamikaze";
+  if(canRevive){
+    e.hp=e.maxHp*0.5;
+    e.phoenixRevived=true;
+    return; // sigue vivo, no se toca el array ni se da oro
+  }
+  goldPieces+=goldOnDeath;
+  arr.splice(idx,1);
+  onEnemyDeath(e);
+}
+
+function applyExclusiveEnchantmentDeathEffect(e){
+  if(e.enchantExclusive==="relay"){
+    // Normal ⭐Relevo: +25% velocidad por 4s al enemigo vivo más cercano detrás de él.
+    var closestBehind=null,bestDist=Infinity;
+    for(var i=0;i<enemies.length;i++){
+      var o=enemies[i]; if(o===e) continue;
+      if(o.x<=e.x) continue; // "detrás" = más lejos de la base, mayor x
+      var dist=o.x-e.x; if(dist<bestDist){ bestDist=dist; closestBehind=o; }
+    }
+    if(closestBehind){ closestBehind.hasteTimer=4; closestBehind.speed=closestBehind.baseSpeed*1.25; }
+  }
+  else if(e.enchantExclusive==="shieldOnDeath"){
+    // Tanque ⭐Guardián: escudo -30% de daño a los 3 aliados vivos más cercanos, 5s.
+    var candidates=enemies.filter(function(o){ return o!==e; })
+      .map(function(o){ return {o:o,dist:Math.abs(o.x-e.x)+Math.abs(o.row-e.row)*cellHeight}; })
+      .sort(function(a,b){ return a.dist-b.dist; })
+      .slice(0,3);
+    candidates.forEach(function(c){ c.o.shieldTimer=5; });
+  }
+  else if(e.enchantExclusive==="phoenix"){
+    // Arrastrador ⭐Fénix: activa/extiende +30s la ventana de Reencarnación Fénix.
+    // El propio Arrastrador NUNCA revive — solo activa el efecto para los demás.
+    phoenixTimer+=30;
+    showPhoenixBanner();
+  }
+}
+
 function onEnemyDeath(e){
+  if(levelDiamondsDropped<levelDiamondsTarget&&Math.random()<0.08){
+    levelDiamondsDropped++;
+    var dey,deh,des;
+    if(e.isBig){ dey=e.row*cellHeight; deh=cellHeight*2; des=deh*0.9; } else { dey=e.row*cellHeight+(cellHeight-e.size)/2; deh=e.size; des=e.size; }
+    diamondPickups.push({x:e.x+des/2,y:dey+deh/2,timer:3,collected:false});
+  }
+  applyExclusiveEnchantmentDeathEffect(e);
   var w=currentWorld();
   if(!w.chaos) return;
   if(e.chaosFx&&e.chaosFx.split){
@@ -840,8 +2045,7 @@ function onEnemyDeath(e){
       enemies.push(ne);
     }
   }
-  if(e.chaosFx&&e.chaosFx.haste){
-    var closest=null,bestDist=Infinity;
+  if(e.chaosFx&&e.chaosFx.haste){  var closest=null,bestDist=Infinity;
     for(var i=0;i<enemies.length;i++){
       var o=enemies[i]; if(Math.abs(o.row-e.row)>1) continue;
       var dist=Math.abs(o.x-e.x); if(dist<bestDist){ bestDist=dist; closest=o; }
@@ -855,6 +2059,12 @@ function updateGame(dt){
   var w=currentWorld();
   var eff=w.towerEfficiency;
 
+  if(phoenixTimer>0){
+    phoenixTimer-=dt;
+    if(phoenixTimer<=0){ phoenixTimer=0; hidePhoenixBanner(); }
+    else updatePhoenixBannerTime();
+  }
+
   uiRefreshAcc+=dt;
   mineSoundTimer+=dt;
   updateMusicRamp();
@@ -862,20 +2072,23 @@ function updateGame(dt){
   if(currentWave<WAVES.length){
     waveTimer+=dt; var wave=WAVES[currentWave];
     if(waveTimer>=wave.duration){
-      currentWave++; waveTimer=0; normalSpawnTimer=0; tankSpawnTimer=0; archerSpawnTimer=0; kamikazeSpawnTimer=0;
+      currentWave++; waveTimer=0; normalSpawnTimer=0; tankSpawnTimer=0; archerSpawnTimer=0; kamikazeSpawnTimer=0; arrastradorSpawned=0;
       if(currentWave>=WAVES.length){ endGame(true); return; } updateWaveHUD();
+      if(currentWave===9&&!battalionTriggeredThisLevel){ battalionTriggeredThisLevel=true; openBattalionPanel(); }
     } else {
       if(wave.normalFreq>0){ normalSpawnTimer+=dt; if(normalSpawnTimer>=wave.normalFreq){ spawnEnemy("normal"); normalSpawnTimer=0; } }
       if(wave.tankFreq>0){ tankSpawnTimer+=dt; if(tankSpawnTimer>=wave.tankFreq){ spawnEnemy("tanque"); tankSpawnTimer=0; } }
       if(wave.archerFreq>0){ archerSpawnTimer+=dt; if(archerSpawnTimer>=wave.archerFreq){ spawnEnemy("arquero"); archerSpawnTimer=0; } }
-      var localLv=levelLocal(currentLevel);
-      if(currentWave===WAVES.length-1&&localLv>=7&&wave.archerFreq>0){
+      var waveNumber=currentWave+1;
+      if(waveNumber>=7&&wave.archerFreq>0){
         var kamikazeFreq=wave.archerFreq*1.20;
         kamikazeSpawnTimer+=dt; if(kamikazeSpawnTimer>=kamikazeFreq){ spawnEnemy("kamikaze"); kamikazeSpawnTimer=0; }
       }
-      if(currentWave===WAVES.length-1&&localLv>7){
-        var ma=localLv===10?2:1;
-        var nextThreshold=1*arrastradorSpawned+1;
+      if(waveNumber>=9){
+        var ma=Math.min(8,waveNumber-8);
+        var spawnWindow=Math.min(60,wave.duration-10);
+        var spacing=Math.max(8,spawnWindow/ma);
+        var nextThreshold=spacing*arrastradorSpawned+8;
         if(arrastradorSpawned<ma&&waveTimer>=nextThreshold){ spawnEnemy("arrastrador"); arrastradorSpawned++; }
       }
       if(uiRefreshAcc>=0.5){ updateInventoryUI(); updateWaveHUD(); uiRefreshAcc=0; }
@@ -886,7 +2099,8 @@ function updateGame(dt){
     for(var c=0;c<COLS;c++){
       var t=grid[r][c]; if(!t) continue;
       if(t.type.name==="Bomba"){ t.fuseTimer-=dt; if(t.fuseTimer<=0){ explodeBomb(r,c); grid[r][c]=null; continue; } }
-      if((t.type.name==="Muro"||t.type.name==="MuroInq")&&t.hasNexoCuracion){
+      if(t.type.name==="GigaBomba"){ t.fuseTimer-=dt; if(t.fuseTimer<=0){ explodeGigaBomba(r,c); grid[r][c]=null; continue; } }
+      if((t.type.name==="Muro"||t.type.name==="MuroInq"||t.type.name==="Asist"||t.type.name==="Mina")&&t.hasNexoCuracion){
         t.curacionTimer=(t.curacionTimer||0)+dt;
         if(t.curacionTimer>=15){ t.curacionTimer-=15; if(t.hp<t.maxHp) t.hp=Math.min(t.maxHp,t.hp+45); }
       }
@@ -894,7 +2108,8 @@ function updateGame(dt){
         var tc=c+1;
         if(tc<COLS){ var ft=grid[r][tc]; if(ft&&(ft.type.name==="Muro"||ft.type.name==="MuroInq")){ var h=(t.hasNexoFuncionamiento?10:5)*eff; t.healAcc=(t.healAcc||0)+dt; if(t.healAcc>=1){ t.healAcc-=1; if(ft.hp<ft.maxHp) ft.hp=Math.min(ft.maxHp,ft.hp+h); } } }
       }
-      if(t.type.name==="Mina"){        var ac=c-1, ha=false, hnf=false;
+      if(t.type.name==="Mina"){
+        var ac=c-1, ha=false, hnf=false;
         if(ac>=0){ var bt=grid[r][ac]; if(bt&&bt.type.name==="Asist"){ ha=true; if(bt.hasNexoFuncionamiento) hnf=true; } }
         var cd=3; if(ha) cd=2.5; if(hnf) cd=cd*0.7; if(t.hasNexoProduccion) cd=cd*0.8;
         cd=cd/eff;
@@ -926,9 +2141,27 @@ function updateGame(dt){
           cd2=cd2/eff;
           t.cooldownTimer+=dt;
           if(t.cooldownTimer>=cd2){
-            if(t.type.name==="Bala"){ projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:360,radius:4,damage:t.hasNexoInfanteria?8:4,pierce:3,hits:0}); }
-            else if(t.type.name==="Tesla"){ projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:320,radius:5,damage:3,pierce:0,hits:0,isTesla:true,expanded:t.hasNexoExpansion}); playTeslaShootSound(); }
-            else{ projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:300,radius:5,damage:t.hasNexoInfanteria?2:1,pierce:0,hits:0}); }
+            if(t.type.name==="Bala"){
+              projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:360,radius:4,damage:t.hasNexoInfanteria?8:4,pierce:3,hits:0});
+              if(t.hasNexoEscopeta){
+                t.shotCount++;
+                if(t.shotCount>=4){
+                  t.shotCount=0;
+                  fireShotgunBurst(c*cellWidth+cellWidth/2,r*cellHeight+cellHeight/2,3,4,3);
+                }
+              }
+            }
+            else if(t.type.name==="Tesla"){ projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:320,radius:5,damage:3,pierce:0,hits:0,isTesla:true,expanded:t.hasNexoExpansion,cargado:t.hasNexoCargado}); playTeslaShootSound(); }
+            else{
+              projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:300,radius:5,damage:t.hasNexoInfanteria?2:1,pierce:0,hits:0});
+              if(t.hasNexoEscopeta){
+                t.shotCount++;
+                if(t.shotCount>=8){
+                  t.shotCount=0;
+                  fireShotgunBurst(c*cellWidth+cellWidth/2,r*cellHeight+cellHeight/2,10,1,0);
+                }
+              }
+            }
             t.cooldownTimer=0;
           }
         } else t.cooldownTimer=0;
@@ -944,6 +2177,16 @@ function updateGame(dt){
 
   for(var i=visualExplosions.length-1;i>=0;i--){ visualExplosions[i].duration-=dt; if(visualExplosions[i].duration<=0) visualExplosions.splice(i,1); }
 
+  for(var i=diamondPickups.length-1;i>=0;i--){
+    diamondPickups[i].timer-=dt;
+    if(diamondPickups[i].timer<=0){
+      diamondPickups.splice(i,1);
+      levelDiamondsGained++; totalDiamonds++;
+      saveDiamonds();
+      refreshDiamondShopCounters();
+    }
+  }
+
   for(var i=projectiles.length-1;i>=0;i--){
     var p=projectiles[i]; p.x+=p.speed*dt; if(p.x>boardWidth){ projectiles.splice(i,1); continue; }
     var rem=false;
@@ -951,19 +2194,24 @@ function updateGame(dt){
       var e=enemies[j];
       if(p.hitEnemies&&p.hitEnemies.indexOf(e)!==-1) continue;
       if((p.row===e.row||(e.isBig&&p.row===e.row+1))&&p.x>=e.x&&p.x<=e.x+e.size){
-        if(!(e.invulnTimer>0)){
-          e.hp-=p.damage;
+        if(!(e.invulnTimer>0)){          e.hp-=applyShieldReduction(e,p.damage);
           playImpactSound();
+          if(p.cargado){ e.cargadoHits=(e.cargadoHits||0)+1; if(e.cargadoHits>=6){ e.cargadoArmed=true; e.cargadoTimer=9; } }
           if(e.hp<=0){
             var rw=0; if(e.type==="normal") rw=randInt(1,4); else if(e.type==="tanque") rw=randInt(3,9); else if(e.type==="arquero") rw=randInt(5,7); else if(e.type==="arrastrador") rw=50; else if(e.type==="kamikaze") rw=randInt(1,3);
-            goldPieces+=rw; enemies.splice(j,1); onEnemyDeath(e);
+            var willRevive=phoenixTimer>0 && !e.phoenixRevived && e.type!=="arrastrador" && e.type!=="kamikaze";
+            if(!willRevive && e.cargadoArmed&&e.cargadoTimer>0){
+              var points4=10, childSpeed4=260;
+              for(var sp4=0;sp4<points4;sp4++){ var ang4=(Math.PI*2*sp4)/points4; starProjectiles.push({x:e.x+e.size/2,y:e.row*cellHeight+cellHeight/2,vx:Math.cos(ang4)*childSpeed4,vy:Math.sin(ang4)*childSpeed4,radius:3,damage:2,life:1.2,spawnGrace:0.12,hitEnemies:[]}); }
+            }
+            tryReviveOrDie(enemies,j,e,rw);
           }
         }
         if(p.isTesla){
           var points=p.expanded?10:5, childSpeed=260;
           for(var sp=0;sp<points;sp++){
             var ang=(Math.PI*2*sp)/points;
-            starProjectiles.push({x:p.x,y:p.y,vx:Math.cos(ang)*childSpeed,vy:Math.sin(ang)*childSpeed,radius:3,damage:2,life:1.2,spawnGrace:0.12});
+            starProjectiles.push({x:p.x,y:p.y,vx:Math.cos(ang)*childSpeed,vy:Math.sin(ang)*childSpeed,radius:3,damage:2,life:1.2,spawnGrace:0.12,hitEnemies:[]});
           }
         }
         if(p.pierce>0){
@@ -983,24 +2231,36 @@ function updateGame(dt){
     if(sp2.spawnGrace>0) sp2.spawnGrace-=dt;
     if(sp2.life<=0||sp2.x<0||sp2.x>boardWidth||sp2.y<0||sp2.y>ROWS*cellHeight){ starProjectiles.splice(i,1); continue; }
     if(sp2.spawnGrace>0) continue;
-    var hitSomething=false;
+    var rem2=false;
     for(var j=enemies.length-1;j>=0;j--){
       var e2=enemies[j];
+      if(sp2.hitEnemies&&sp2.hitEnemies.indexOf(e2)!==-1) continue;
       var eCenterY=e2.row*cellHeight+cellHeight/2;
       var eLeft=e2.x, eRight=e2.x+e2.size, eTop=eCenterY-e2.size/2, eBottom=eCenterY+e2.size/2;
       if(sp2.x>=eLeft&&sp2.x<=eRight&&sp2.y>=eTop&&sp2.y<=eBottom){
         if(!(e2.invulnTimer>0)){
-          e2.hp-=sp2.damage;
+          e2.hp-=applyShieldReduction(e2,sp2.damage);
           playImpactSound();
+          if(sp2.isCargado){ e2.cargadoHits=(e2.cargadoHits||0)+1; if(e2.cargadoHits>=6){ e2.cargadoArmed=true; e2.cargadoTimer=9; } }
           if(e2.hp<=0){
             var rw2=0; if(e2.type==="normal") rw2=randInt(1,4); else if(e2.type==="tanque") rw2=randInt(3,9); else if(e2.type==="arquero") rw2=randInt(5,7); else if(e2.type==="arrastrador") rw2=50; else if(e2.type==="kamikaze") rw2=randInt(1,3);
-            goldPieces+=rw2; enemies.splice(j,1); onEnemyDeath(e2);
+            var willRevive2=phoenixTimer>0 && !e2.phoenixRevived && e2.type!=="arrastrador" && e2.type!=="kamikaze";
+            if(!willRevive2 && e2.cargadoArmed&&e2.cargadoTimer>0){
+              var points3=10, childSpeed3=260;
+              for(var sp3=0;sp3<points3;sp3++){ var ang3=(Math.PI*2*sp3)/points3; starProjectiles.push({x:e2.x+e2.size/2,y:eCenterY,vx:Math.cos(ang3)*childSpeed3,vy:Math.sin(ang3)*childSpeed3,radius:3,damage:2,life:1.2,spawnGrace:0.12,hitEnemies:[]}); }
+            }
+            tryReviveOrDie(enemies,j,e2,rw2);
           }
         }
-        hitSomething=true; break;
+        if(sp2.pierce>0){
+          if(!sp2.hitEnemies) sp2.hitEnemies=[];
+          sp2.hitEnemies.push(e2);
+          sp2.hits=(sp2.hits||0)+1;
+          if(sp2.hits>=sp2.pierce){ rem2=true; break; }
+        } else { rem2=true; break; }
       }
     }
-    if(hitSomething) starProjectiles.splice(i,1);
+    if(rem2) starProjectiles.splice(i,1);
   }
 
   for(var i=enemies.length-1;i>=0;i--){
@@ -1009,24 +2269,38 @@ function updateGame(dt){
     if(e.chaosFx&&e.chaosFx.invuln&&!e.invulnUsed&&e.hp<=e.maxHp*0.2){ e.invulnTimer=4; e.invulnUsed=true; }
     if(e.invulnTimer>0){ e.invulnTimer-=dt; if(e.invulnTimer<0) e.invulnTimer=0; }
     if(e.hasteTimer>0){ e.hasteTimer-=dt; if(e.hasteTimer<=0){ e.hasteTimer=0; e.speed=e.baseSpeed; } }
+    if(e.shieldTimer>0){ e.shieldTimer-=dt; if(e.shieldTimer<0) e.shieldTimer=0; }
+    if(e.cargadoArmed&&e.cargadoTimer>0){ e.cargadoTimer-=dt; if(e.cargadoTimer<=0){ e.cargadoTimer=0; e.cargadoArmed=false; } }
 
     if(e.type==="arquero"){
       e.arrowTimer+=dt;
-      if(e.arrowTimer>=3){
+      var arrowThreshold=3/(e.arrowCooldownMult||1);
+      if(e.arrowTimer>=arrowThreshold){
         e.arrowTimer=0;
         var dmg=10*(e.chaosFx&&e.chaosFx.dmg?1.2:1);
         enemyArrows.push({x:e.x,row:e.row,speed:240,size:cellWidth*0.4,damage:dmg});
       }
     }
     var cc=Math.floor((e.x+e.size/2)/cellWidth), oa=false;
-    if(e.isBig){
+    if(e.type==="kamikaze"){
+      var kt=(cc>=0&&cc<COLS)?grid[e.row][cc]:null;
+      if(kt&&kt.type.name!=="Bomba"){
+        oa=true; e.isEating=true; e.fuseLit=true;
+        var isDetonador=(e.enchantExclusive==="instantBigBlast");
+        if(isDetonador){ explodeKamikaze(e.row,cc,true); e.hp=0; }
+        else {
+          e.fuseTimer+=dt;
+          if(e.fuseTimer>=1){ explodeKamikaze(e.row,cc,false); e.hp=0; }
+        }
+      } else { e.fuseTimer=0; e.fuseLit=false; e.isEating=false; }
+    } else if(e.isBig){
       for(var rr=e.row;rr<=e.row+1&&rr<ROWS;rr++){ var tw=grid[rr][cc]; if(tw&&tw.type.name!=="Bomba"){ oa=true; e.isEating=true; applyBiteDamage(tw,e,dt); if(tw.hp<=0.5) grid[rr][cc]=null; } }
     } else {
       if(cc>=0&&cc<COLS){ var tw=grid[e.row][cc]; if(tw&&tw.type.name!=="Bomba"){ oa=true; e.isEating=true; applyBiteDamage(tw,e,dt); if(tw.hp<=0.5){ grid[e.row][cc]=null; e.isEating=false; } } }
     }
     if(e.hp<=0){
       var rw=0; if(e.type==="normal") rw=randInt(1,4); else if(e.type==="tanque") rw=randInt(3,9); else if(e.type==="arquero") rw=randInt(5,7); else if(e.type==="arrastrador") rw=50; else if(e.type==="kamikaze") rw=randInt(1,3);
-      goldPieces+=rw; enemies.splice(i,1); onEnemyDeath(e); continue;
+      tryReviveOrDie(enemies,i,e,rw); continue;
     }
     if(!oa){ e.isEating=false; e.x-=e.speed*dt; }
     if(e.x+e.size<0){ endGame(false); return; }
@@ -1039,13 +2313,21 @@ function applyBiteDamage(tw,e,dt){
     var received=tw.hasNexoInquebrantable?(0.25*dt*60):(1.0*dt*60);
     var reflected=tw.hasNexoInquebrantable?(0.5*dt*60):(1.0*dt*60);
     tw.hp-=received;
-    e.hp-=reflected;
+    e.hp-=applyShieldReduction(e,reflected);
   } else if(tw.type.name==="Muro"&&tw.hasNexoInquebrantable){
     tw.hp-=(0.25*dt*60);
   } else {
     tw.hp-=baseBite;
-  }}
+  }
+}
 
+function enemyEmoji(type){
+  if(type==="tanque") return "🦾";
+  if(type==="arquero") return "🏹";
+  if(type==="arrastrador") return "🐍";
+  if(type==="kamikaze") return "💥";
+  return "😈";
+}
 function drawGame(){
   if(!gameStarted) return;
   var w=currentWorld();
@@ -1062,7 +2344,7 @@ function drawGame(){
       ctx.strokeStyle="rgba(0,0,0,0.35)"; ctx.lineWidth=1;
       ctx.strokeRect(c*cellWidth+0.5,r*cellHeight+0.5,cellWidth-1,cellHeight-1);
     }
-  }
+      }
   ctx.strokeStyle=w.frame||"#1a0f08"; ctx.lineWidth=4;
   ctx.strokeRect(2,2,COLS*cellWidth-4,ROWS*cellHeight-4);
 
@@ -1071,8 +2353,8 @@ function drawGame(){
       var t=grid[r][c];
       if(t){
         var p=6, x=c*cellWidth+p, y=r*cellHeight+p, ww2=cellWidth-p*2, hh=cellHeight-p*2;
-        var nc=0; if(t.hasNexoDureza)nc++; if(t.hasNexoFuncionamiento)nc++; if(t.hasNexoProduccion)nc++; if(t.hasNexoInfanteria)nc++; if(t.hasNexoInquebrantable)nc++; if(t.hasNexoCuracion)nc++; if(t.hasNexoExpansion)nc++; if(t.hasNexoTesoro)nc++;
-        var tc="transparent"; if(nc>=3) tc="rgba(156,39,176,0.45)"; else if(nc===2) tc="rgba(33,150,243,0.4)"; else if(nc===1) tc="rgba(76,175,80,0.4)";
+        var nc=0; if(t.hasNexoDureza)nc++; if(t.hasNexoFuncionamiento)nc++; if(t.hasNexoProduccion)nc++; if(t.hasNexoInfanteria)nc++; if(t.hasNexoInquebrantable)nc++; if(t.hasNexoCuracion)nc++; if(t.hasNexoExpansion)nc++; if(t.hasNexoTesoro)nc++; if(t.hasNexoSobreescudo)nc++; if(t.hasNexoEscopeta)nc++; if(t.hasNexoBlindaje)nc++; if(t.hasNexoCargado)nc++;
+        var tc="transparent"; if(nc>=4) tc="rgba(220,20,20,0.5)"; else if(nc===3) tc="rgba(156,39,176,0.45)"; else if(nc===2) tc="rgba(33,150,243,0.4)"; else if(nc===1) tc="rgba(76,175,80,0.4)";
         ctx.fillStyle=tc; ctx.fillRect(x,y,ww2,hh);
         if(t.hp<t.maxHp&&t.type.name!=="Bomba"){
           ctx.fillStyle="rgba(0,0,0,0.5)"; ctx.fillRect(x,y+hh-6,ww2,4);
@@ -1102,6 +2384,20 @@ function drawGame(){
   for(var i=0;i<projectiles.length;i++){ var pr=projectiles[i]; ctx.fillStyle=pr.isTesla?"#00e5ff":(pr.pierce>0?"#ff4400":(pr.damage>=2?"#ff8800":"#ffff00")); ctx.beginPath(); ctx.arc(pr.x,pr.y,pr.radius,0,Math.PI*2); ctx.fill(); }
   for(var i=0;i<starProjectiles.length;i++){ var sp3=starProjectiles[i]; ctx.fillStyle="#66f2ff"; ctx.beginPath(); ctx.arc(sp3.x,sp3.y,sp3.radius,0,Math.PI*2); ctx.fill(); }
 
+  for(var i=0;i<diamondPickups.length;i++){
+    var dp=diamondPickups[i];
+    var blinking = dp.timer<0.6 && Math.floor(dp.timer*8)%2===0;
+    if(blinking) continue;
+    var pulse=1+Math.sin(dp.timer*10)*0.08;
+    var dSize=Math.min(cellWidth,cellHeight)*0.42*pulse;
+    ctx.save();
+    ctx.shadowColor="#7ee8ff"; ctx.shadowBlur=14;
+    ctx.font="bold "+Math.floor(dSize)+"px Arial";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText("💎",dp.x,dp.y);
+    ctx.restore();
+  }
+
   for(var i=0;i<enemies.length;i++){
     var e=enemies[i], ey,eh,es;
     if(e.isBig){ ey=e.row*cellHeight; eh=cellHeight*2; es=eh*0.9; } else { ey=e.row*cellHeight+(cellHeight-e.size)/2; eh=e.size; es=e.size; }
@@ -1115,28 +2411,41 @@ function drawGame(){
       var fxCount=0; for(var k in e.chaosFx) if(e.chaosFx[k]) fxCount++;
       if(fxCount>0){ ctx.strokeStyle="#00ffe1"; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(e.x+es/2,ey+eh/2,es/2+3,eh/2+3,0,0,Math.PI*2); ctx.stroke(); }
     }
+    if(e.enchantLevel==="exclusive"){
+      ctx.strokeStyle="#ffd700"; ctx.lineWidth=3; ctx.beginPath(); ctx.ellipse(e.x+es/2,ey+eh/2,es/2+5,eh/2+5,0,0,Math.PI*2); ctx.stroke();
+    } else if(e.enchantLevel==="enchanted"){
+      ctx.strokeStyle="#6ee7d8"; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(e.x+es/2,ey+eh/2,es/2+3,eh/2+3,0,0,Math.PI*2); ctx.stroke();
+    }
 
-    ctx.fillStyle="#ffffff";
-    ctx.font="bold "+Math.floor(es*0.35)+"px Arial";
+    ctx.font=Math.floor(es*0.55)+"px Arial";
     ctx.textAlign="center"; ctx.textBaseline="middle";
-    ctx.fillText(Math.floor(e.hp)+" HP",e.x+es/2,ey-10);
+    ctx.fillText(enemyEmoji(e.type),e.x+es/2,ey+eh/2);
+
+    ctx.save();
+    ctx.fillStyle="#ffffff";
+    ctx.font="bold "+Math.floor(es*0.32)+"px Arial";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.shadowColor="rgba(0,0,0,0.85)"; ctx.shadowBlur=3;
+    ctx.fillText(Math.floor(e.hp)+" HP",e.x+es/2,ey+eh-Math.max(9,eh*0.12));
+    ctx.restore();
   }
 
   if(gamePaused){ ctx.fillStyle="rgba(0,0,0,0.5)"; ctx.fillRect(0,0,boardWidth,boardHeight); }
 }
 
 function updateInventoryUI(){
-  var sn=["Ataque","Asistente","Mina","Muro","Bomba","Bala","M.Inquebrantable","Tesla"];
-  var nexoNames=["N.Dureza","N.Func","N.Prod","N.Infant","N.Inquebrantable","N.Curación","N.Expansión"];
-  var nexoIcons=["🔩","⚙️","💰","🗡️","⚒️","💚","✴️","🪙"];
+  var sn=["Ataque","Asistente","Mina","Muro","Bomba","Bala","M.Inquebrantable","Tesla","GigaBomba"];
+  var nexoNames=["N.Dureza","N.Func","N.Prod","N.Infant","N.Inquebrantable","N.Curación","N.Expansión","N.Tesoro","N.Sobreescudo","N.Escopeta","N.Blindaje","N.Cargado"];
+  var nexoIcons=["🔩","⚙️","💰","🗡️","⚒️","💚","✴️","🪙","🔰","🎯","🧯","🔋"];
   var scroll=document.getElementById("slots-scroll"); scroll.innerHTML="";
   activeSlots.forEach(function(slot,pos){
     var d=document.createElement("div");
     if(slot.kind==="tower"){
       var i=slot.idx, cost=getTowerCost(i), priceText="$"+cost;
+      if(freeTowerIdxThisLevel.indexOf(i)!==-1) priceText="GRATIS 🎁";
       if(i===2&&mineIsMaxed()) priceText="MAX";
-      if(i===2&&!mineIsMaxed()&&minesBought===0) priceText="GRATIS";
-      if(i===4) priceText="$"+cost+" ("+bombsBought+"/"+bombLimit+")";
+      if(i===2&&!mineIsMaxed()&&minesBought===0&&freeTowerIdxThisLevel.indexOf(i)===-1) priceText="GRATIS";
+      if(i===4) priceText=(freeTowerIdxThisLevel.indexOf(i)!==-1?"GRATIS 🎁":"$"+cost)+" ("+bombsBought+"/"+bombLimit+")";
       if(i===5&&bulletIsMaxed()) priceText="MAX";
       d.className="slot"+(pos===selectedSlotIndex?" selected":"")+(!canAfford(i)?" cant-afford":"");
       d.innerHTML='<div class="icon">'+TOWER_TYPES[i].icon+'</div><div class="name">'+sn[i]+'</div><div class="price">'+priceText+'</div>';
@@ -1144,6 +2453,13 @@ function updateInventoryUI(){
       var ch=getNexoCharges(slot.idx);
       d.className="slot"+(pos===selectedSlotIndex?" selected":"")+(ch===0?" locked":"");
       d.innerHTML='<div class="icon">'+nexoIcons[slot.idx]+'</div><div class="name">'+nexoNames[slot.idx]+'</div><div class="price">x'+ch+'</div>';
+    } else if(slot.kind==="comboTower"){
+      var combo=freeComboTowersThisLevel[slot.comboIdx];
+      var locked=!combo;
+      d.className="slot combo-tower"+(pos===selectedSlotIndex?" selected":"")+(locked?" locked":"");
+      var comboName=combo?INV_TOWERS[combo.baseIdx].n:"";
+      var comboIcon=combo?INV_TOWERS[combo.baseIdx].i:"🎖️";
+      d.innerHTML='<div class="icon">'+comboIcon+'</div><div class="name">🎖️'+comboName+'</div><div class="price">GRATIS 🎁</div>';
     } else {
       d.className="slot demolition"+(pos===selectedSlotIndex?" selected":"");
       d.innerHTML='<div class="icon">🔨</div><div class="name">Quitar</div><div class="price">$0</div>';
@@ -1151,7 +2467,8 @@ function updateInventoryUI(){
     d.onclick=(function(p){ return function(){ selectSlot(p); }; })(pos);
     scroll.appendChild(d);
   });
-  var gv=document.getElementById("gold-value"); if(gv) gv.innerText=Math.floor(goldPieces)+" ✨";
+  var sgv=document.getElementById("shop-gold-value"); if(sgv) sgv.innerText=Math.floor(goldPieces)+" ✨";
+  var smgv=document.getElementById("shop-modal-gold-value"); if(smgv) smgv.innerText=Math.floor(goldPieces)+" ✨";
   updateShopButtons();
 }
 function toggleDrawer(){
@@ -1166,33 +2483,45 @@ function openShop(){
   document.getElementById("shop-overlay").classList.add("active");
   var w=currentWorld();
   document.getElementById("world-modifier-note").innerText=w.note;
+  var sgv=document.getElementById("shop-gold-value"); if(sgv) sgv.innerText=Math.floor(goldPieces)+" ✨";
+  var smgv=document.getElementById("shop-modal-gold-value"); if(smgv) smgv.innerText=Math.floor(goldPieces)+" ✨";
   updateShopButtons();
 }
 function closeShop(){ document.getElementById("shop-overlay").classList.remove("active"); }
 function closeShopOnOverlay(e){ if(e.target.id==="shop-overlay") closeShop(); }
 
 function updateShopButtons(){
-  var btns=[{id:"buy-nexo-dureza",cost:50,fn:buyNexoDureza,idx:0},{id:"buy-nexo-funcionamiento",cost:70,fn:buyNexoFuncionamiento,idx:1},{id:"buy-nexo-produccion",cost:60,fn:buyNexoProduccion,idx:2},{id:"buy-nexo-infanteria",cost:90,fn:buyNexoInfanteria,idx:3},{id:"buy-nexo-inquebrantable",cost:85,fn:buyNexoInquebrantable,idx:4},{id:"buy-nexo-curacion",cost:75,fn:buyNexoCuracion,idx:5},{id:"buy-nexo-expansion",cost:110,fn:buyNexoExpansion,idx:6},{id:"buy-nexo-tesoro",cost:55,fn:buyNexoTesoro,idx:7}];
+  var btns=[{id:"buy-nexo-dureza",cost:50,fn:buyNexoDureza,idx:0},{id:"buy-nexo-funcionamiento",cost:70,fn:buyNexoFuncionamiento,idx:1},{id:"buy-nexo-produccion",cost:60,fn:buyNexoProduccion,idx:2},{id:"buy-nexo-infanteria",cost:90,fn:buyNexoInfanteria,idx:3},{id:"buy-nexo-inquebrantable",cost:85,fn:buyNexoInquebrantable,idx:4},{id:"buy-nexo-curacion",cost:75,fn:buyNexoCuracion,idx:5},{id:"buy-nexo-expansion",cost:110,fn:buyNexoExpansion,idx:6},{id:"buy-nexo-tesoro",cost:55,fn:buyNexoTesoro,idx:7},{id:"buy-nexo-sobreescudo",cost:45,fn:buyNexoSobreescudo,idx:8},{id:"buy-nexo-escopeta",cost:150,fn:buyNexoEscopeta,idx:9},{id:"buy-nexo-blindaje",cost:100,fn:buyNexoBlindaje,idx:10},{id:"buy-nexo-cargado",cost:180,fn:buyNexoCargado,idx:11}];
   btns.forEach(function(b){
-    var el=document.getElementById(b.id);
-    if(el){
+    var el=document.getElementById(b.id); 
+        if(el){
+      var realCost=applyShopDiscount(b.cost);
       var card=el.closest(".upgrade-card");
       var inLoadout=selectedUpgrades.indexOf(b.idx)!==-1;
-      if(card) card.style.display=inLoadout?"flex":"none";
-      el.classList.toggle("disabled",goldPieces<b.cost);
-      el.onclick=goldPieces>=b.cost?b.fn:null;
+      if(card){
+        card.style.display=inLoadout?"flex":"none";
+        var costEl=card.querySelector(".upgrade-cost");
+        if(costEl) costEl.innerText=pendingShopDiscount>0?("Costo: "+realCost+" ✨ (antes "+b.cost+")"):("Costo: "+b.cost+" ✨");
+      }
+      el.classList.toggle("disabled",goldPieces<realCost);
+      el.onclick=goldPieces>=realCost?b.fn:null;
     }
   });
 }
 
 function animBtn(b){ var o=b.innerText; b.innerText="✓"; b.classList.add("success"); setTimeout(function(){ b.innerText=o; b.classList.remove("success"); },800); }
-function buyNexoDureza(){ if(goldPieces>=50){ goldPieces-=50; nexoDurezaCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-dureza")); } }
-function buyNexoFuncionamiento(){ if(goldPieces>=70){ goldPieces-=70; nexoFuncionamientoCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-funcionamiento")); } }
-function buyNexoProduccion(){ if(goldPieces>=60){ goldPieces-=60; nexoProduccionCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-produccion")); } }
-function buyNexoInfanteria(){ if(goldPieces>=90){ goldPieces-=90; nexoInfanteriaCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-infanteria")); } }
-function buyNexoInquebrantable(){ if(goldPieces>=85){ goldPieces-=85; nexoInquebrantableCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-inquebrantable")); } }
-function buyNexoCuracion(){ if(goldPieces>=75){ goldPieces-=75; nexoCuracionCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-curacion")); } }
-function buyNexoExpansion(){ if(goldPieces>=110){ goldPieces-=110; nexoExpansionCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-expansion")); } }function buyNexoTesoro(){ if(goldPieces>=55){ goldPieces-=55; nexoTesoroCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-tesoro")); } }
+function buyNexoDureza(){ var c=applyShopDiscount(50); if(goldPieces>=c){ goldPieces-=c; nexoDurezaCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-dureza")); } }
+function buyNexoFuncionamiento(){ var c=applyShopDiscount(70); if(goldPieces>=c){ goldPieces-=c; nexoFuncionamientoCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-funcionamiento")); } }
+function buyNexoProduccion(){ var c=applyShopDiscount(60); if(goldPieces>=c){ goldPieces-=c; nexoProduccionCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-produccion")); } }
+function buyNexoInfanteria(){ var c=applyShopDiscount(90); if(goldPieces>=c){ goldPieces-=c; nexoInfanteriaCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-infanteria")); } }
+function buyNexoInquebrantable(){ var c=applyShopDiscount(85); if(goldPieces>=c){ goldPieces-=c; nexoInquebrantableCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-inquebrantable")); } }
+function buyNexoCuracion(){ var c=applyShopDiscount(75); if(goldPieces>=c){ goldPieces-=c; nexoCuracionCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-curacion")); } }
+function buyNexoExpansion(){ var c=applyShopDiscount(110); if(goldPieces>=c){ goldPieces-=c; nexoExpansionCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-expansion")); } }
+function buyNexoTesoro(){ var c=applyShopDiscount(55); if(goldPieces>=c){ goldPieces-=c; nexoTesoroCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-tesoro")); } }
+function buyNexoSobreescudo(){ var c=applyShopDiscount(45); if(goldPieces>=c){ goldPieces-=c; nexoSobreescudoCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-sobreescudo")); } }
+function buyNexoEscopeta(){ var c=applyShopDiscount(150); if(goldPieces>=c){ goldPieces-=c; nexoEscopetaCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-escopeta")); } }
+function buyNexoBlindaje(){ var c=applyShopDiscount(100); if(goldPieces>=c){ goldPieces-=c; nexoBlindajeCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-blindaje")); } }
+function buyNexoCargado(){ var c=applyShopDiscount(180); if(goldPieces>=c){ goldPieces-=c; nexoCargadoCharges++; updateInventoryUI(); animBtn(document.getElementById("buy-nexo-cargado")); } }
 
 function toggleFullscreen(){ try{ if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(function(){}); else document.exitFullscreen(); }catch(e){} }
 function rotateScreen(){ try{ if(screen.orientation&&screen.orientation.lock){ if(screen.orientation.type.includes("portrait")) screen.orientation.lock("landscape").catch(function(){}); else screen.orientation.unlock(); } }catch(e){} }
@@ -1255,17 +2584,33 @@ if(currentPlatform){ applyPlatform(); } else {
 function endGame(victory){
   if(gameEnded) return; gameEnded=true; gameStarted=false;
   stopMusic();
+  if(diamondPickups.length>0){
+    levelDiamondsGained+=diamondPickups.length; totalDiamonds+=diamondPickups.length;
+    diamondPickups=[]; saveDiamonds(); refreshDiamondShopCounters();
+  }
   if(victory){
-    if(currentLevel===maxUnlockedLevel&&maxUnlockedLevel<TOTAL_LEVELS){ maxUnlockedLevel++; saveProgress(); }
+    var justUnlockedNewLevel=false;
+    if(currentLevel===maxUnlockedLevel&&maxUnlockedLevel<TOTAL_LEVELS){
+      maxUnlockedLevel++; saveProgress(); justUnlockedNewLevel=true;
+      applyProgressionRewardsForLevel(maxUnlockedLevel);
+    }
+    totalGold+=Math.floor(goldPieces); saveGold();
     document.getElementById("victory-level").innerText=levelLocal(currentLevel)+" ("+currentWorld().name+")";
     document.getElementById("victory-gold").innerText=Math.floor(goldPieces);
+    document.getElementById("victory-diamonds").innerText=levelDiamondsGained;
     document.getElementById("victory-towers").innerText=towersBuilt;
     document.getElementById("victory-overlay").classList.add("active");
   } else {
     document.getElementById("defeat-level").innerText=levelLocal(currentLevel)+" ("+currentWorld().name+")";
     document.getElementById("defeat-wave").innerText=currentWave+1;
+    document.getElementById("defeat-diamonds").innerText=levelDiamondsGained;
     document.getElementById("defeat-overlay").classList.add("active");
   }
+  pendingShopDiscount=0; savePendingRewards();
+  for(var si=0;si<extraStorage.length;si++){
+    if(extraStorageActivated[si]){ extraStorage[si]=null; extraStorageActivated[si]=false; }
+  }
+  saveExtraStorage(); saveExtraActivated();
 }
 
 var gpPrevButtons=[];
@@ -1299,7 +2644,7 @@ function pollGamepad(){
       var cur=selectedSlotIndex===null?0:selectedSlotIndex;
       if(gamepadJustPressed(gp,6)){ cur=(cur-1+activeSlots.length)%activeSlots.length; selectSlot(cur); }
       if(gamepadJustPressed(gp,7)){ cur=(cur+1)%activeSlots.length; selectSlot(cur); }
-    }
+          }
   }
   gpPrevButtons=gp.buttons.map(function(b){ return b&&b.pressed; });
 }
@@ -1310,12 +2655,14 @@ function gameLoop(ts){
   lastTs=ts;
   dt=Math.min(dt,0.1);
   try{ pollGamepad(); }catch(e){ gamepadApiBlocked=true; }
+  if(battalionActive) battalionUpdateTick(dt);
   if(!gamePaused&&gameStarted&&!gameEnded) updateGame(dt);
   drawGame();
   requestAnimationFrame(gameLoop);
 }
 
 showMainMenu();
+maybeShowWelcomeTutorial();
 requestAnimationFrame(gameLoop);
 </script>
 </body>
