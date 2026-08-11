@@ -2011,12 +2011,12 @@ function handleTouch(e){
   }}
 if(canvas){ canvas.addEventListener("touchstart",handleTouch,{passive:false}); canvas.addEventListener("mousedown",handleTouch); }
 
-function fireShotgunBurst(x,y,count,damage,pierce){
+function fireShotgunBurst(x,y,count,damage,pierce,hasInfanteria){
   var spread=0.55;
   for(var k=0;k<count;k++){
     var t2=count>1?(k/(count-1)):0.5;
     var ang=(t2-0.5)*spread;
-    starProjectiles.push({x:x,y:y,vx:Math.cos(ang)*340,vy:Math.sin(ang)*340,radius:3,damage:damage,pierce:pierce,hitEnemies:[],life:1.0,spawnGrace:0.12,isShotgun:true});
+    starProjectiles.push({x:x,y:y,vx:Math.cos(ang)*340,vy:Math.sin(ang)*340,radius:3,damage:damage,pierce:pierce,hitEnemies:[],life:1.0,spawnGrace:0.12,isShotgun:true,hasInfanteria:hasInfanteria});
   }
 }
 
@@ -2266,23 +2266,23 @@ function updateGame(dt){
           t.cooldownTimer+=dt;
           if(t.cooldownTimer>=cd2){
             if(t.type.name==="Bala"){
-              projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:360,radius:4,damage:t.hasNexoInfanteria?8:4,pierce:3,hits:0});
+              projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:360,radius:4,damage:t.hasNexoInfanteria?8:4,pierce:3,hits:0,hasInfanteria:t.hasNexoInfanteria});
               if(t.hasNexoEscopeta){
                 t.shotCount++;
                 if(t.shotCount>=4){
                   t.shotCount=0;
-                  fireShotgunBurst(c*cellWidth+cellWidth/2,r*cellHeight+cellHeight/2,3,4,3);
+                  fireShotgunBurst(c*cellWidth+cellWidth/2,r*cellHeight+cellHeight/2,3,t.hasNexoInfanteria?8:4,3,t.hasNexoInfanteria);
                 }
               }
             }
             else if(t.type.name==="Tesla"){ projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:320,radius:5,damage:3,pierce:0,hits:0,isTesla:true,expanded:t.hasNexoExpansion,cargado:t.hasNexoCargado}); playTeslaShootSound(); }
             else{
-              projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:300,radius:5,damage:t.hasNexoInfanteria?2:1,pierce:0,hits:0});
+              projectiles.push({x:c*cellWidth+cellWidth/2,y:r*cellHeight+cellHeight/2,row:r,speed:300,radius:5,damage:t.hasNexoInfanteria?2:1,pierce:0,hits:0,hasInfanteria:t.hasNexoInfanteria});
               if(t.hasNexoEscopeta){
                 t.shotCount++;
                 if(t.shotCount>=8){
                   t.shotCount=0;
-                  fireShotgunBurst(c*cellWidth+cellWidth/2,r*cellHeight+cellHeight/2,10,1,0);
+                  fireShotgunBurst(c*cellWidth+cellWidth/2,r*cellHeight+cellHeight/2,10,t.hasNexoInfanteria?2:1,0,t.hasNexoInfanteria);
                 }
               }
             }
@@ -2665,16 +2665,18 @@ function drawGame(){
     if(pr.pierce>0){
       var pepinoImg=GAME_IMG.PROYECTIL_PEPINO;
       if(pepinoImg&&pepinoImg.complete&&(pepinoImg.naturalWidth||pepinoImg.width)){
-        drawImageFit(pepinoImg,pr.x,pr.y,22,22);
+        // Bala: tamaño base 22px +15% = 25.3px; con Nexo Infantería, +20% adicional sobre ese base = 30.36px.
+        var pepinoSize=pr.hasInfanteria?30.36:25.3;
+        drawImageFit(pepinoImg,pr.x,pr.y,pepinoSize,pepinoSize);
         continue;
       }
     }
     if(!pr.isTesla&&pr.pierce===0){
       var vainaImg=GAME_IMG.PROYECTIL_VAINA;
       if(vainaImg&&vainaImg.complete&&(vainaImg.naturalWidth||vainaImg.width)){
-        // radius*4.6 compensa el margen transparente del sprite (círculo real ~87.5% del lienzo)
-        // para que el diámetro VISIBLE resultante sea el doble del círculo original (radius*2).
-        drawImageFit(vainaImg,pr.x,pr.y,pr.radius*4.6,pr.radius*4.6);
+        // Ataque: multiplicador base 4.6 -15% = 3.91; con Nexo Infantería, +15% adicional sobre ese base = 4.4965.
+        var vainaMult=pr.hasInfanteria?4.4965:3.91;
+        drawImageFit(vainaImg,pr.x,pr.y,pr.radius*vainaMult,pr.radius*vainaMult);
         continue;
       }
     }
@@ -2686,13 +2688,17 @@ function drawGame(){
       if(sp3.pierce>0){
         var pepinoImg2=GAME_IMG.PROYECTIL_PEPINO;
         if(pepinoImg2&&pepinoImg2.complete&&(pepinoImg2.naturalWidth||pepinoImg2.width)){
-          drawImageFit(pepinoImg2,sp3.x,sp3.y,sp3.radius*5.5,sp3.radius*5.5);
+          // Base de escopeta sin cambios (radius*5.5); con Infantería +20% sobre ese base.
+          var pepinoMult2=sp3.hasInfanteria?6.6:5.5;
+          drawImageFit(pepinoImg2,sp3.x,sp3.y,sp3.radius*pepinoMult2,sp3.radius*pepinoMult2);
           continue;
         }
       } else {
         var vainaImg2=GAME_IMG.PROYECTIL_VAINA;
         if(vainaImg2&&vainaImg2.complete&&(vainaImg2.naturalWidth||vainaImg2.width)){
-          drawImageFit(vainaImg2,sp3.x,sp3.y,sp3.radius*4.6,sp3.radius*4.6);
+          // Base de escopeta sin cambios (radius*4.6); con Infantería +15% sobre ese base.
+          var vainaMult2=sp3.hasInfanteria?5.29:4.6;
+          drawImageFit(vainaImg2,sp3.x,sp3.y,sp3.radius*vainaMult2,sp3.radius*vainaMult2);
           continue;
         }
       }
