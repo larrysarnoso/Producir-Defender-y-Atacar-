@@ -2097,6 +2097,12 @@ function tryReviveOrDie(arr,idx,e,goldOnDeath){
   if(canRevive){
     e.hp=e.maxHp*0.5;
     e.phoenixRevived=true;
+    // Ventana breve para que el revivir sea perceptible: color dorado distintivo por 2.5s
+    // (phoenixGlowTimer, solo visual) + 0.6s de invulnerabilidad corta reutilizando invulnTimer
+    // (ya usado en el resto del juego) para que no muera de nuevo en el golpe inmediatamente
+    // siguiente antes de que el jugador llegue a verlo con vida.
+    e.phoenixGlowTimer=2.5;
+    e.invulnTimer=Math.max(e.invulnTimer||0,0.6);
     return; // sigue vivo, no se toca el array ni se da oro
   }
   goldPieces+=goldOnDeath;
@@ -2397,6 +2403,7 @@ function updateGame(dt){
     if(e.invulnTimer>0){ e.invulnTimer-=dt; if(e.invulnTimer<0) e.invulnTimer=0; }
     if(e.hasteTimer>0){ e.hasteTimer-=dt; if(e.hasteTimer<=0){ e.hasteTimer=0; e.speed=e.baseSpeed; } }
     if(e.shieldTimer>0){ e.shieldTimer-=dt; if(e.shieldTimer<0) e.shieldTimer=0; }
+    if(e.phoenixGlowTimer>0){ e.phoenixGlowTimer-=dt; if(e.phoenixGlowTimer<0) e.phoenixGlowTimer=0; }
 
     if(e.type==="arquero"){
       e.arrowTimer+=dt;
@@ -2729,7 +2736,8 @@ function drawGame(){
     if(e.isBig){ ey=e.row*cellHeight; eh=cellHeight*2; es=eh*0.9; } else { ey=e.row*cellHeight+(cellHeight-e.size)/2; eh=e.size; es=e.size; }
 
     var fillColor=e.color;
-    if(e.invulnTimer>0) fillColor="#c9a6ff";
+    if(e.phoenixGlowTimer>0) fillColor="#ffcc33";
+    else if(e.invulnTimer>0) fillColor="#c9a6ff";
     else if(e.hasteTimer>0) fillColor="#ffb347";
     ctx.fillStyle=fillColor; ctx.beginPath(); ctx.ellipse(e.x+es/2,ey+eh/2,es/2,eh/2,0,0,Math.PI*2); ctx.fill();
 
@@ -2741,6 +2749,13 @@ function drawGame(){
       ctx.strokeStyle="#ffd700"; ctx.lineWidth=3; ctx.beginPath(); ctx.ellipse(e.x+es/2,ey+eh/2,es/2+5,eh/2+5,0,0,Math.PI*2); ctx.stroke();
     } else if(e.enchantLevel==="enchanted"){
       ctx.strokeStyle="#6ee7d8"; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(e.x+es/2,ey+eh/2,es/2+3,eh/2+3,0,0,Math.PI*2); ctx.stroke();
+    }
+    if(e.phoenixGlowTimer>0){
+      ctx.save();
+      ctx.shadowColor="#ff6600"; ctx.shadowBlur=10;
+      ctx.strokeStyle="#ff9500"; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.ellipse(e.x+es/2,ey+eh/2,es/2+6,eh/2+6,0,0,Math.PI*2); ctx.stroke();
+      ctx.restore();
     }
 
     ctx.font=Math.floor(es*0.55)+"px Arial";
