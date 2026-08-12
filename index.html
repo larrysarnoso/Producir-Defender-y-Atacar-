@@ -402,7 +402,7 @@ body.platform-pc #pause-rotate-btn,body.platform-xbox #pause-rotate-btn{display:
       <div class="upgrade-card"><div class="upgrade-icon">🔰</div><div class="upgrade-info"><div class="upgrade-name">Nexo Sobreescudo</div><div class="upgrade-desc">+90 HP extra — Ataque/Mina/Asist/Muros/Tesla/Bala</div><div class="upgrade-cost">Costo: 45 ✨</div></div><button class="buy-button" id="buy-nexo-sobreescudo" onclick="buyNexoSobreescudo()">COMPRAR</button></div>
       <div class="upgrade-card"><div class="upgrade-icon">🎯</div><div class="upgrade-info"><div class="upgrade-name">Nexo Escopeta</div><div class="upgrade-desc">Ráfaga de escopeta — Ataque/Bala</div><div class="upgrade-cost">Costo: 150 ✨</div></div><button class="buy-button" id="buy-nexo-escopeta" onclick="buyNexoEscopeta()">COMPRAR</button></div>
       <div class="upgrade-card"><div class="upgrade-icon">🧯</div><div class="upgrade-info"><div class="upgrade-name">Nexo Blindaje Antiexplosión</div><div class="upgrade-desc">-55% daño de explosión Kamikaze — Muro/Asist</div><div class="upgrade-cost">Costo: 100 ✨</div></div><button class="buy-button" id="buy-nexo-blindaje" onclick="buyNexoBlindaje()">COMPRAR</button></div>
-      <div class="upgrade-card"><div class="upgrade-icon">🔋</div><div class="upgrade-info"><div class="upgrade-name">Nexo Cargado</div><div class="upgrade-desc">6+ impactos: libera 10 cargas al morir en 9s — solo Tesla</div><div class="upgrade-cost">Costo: 180 ✨</div></div><button class="buy-button" id="buy-nexo-cargado" onclick="buyNexoCargado()">COMPRAR</button></div>
+      <div class="upgrade-card"><div class="upgrade-icon">🔋</div><div class="upgrade-info"><div class="upgrade-name">Nexo Cargado</div><div class="upgrade-desc">Proyectiles divididos vuelven a dividirse al impactar — solo Tesla</div><div class="upgrade-cost">Costo: 180 ✨</div></div><button class="buy-button" id="buy-nexo-cargado" onclick="buyNexoCargado()">COMPRAR</button></div>
       <div id="world-modifier-note"></div>
       <button class="pause-btn" onclick="closeShop()" style="margin-top:15px">CERRAR</button>
     </div>
@@ -1351,7 +1351,7 @@ var INV_UPGRADES=[
   {n:"Nexo Sobreescudo",i:"🔰",d:"+90 HP extra — Ataque/Mina/Asist/Muros/Tesla/Bala — $45"},
   {n:"Nexo Escopeta",i:"🎯",d:"Ráfaga de escopeta — Ataque/Bala — $150"},
   {n:"Nexo Blindaje Antiexplosión",i:"🧯",d:"-55% daño de explosión Kamikaze — Muro/Asist — $100"},
-  {n:"Nexo Cargado",i:"🔋",d:"6+ impactos: libera 10 cargas de estrella al morir en 9s — solo Tesla — $180"}
+  {n:"Nexo Cargado",i:"🔋",d:"Reacción en cadena: proyectiles divididos vuelven a dividirse al impactar — solo Tesla — $180"}
 ];
 var NEXO_BASE_COST=[50,70,60,90,85,75,110,55,45,150,100,180];
 var TOWER_BASE_COST=[5,10,4,20,15,20,45,35,30];
@@ -2322,14 +2322,8 @@ function updateGame(dt){
         if(!(e.invulnTimer>0)){
           e.hp-=applyShieldReduction(e,p.damage);
           playImpactSound();
-          if(p.cargado){ e.cargadoHits=(e.cargadoHits||0)+1; if(e.cargadoHits>=6){ e.cargadoArmed=true; e.cargadoTimer=9; } }
           if(e.hp<=0){
             var rw=0; if(e.type==="normal") rw=randInt(1,4); else if(e.type==="tanque") rw=randInt(3,9); else if(e.type==="arquero") rw=randInt(5,7); else if(e.type==="arrastrador") rw=50; else if(e.type==="kamikaze") rw=randInt(1,3);
-            var willRevive=phoenixTimer>0 && !e.phoenixRevived && e.type!=="arrastrador" && e.type!=="kamikaze";
-            if(!willRevive && e.cargadoArmed&&e.cargadoTimer>0){
-              var points4=10, childSpeed4=260;
-              for(var sp4=0;sp4<points4;sp4++){ var ang4=(Math.PI*2*sp4)/points4; starProjectiles.push({x:e.x+e.size/2,y:e.row*cellHeight+cellHeight/2,vx:Math.cos(ang4)*childSpeed4,vy:Math.sin(ang4)*childSpeed4,radius:3,damage:2,life:1.2,spawnGrace:0.12,hitEnemies:[]}); }
-            }
             tryReviveOrDie(enemies,j,e,rw);
           }
         }
@@ -2337,7 +2331,7 @@ function updateGame(dt){
           var points=p.expanded?10:5, childSpeed=260;
           for(var sp=0;sp<points;sp++){
             var ang=(Math.PI*2*sp)/points;
-            starProjectiles.push({x:p.x,y:p.y,vx:Math.cos(ang)*childSpeed,vy:Math.sin(ang)*childSpeed,radius:3,damage:2,life:1.2,spawnGrace:0.12,hitEnemies:[]});
+            starProjectiles.push({x:p.x,y:p.y,vx:Math.cos(ang)*childSpeed,vy:Math.sin(ang)*childSpeed,radius:3,damage:5,life:1.2,spawnGrace:0.12,hitEnemies:[],cargado:p.cargado});
           }
         }
         if(p.pierce>0){
@@ -2367,15 +2361,22 @@ function updateGame(dt){
         if(!(e2.invulnTimer>0)){
           e2.hp-=applyShieldReduction(e2,sp2.damage);
           playImpactSound();
-          if(sp2.isCargado){ e2.cargadoHits=(e2.cargadoHits||0)+1; if(e2.cargadoHits>=6){ e2.cargadoArmed=true; e2.cargadoTimer=9; } }
           if(e2.hp<=0){
             var rw2=0; if(e2.type==="normal") rw2=randInt(1,4); else if(e2.type==="tanque") rw2=randInt(3,9); else if(e2.type==="arquero") rw2=randInt(5,7); else if(e2.type==="arrastrador") rw2=50; else if(e2.type==="kamikaze") rw2=randInt(1,3);
-            var willRevive2=phoenixTimer>0 && !e2.phoenixRevived && e2.type!=="arrastrador" && e2.type!=="kamikaze";
-            if(!willRevive2 && e2.cargadoArmed&&e2.cargadoTimer>0){
-              var points3=10, childSpeed3=260;
-              for(var sp3=0;sp3<points3;sp3++){ var ang3=(Math.PI*2*sp3)/points3; starProjectiles.push({x:e2.x+e2.size/2,y:eCenterY,vx:Math.cos(ang3)*childSpeed3,vy:Math.sin(ang3)*childSpeed3,radius:3,damage:2,life:1.2,spawnGrace:0.12,hitEnemies:[]}); }
-            }
             tryReviveOrDie(enemies,j,e2,rw2);
+          }
+        }
+        // Nexo Cargado — reacción en cadena: el proyectil dividido de Tesla (damage:5), al
+        // impactar CUALQUIER enemigo, se vuelve a dividir en 3 proyectiles nuevos de 8 de
+        // daño cada uno. Estos nuevos proyectiles NO llevan cargado, así que no vuelven a
+        // dividirse — la cadena tiene exactamente 2 niveles (5 → 3), sin importar si el
+        // enemigo impactado muere o sobrevive al golpe.
+        if(sp2.cargado){
+          var pointsC=3, childSpeedC=260;
+          var baseAngC=Math.atan2(sp2.vy,sp2.vx);
+          for(var spc=0;spc<pointsC;spc++){
+            var angC=baseAngC+(spc-1)*0.5;
+            starProjectiles.push({x:sp2.x,y:sp2.y,vx:Math.cos(angC)*childSpeedC,vy:Math.sin(angC)*childSpeedC,radius:3,damage:8,life:1.2,spawnGrace:0.12,hitEnemies:[]});
           }
         }
         if(sp2.pierce>0){
@@ -2396,7 +2397,6 @@ function updateGame(dt){
     if(e.invulnTimer>0){ e.invulnTimer-=dt; if(e.invulnTimer<0) e.invulnTimer=0; }
     if(e.hasteTimer>0){ e.hasteTimer-=dt; if(e.hasteTimer<=0){ e.hasteTimer=0; e.speed=e.baseSpeed; } }
     if(e.shieldTimer>0){ e.shieldTimer-=dt; if(e.shieldTimer<0) e.shieldTimer=0; }
-    if(e.cargadoArmed&&e.cargadoTimer>0){ e.cargadoTimer-=dt; if(e.cargadoTimer<=0){ e.cargadoTimer=0; e.cargadoArmed=false; } }
 
     if(e.type==="arquero"){
       e.arrowTimer+=dt;
@@ -2502,24 +2502,22 @@ function drawNexoGlow(nc,x,y,ww2,hh,gridRow,gridCol){
   // Offset por celda para que las torres no parpadeen todas sincronizadas — se ve más vivo.
   var phase=nexoGlowAcc*3+(gridRow*7+gridCol*13)%6.283;
   var pulse=0.5+Math.sin(phase)*0.5; // 0..1
-  var maxR=Math.max(ww2,hh)*0.68;
+  var maxR=Math.max(ww2,hh)*1.0;
 
   ctx.save();
-  // Glow radial de fondo: se desvanece del centro hacia afuera, más intenso en el pico del pulso.
-  var glowAlpha=0.30+pulse*0.30;
+  // Aura circular pura: máxima intensidad en el centro, cae hacia afuera con curva suave
+  // (exponente 1.2, no lineal) para que se perciba concentrada y "emisiva" sin formar un
+  // anillo ni un borde recto — nada de strokeRect aquí, solo el gradiente radial.
+  var peakAlpha=0.55+pulse*0.35;
   var grad=ctx.createRadialGradient(cx,cy,0,cx,cy,maxR);
-  grad.addColorStop(0,"rgba("+rgb+","+glowAlpha+")");
-  grad.addColorStop(0.7,"rgba("+rgb+","+(glowAlpha*0.4)+")");
-  grad.addColorStop(1,"rgba("+rgb+",0)");
+  var STOPS=12;
+  for(var s=0;s<=STOPS;s++){
+    var t=s/STOPS;
+    var a=peakAlpha*Math.pow(1-t,1.2);
+    grad.addColorStop(t,"rgba("+rgb+","+Math.max(0,a)+")");
+  }
   ctx.fillStyle=grad;
   ctx.beginPath(); ctx.arc(cx,cy,maxR,0,Math.PI*2); ctx.fill();
-
-  // Anillo pulsante en el borde de la celda: el grosor y brillo oscilan con el pulso.
-  ctx.strokeStyle="rgba("+rgb+","+(0.65+pulse*0.35)+")";
-  ctx.lineWidth=1.5+pulse*2;
-  ctx.shadowColor="rgba("+rgb+",0.9)";
-  ctx.shadowBlur=4+pulse*6;
-  ctx.strokeRect(x+1,y+1,ww2-2,hh-2);
   ctx.restore();
 }
 function drawTowerIcon(t,x,y,ww2,hh){
@@ -2588,8 +2586,8 @@ function drawGame(){
         var nc=0; if(t.hasNexoDureza)nc++; if(t.hasNexoFuncionamiento)nc++; if(t.hasNexoProduccion)nc++; if(t.hasNexoInfanteria)nc++; if(t.hasNexoInquebrantable)nc++; if(t.hasNexoCuracion)nc++; if(t.hasNexoExpansion)nc++; if(t.hasNexoTesoro)nc++; if(t.hasNexoSobreescudo)nc++; if(t.hasNexoEscopeta)nc++; if(t.hasNexoBlindaje)nc++; if(t.hasNexoCargado)nc++;
         if(nc>0) drawNexoGlow(nc,x,y,ww2,hh,r,c);
         if(t.hp<t.maxHp&&t.type.name!=="Bomba"){
-          ctx.fillStyle="rgba(0,0,0,0.5)"; ctx.fillRect(x,y+hh-6,ww2,4);
-          ctx.fillStyle="#00ff00"; ctx.fillRect(x,y+hh-6,ww2*(t.hp/t.maxHp),4);
+          ctx.fillStyle="rgba(0,0,0,0.5)"; ctx.fillRect(x,y+hh-3,ww2,4);
+          ctx.fillStyle="#00ff00"; ctx.fillRect(x,y+hh-3,ww2*(t.hp/t.maxHp),4);
         }ctx.fillStyle="#fff"; ctx.font="bold "+Math.floor(Math.min(cellWidth,cellHeight)*0.68)+"px Arial";
         ctx.textAlign="center"; ctx.textBaseline="middle";
         drawTowerIcon(t,x,y,ww2,hh);
@@ -2638,9 +2636,15 @@ function drawGame(){
       var cx=sq.c*cellWidth+cellWidth/2, cy=sq.r*cellHeight+cellHeight/2;
       if(humoReady&&exp.centerR!==undefined){
         var dr=sq.r-exp.centerR, dc=sq.c-exp.centerC;
-        var angle=(dr===0&&dc===0)?0:Math.atan2(dc,-dr);
+        // Orientación específica por dirección (no una rotación continua por ángulo):
+        // centro/arriba/abajo usan el sprite tal cual (0°); izquierda rota 90° en sentido
+        // horario; derecha usa esa misma rotación pero espejada horizontalmente.
+        var angle=0, flipX=1;
+        if(dc<0){ angle=Math.PI/2; }
+        else if(dc>0){ angle=Math.PI/2; flipX=-1; }
         ctx.save();
         ctx.translate(cx,cy);
+        ctx.scale(flipX,1);
         ctx.rotate(angle);
         drawImageFit(humoImg,0,0,cellWidth*1.05,cellHeight*1.05);
         ctx.restore();
